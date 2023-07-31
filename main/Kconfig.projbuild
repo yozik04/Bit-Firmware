@@ -1,0 +1,11 @@
+
+choice CM_BUILD_EXAMPLE
+    prompt "Examples"
+    help
+        Build the Bit firmware or one of the examples.
+    default CM_BUILD_FIRMWARE
+
+    config CM_BUILD_FIRMWARE
+        bool "Bit firmware"
+
+endchoice
