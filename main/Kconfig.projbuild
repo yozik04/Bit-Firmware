@@ -7,5 +7,6 @@ choice CM_BUILD_EXAMPLE
 
     config CM_BUILD_FIRMWARE
         bool "Bit firmware"
-
+    config CM_HARDWARE_TEST
+        bool "Hardware test"
 endchoice

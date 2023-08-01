@@ -12,6 +12,7 @@
 #include "Devices/Input.h"
 #include "Devices/Battery.h"
 #include "Util/Notes.h"
+#include "Util/Events.h"
 
 BacklightBrightness* bl;
 
@@ -38,15 +39,10 @@ void init(){
 	auto i2c = new I2C(I2C_NUM_0, (gpio_num_t) I2C_SDA, (gpio_num_t) I2C_SCL);
 
 	auto disp = new Display();
-	auto input = new Input();
+	auto input = new Input(true);
 	Services.set(Service::Input, input);
 
-	auto battery = new Battery(); // Battery is doing shutdown
-	if(battery->isShutdown()) return; // Stop initialization if battery is critical
-	Services.set(Service::Battery, battery);
-
 	if(settings->get().sound){
-		//TODO - startup chime
 		audio->play({
 							Chirp{ .startFreq = NOTE_E4, .endFreq = NOTE_GS4, .duration = 100 },
 							Chirp{ .startFreq = 0, .endFreq = 0, .duration = 200 },
@@ -56,12 +52,44 @@ void init(){
 					});
 	}
 
+	printf("fade in\n");
+	bl->fadeIn();
+	printf("fade out\n");
+	bl->fadeOut();
+	printf("fade in\n");
 	bl->fadeIn();
 
+
 	auto& display = disp->getLGFX();
-	// Start Battery scanning after everything else, otherwise Critical
-	// Battery event might come while initialization is still in progress
-	battery->begin();
+	int colors[] = { TFT_RED, TFT_GREEN, TFT_BLUE };
+	for(auto& c : colors){
+		display.clear(c);
+		vTaskDelay(500 / portTICK_PERIOD_MS);
+	}
+
+	display.clear(TFT_BLACK);
+	display.setTextColor(TFT_GOLD);
+	display.setCursor(50, 103);
+
+	EventQueue queue(10);
+	Events::listen(Facility::Input, &queue);
+
+	while(1){
+		Event item{};
+		if(queue.get(item, portMAX_DELAY)){
+			if(item.facility == Facility::Input){
+				auto* data = (Input::Data*) item.data;
+				if(data->action == Input::Data::Press){
+					display.clear();
+					display.setCursor(50, 103);
+					display.print(Input::PinLabels.at(data->btn));
+				}else if(data->action == Input::Data::Release){
+					display.clear();
+				}
+			}
+			free(item.data);
+		}
+	}
 }
 
 extern "C" void app_main(void){

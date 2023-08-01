@@ -2,6 +2,8 @@ file(GLOB_RECURSE SOURCES "src/**.cpp" "src/**.c")
 
 if(CONFIG_CM_BUILD_FIRMWARE)
     set(ENTRY "main.cpp")
+elseif(CONFIG_CM_HARDWARE_TEST)
+    set(ENTRY "../examples/HWTest.cpp")
 endif()
 
 file(GLOB_RECURSE LIBS "lib/*/src/**.cpp" "lib/*/src/**.c")
