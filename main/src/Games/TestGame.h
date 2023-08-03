@@ -19,14 +19,16 @@ protected:
 
 private:
 	struct Object {
-		std::shared_ptr<GameObject> gObj;
+		GameObjPtr gObj;
 		glm::vec2 velocity;
 	};
 
 	std::vector<Object> objs;
 
-	std::shared_ptr<GameObject> pat;
-	std::shared_ptr<GameObject> bg;
+	GameObjPtr pat;
+	GameObjPtr bg;
+
+	GameObjPtr label;
 
 	bool gravity = true;
 };

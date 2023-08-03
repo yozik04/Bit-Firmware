@@ -3,6 +3,7 @@
 #include "../GameEngine/Rendering/AnimRC.h"
 #include "../GameEngine/Rendering/StaticRC.h"
 #include "../GameEngine/Collision/RectCC.h"
+#include "GameEngine/Rendering/TextRC.h"
 
 TestGame::TestGame(Sprite& canvas) : Game(canvas, "", {
 		{ "/Pat1.gif",            {}, true },
@@ -76,9 +77,19 @@ void TestGame::onLoad(){
 	add("/MenuIcons/Icon4.raw", 15, 60);
 	add("/MenuIcons/Icon5.raw", 55, 60);
 	add("/MenuIcons/Icon6.raw", 120, 60);
+
+	label = std::make_shared<GameObject>(
+			std::make_unique<TextRC>("time: 0"),
+			nullptr
+	);
+	addObject(label);
+
+	label->setPos(70, 5);
 }
 
 void TestGame::onLoop(float deltaTime){
+	std::static_pointer_cast<TextRC>(label->getRenderComponent())->setText("time: " + std::to_string(esp_timer_get_time() / 1000000));
+
 	for(int i = 0; i < objs.size(); i++){
 		auto& obj = objs[i];
 		obj.velocity += glm::vec2{ 0.0f, 40.0f } * deltaTime * (gravity ? 1.0f : -1.0f);
