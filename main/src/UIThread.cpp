@@ -26,12 +26,17 @@ void UIThread::loop(){
 }
 
 void UIThread::startGame(std::unique_ptr<Game> game){
-	this->game = std::move(game);
 	//TODO - rework game loading and starting
+	stop();
+
+	this->game = std::move(game);
 	this->game->load();
 	while(!this->game->isLoaded()){
 		vTaskDelay(1);
 	}
 
 	this->game->start();
+
+	loopTime = esp_timer_get_time();
+	start();
 }

@@ -14,6 +14,7 @@
 #include <Util/Events.h>
 #include "Devices/Input.h"
 #include "Services/ChirpSystem.h"
+#include <atomic>
 
 class Game {
 
@@ -54,7 +55,7 @@ private:
 	ResourceManager resMan;
 	const std::vector<ResDescriptor> resources;
 
-	bool loaded = false;
+	std::atomic_bool loaded = false;
 	bool started = false;
 	ThreadedClosure loadTask;
 
