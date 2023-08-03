@@ -13,6 +13,7 @@ public:
 	virtual ~GameObject() = default;
 	glm::vec2 getPos() const;
 	void setPos(glm::vec2 pos);
+	void setPos(float x, float y);
 
 	float getRot() const;
 	void setRot(float rot);

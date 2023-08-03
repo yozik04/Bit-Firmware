@@ -12,6 +12,10 @@ void GameObject::setPos(glm::vec2 pos){
 	this->pos = pos;
 }
 
+void GameObject::setPos(float x, float y){
+	this->pos = { x, y };
+}
+
 std::shared_ptr<RenderComponent> GameObject::getRenderComponent() const{
 	return renderComponent;
 }
@@ -27,5 +31,3 @@ float GameObject::getRot() const{
 void GameObject::setRot(float rot){
 	this->rot = rot;
 }
-
-
