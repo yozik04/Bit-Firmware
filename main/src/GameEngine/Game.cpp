@@ -5,7 +5,7 @@
 
 Game::Game(Sprite& base, const char* root, std::vector<ResDescriptor> resources) :
 		collision(this), inputQueue(12), audio(*(ChirpSystem*) Services.get(Service::Audio)), base(base),
-		resMan(root),resources(std::move(resources)),
+		resMan(root), resources(std::move(resources)),
 		loadTask([this](){ loadFunc(); }, "loadTask", 4096),
 		render(this, base){
 
@@ -80,7 +80,7 @@ void Game::loop(uint micros){
 	render.update(micros);
 	onRender(base);
 
-	// collision.drawDebug(CircuitPet.getDisplay()->getBaseSprite());
+//	collision.drawDebug(base);
 }
 
 void Game::onStart(){}

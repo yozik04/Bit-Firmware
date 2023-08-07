@@ -340,6 +340,8 @@ void CollisionSystem::drawDebug(Sprite& canvas){
 
 			auto col = obj.getCollisionComponent();
 
+			if(!col) return;
+
 			if(col->getType() == CollisionType::Rect){
 				canvas.drawRect(obj.getPos().x, obj.getPos().y, col->getRect()->getDim().x, col->getRect()->getDim().y, c);
 			}else if(col->getType() == CollisionType::Circle){

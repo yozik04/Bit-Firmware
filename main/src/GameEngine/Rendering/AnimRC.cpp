@@ -37,7 +37,7 @@ void AnimRC::reset(){
 
 void AnimRC::push(Sprite& parent, PixelDim pos, float rot) const{
 	auto sprite = gif->getSprite();
-	sprite.pushRotateZoom(&parent, pos.x, pos.y, rot, 1, 1, TFT_TRANSPARENT);
+	sprite.pushRotateZoom(&parent, pos.x + sprite.width() / 2, pos.y + sprite.height() / 2, rot, 1, 1, TFT_TRANSPARENT);
 }
 
 void AnimRC::setLoopDoneCallback(std::function<void(uint32_t)> cb){
