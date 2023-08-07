@@ -31,7 +31,7 @@ Input::Input(bool invertLogic) : SleepyThreaded(SleepTime, "Input", 2048, 6, 0),
 		const auto port = pair.first;
 		const auto pin = pair.second;
 
-		btnState[port] = false;
+		btnState[port] = invertLogic;
 		dbTime[port] = 0;
 
 		mask |= (1ULL << pin);
