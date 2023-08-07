@@ -1,5 +1,6 @@
 #include "Display.h"
 #include <Pins.hpp>
+#include "Color.h"
 
 Display::Display() : canvas(&lgfx){
 	setupBus();
@@ -75,4 +76,31 @@ void Display::drawTest(){
 	lgfx.drawLine(0, 127, 127, 127, TFT_GREEN);
 	lgfx.drawLine(127, 0, 127, 127, TFT_GREEN);
 	printf("Done.\n");
+}
+
+void Display::drawFile(Sprite& sprite, File icon, int16_t x, int16_t y, uint16_t width, uint16_t height, uint8_t scale, int32_t maskingColor){
+	static constexpr uint32_t BufferLength = 512;
+
+	icon.seek(0);
+	Color buffer[BufferLength];
+	size_t bufferPos = 0;
+	size_t available = icon.read(reinterpret_cast<uint8_t*>(buffer), BufferLength) / 2;
+
+	for(int i = 0; i < height; i++){
+		for(int j = 0; j < width; j++){
+			if(bufferPos == available){
+				available = icon.read(reinterpret_cast<uint8_t*>(buffer), BufferLength) / 2;
+				if(available == 0){
+					return;
+				}
+				bufferPos = 0;
+			}
+
+			uint16_t color = buffer[bufferPos++];
+
+			if(color != maskingColor || maskingColor == -1){
+				sprite.fillRect(x + j * scale, y + i * scale, scale, scale, color);
+			}
+		}
+	}
 }

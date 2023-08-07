@@ -22,8 +22,6 @@ protected:
 private:
 	File file;
 	PixelDim dim;
-	static void drawIcon(Sprite& sprite, File icon, int16_t x, int16_t y, uint16_t width, uint16_t height,
-						 uint8_t scale = 1, int32_t maskingColor = TFT_TRANSPARENT);
 };
 
 
