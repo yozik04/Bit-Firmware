@@ -11,7 +11,7 @@ std::shared_ptr<Sprite> SpriteRC::getSprite() const{
 
 void SpriteRC::push(Sprite& parent, PixelDim pos, float rot) const{
 	if(rot == 0){
-		sprite->pushSprite(&parent, pos.x, pos.y);
+		sprite->pushSprite(&parent, pos.x, pos.y, TFT_TRANSPARENT);
 	}else{
 		sprite->pushRotateZoomWithAA(&parent, pos.x + sprite->width() / 2, pos.y + sprite->height() / 2, rot, 1, 1, TFT_TRANSPARENT);
 	}
