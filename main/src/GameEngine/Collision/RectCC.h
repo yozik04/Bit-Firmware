@@ -6,13 +6,16 @@
 
 class RectCC : public CollisionComponent {
 public:
-	RectCC(glm::vec2 dim);
+	RectCC(glm::vec2 dim, glm::vec2 offset = { 0, 0 });
 	~RectCC() override = default;
 
 	glm::vec2 getDim() const;
+	glm::vec2 getOffset() const;
+	void setOffset(const glm::vec2& offset);
 
 private:
 	glm::vec2 dim;
+	glm::vec2 offset;
 };
 
 
