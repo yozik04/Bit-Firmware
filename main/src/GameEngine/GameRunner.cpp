@@ -15,6 +15,7 @@ void GameRunner::startGame(std::function<std::unique_ptr<Game>(Sprite&)> launche
 	}
 
 	currentGame = std::move(game);
+	currentGame->start();
 	lastMicros = micros();
 }
 
