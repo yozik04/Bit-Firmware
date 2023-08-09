@@ -3,7 +3,7 @@
 
 Hearts::Hearts(File heart) : heart(heart){
 	go = std::make_shared<GameObject>(
-			std::make_unique<SpriteRC>(PixelDim{ 25, 6 }),
+			std::make_unique<SpriteRC>(PixelDim{ 31, 8 }),
 			nullptr
 	);
 
@@ -18,7 +18,7 @@ void Hearts::setLives(uint8_t lives){
 	sprite->clear(TFT_TRANSPARENT);
 
 	for(int i = 0; i < lives; i++){
-		Display::drawFile(*sprite, heart, i * 9, 0, 7, 6, 1, TFT_TRANSPARENT);
+		Display::drawFile(*sprite, heart, i * 10, 0, 9, 8, 1, TFT_TRANSPARENT);
 	}
 }
 
