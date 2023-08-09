@@ -15,6 +15,9 @@
 #include <esp_spiffs.h>
 #include "UIThread.h"
 #include "Games/TestGame.h"
+#include "LV_Interface/LVGL.h"
+#include "LV_Interface/InputLVGL.h"
+#include "LV_Interface/FSLVGL.h"
 
 BacklightBrightness* bl;
 
@@ -73,18 +76,25 @@ void init(){
 	if(battery->isShutdown()) return; // Stop initialization if battery is critical
 	Services.set(Service::Battery, battery);
 
+	auto lvgl = new LVGL(*disp);
+	auto lvInput = new InputLVGL();
+	auto lvFS = new FSLVGL('S');
+
+	auto gamer = new GameRunner(*disp);
+
+	auto ui = new UIThread(*lvgl, *gamer);
+	ui->startGame([](Sprite& canvas){ return std::make_unique<TestGame>(canvas); });
+
 	if(settings->get().sound){
 		//TODO - startup chime
 	}
 
+	ui->start();
 	bl->fadeIn();
 
 	// Start Battery scanning after everything else, otherwise Critical
 	// Battery event might come while initialization is still in progress
 	battery->begin();
-
-	auto ui = new UIThread(*disp);
-	ui->startGame(std::make_unique<TestGame>(disp->getCanvas()));
 }
 
 extern "C" void app_main(void){
