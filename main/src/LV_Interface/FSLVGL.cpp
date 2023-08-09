@@ -66,7 +66,7 @@ std::unordered_set<FSLVGL::FileResource, std::hash<File*>> FSLVGL::cache;
 FSLVGL::FSLVGL(char letter){
 	cache.reserve(sizeof(Cached) / sizeof(Cached[0]) + 16);
 
-	esp_vfs_spiffs_conf_t conf = {
+	/*esp_vfs_spiffs_conf_t conf = {
 			.base_path = "/spiffs",
 			.partition_label = "storage",
 			.max_files = 8,
@@ -84,7 +84,7 @@ FSLVGL::FSLVGL(char letter){
 		}
 
 		return;
-	}
+	}*/
 
 
 	lv_fs_drv_init(&drv);                     /*Basic initialization*/
