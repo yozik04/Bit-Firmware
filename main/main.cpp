@@ -18,6 +18,7 @@
 #include "LV_Interface/LVGL.h"
 #include "LV_Interface/InputLVGL.h"
 #include "LV_Interface/FSLVGL.h"
+#include "Screens/IntroScreen.h"
 
 BacklightBrightness* bl;
 
@@ -83,7 +84,7 @@ void init(){
 	auto gamer = new GameRunner(*disp);
 
 	auto ui = new UIThread(*lvgl, *gamer);
-	ui->startGame([](Sprite& canvas){ return std::make_unique<TestGame>(canvas); });
+	ui->startScreen([](){ return std::make_unique<IntroScreen>(); });
 
 	if(settings->get().sound){
 		//TODO - startup chime
