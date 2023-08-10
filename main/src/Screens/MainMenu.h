@@ -10,6 +10,8 @@ public:
 	MainMenu();
 	virtual ~MainMenu();
 
+	static void loadCache();
+
 private:
 	void buildUI();
 
@@ -23,8 +25,7 @@ private:
 	void onStop() override;
 
 	static constexpr const char* BgImgs[] = { "/bg/0.bin", "/bg/1.bin", "/bg/2.bin", "/bg/3.bin", };
-	void loadCache();
-	void unloadCache();
+	static void unloadCache();
 
 };
 
