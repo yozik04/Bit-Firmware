@@ -54,6 +54,12 @@ void init(){
 	}
 	ESP_ERROR_CHECK(ret);
 
+	gpio_config_t cfg = {
+			.pin_bit_mask = (1ULL << I2C_SDA) | (1ULL << I2C_SCL),
+			.mode = GPIO_MODE_INPUT
+	};
+	gpio_config(&cfg);
+
 	if(!initSPIFFS()) return;
 
 	auto settings = new Settings();
@@ -67,8 +73,6 @@ void init(){
 	auto buzzPwm = new PWM(PIN_BUZZ, LEDC_CHANNEL_0);
 	auto audio = new ChirpSystem(*buzzPwm);
 	Services.set(Service::Audio, audio);
-
-	auto i2c = new I2C(I2C_NUM_0, (gpio_num_t) I2C_SDA, (gpio_num_t) I2C_SCL);
 
 	auto disp = new Display();
 	auto input = new Input(true);
