@@ -14,7 +14,7 @@
 #include "Util/Notes.h"
 #include <esp_spiffs.h>
 #include "UIThread.h"
-#include "Games/TestGame.h"
+#include "Services/Robots.h"
 #include "LV_Interface/LVGL.h"
 #include "LV_Interface/InputLVGL.h"
 #include "LV_Interface/FSLVGL.h"
@@ -77,6 +77,8 @@ void init(){
 	auto battery = new Battery(); // Battery is doing shutdown
 	if(battery->isShutdown()) return; // Stop initialization if battery is critical
 	Services.set(Service::Battery, battery);
+
+	auto rob = new Robots();
 
 	auto lvgl = new LVGL(*disp);
 	auto lvInput = new InputLVGL();
