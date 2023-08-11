@@ -15,6 +15,7 @@
 #include <esp_spiffs.h>
 #include "UIThread.h"
 #include "Services/Robots.h"
+#include "Services/GameManager.h"
 #include "LV_Interface/LVGL.h"
 #include "LV_Interface/InputLVGL.h"
 #include "LV_Interface/FSLVGL.h"
@@ -82,6 +83,9 @@ void init(){
 	if(battery->isShutdown()) return; // Stop initialization if battery is critical
 	Services.set(Service::Battery, battery);
 
+	// GameManager before robot detector, in case robot is plugged in during boot
+	auto games = new GameManager();
+	Services.set(Service::Games, games);
 	auto rob = new Robots();
 
 	auto lvgl = new LVGL(*disp);
