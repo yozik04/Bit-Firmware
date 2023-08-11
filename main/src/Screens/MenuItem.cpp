@@ -34,3 +34,7 @@ void MenuItem::setBorder(bool enabled){
 		lv_obj_add_flag(border, LV_OBJ_FLAG_HIDDEN);
 	}
 }
+
+void MenuItem::setIcon(const char* path){
+	lv_img_set_src(img, path);
+}

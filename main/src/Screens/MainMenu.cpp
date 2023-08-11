@@ -1,34 +1,51 @@
 #include "MainMenu.h"
 #include "MenuItem.h"
 #include "LV_Interface/FSLVGL.h"
-#include "LV_Interface/LVGIF.h"
+#include "Services/GameManager.h"
+#include "Util/Services.h"
 #include "Util/stdafx.h"
 
 struct Entry {
 	const char* icon;
+	Robot rob = Robot::COUNT;
 };
 
 static constexpr Entry MenuEntries[] = {
-		{ .icon = "S:/GameIcons/Blocks.bin" },
-		{ .icon = "S:/GameIcons/Pong.bin" },
-		{ .icon = "S:/GameIcons/Snake.bin" },
-		{ .icon = "S:/GameIcons/Arte.bin" },
-		{ .icon = "S:/GameIcons/Bee.bin" },
-		{ .icon = "S:/GameIcons/Bob.bin" },
-		{ .icon = "S:/GameIcons/Butt.bin" },
-		{ .icon = "S:/GameIcons/Capa.bin" },
-		{ .icon = "S:/GameIcons/Hertz.bin" },
-		{ .icon = "S:/GameIcons/Marv.bin" },
-		{ .icon = "S:/GameIcons/Resis.bin" },
-		{ .icon = "S:/GameIcons/Robby.bin" }
+		{ .icon = "Blocks" },
+		{ .icon = "Pong" },
+		{ .icon = "Snake" },
+		{ .icon = "Arte", .rob = Artemis },
+		{ .icon = "Bee", .rob = MrBee },
+		{ .icon = "Bob", .rob = Bob },
+		{ .icon = "Butt", .rob = Buttons },
+		{ .icon = "Capa", .rob = Capacitron },
+		{ .icon = "Hertz", .rob = Hertz },
+		{ .icon = "Marv", .rob = Marv },
+		{ .icon = "Resis", .rob = Resistron },
+		{ .icon = "Robby", .rob = Robby }
 };
 
-MainMenu::MainMenu(){
+// Ordered by adress
+static constexpr const char* RobotIcons[] = {
+		"Bee",
+		"Resis",
+		"Arte",
+		"Robby",
+		"Marv",
+		"Capa",
+		"Bob",
+		"Butt",
+		"Hertz"
+};
+
+MainMenu::MainMenu() : events(12){
 	loadCache();
+	Events::listen(Facility::Games, &events);
 	buildUI();
 }
 
 MainMenu::~MainMenu(){
+	Events::unlisten(&events);
 	unloadCache();
 }
 
@@ -44,6 +61,25 @@ void MainMenu::onStart(){
 
 void MainMenu::onStop(){
 	bg->stop();
+}
+
+void MainMenu::loop(){
+	Event evt{};
+	if(events.get(evt, 0)){
+		auto data = (GameManager::Event*) evt.data;
+		auto rob = data->rob;
+
+		// TODO: show inserted popup
+		// TODO: show unlock popup if new
+		if(data->isNew && robGames.count(rob)){
+			MenuItem* item = robGames.at(rob);
+			const auto icon = RobotIcons[rob];
+			const auto path = imgUnl(icon);
+			item->setIcon(path.c_str());
+		}
+
+		free(evt.data);
+	}
 }
 
 void MainMenu::buildUI(){
@@ -73,12 +109,24 @@ void MainMenu::buildUI(){
 	lv_obj_set_style_pad_gap(itemCont, 6, 0);
 	lv_obj_set_style_pad_hor(itemCont, 19, 0);
 
+	auto games = (GameManager*) Services.get(Service::Games);
 	items.reserve(sizeof(MenuEntries) / sizeof(MenuEntries[0]));
 	for(const auto& entry : MenuEntries){
-		auto item = new MenuItem(itemCont, entry.icon);
+		std::string path;
+		if(entry.rob == COUNT || games->isUnlocked(entry.rob)){
+			path = imgUnl(entry.icon);
+		}else{
+			path = imgLoc(entry.icon);
+		}
+
+		auto item = new MenuItem(itemCont, path.c_str());
 		lv_obj_add_flag(*item, LV_OBJ_FLAG_SCROLL_ON_FOCUS);
 		lv_group_add_obj(inputGroup, *item);
+
 		items.push_back(item);
+		if(entry.rob != COUNT){
+			robGames.insert(std::make_pair(entry.rob, item));
+		}
 	}
 
 	lv_obj_refr_size(itemCont);
@@ -94,25 +142,43 @@ void MainMenu::buildUI(){
 }
 
 void MainMenu::loadCache(){
-	auto time = millis();
-
 	for(const auto& img : BgImgs){
 		FSLVGL::addToCache(img);
 	}
 
+	// TODO: Only locked/unlocked icons for the games that are locked/unlocked
+	// With this there is ~40kb free heap in MainMenu as of writing this
 	for(const auto& entry : MenuEntries){
-		std::string path(entry.icon + 2);
-		FSLVGL::addToCache(path.c_str());
+		auto lock = imgLoc(entry.icon); lock.erase(0, 2);
+		auto unlock = imgUnl(entry.icon); unlock.erase(0, 2);
+		FSLVGL::addToCache(lock.c_str());
+		FSLVGL::addToCache(unlock.c_str());
 	}
 }
 
 void MainMenu::unloadCache(){
 	for(const auto& entry : MenuEntries){
-		std::string path(entry.icon + 2);
-		FSLVGL::removeFromCache(path.c_str());
+		auto lock = imgLoc(entry.icon); lock.erase(0, 2);
+		auto unlock = imgUnl(entry.icon); unlock.erase(0, 2);
+		FSLVGL::removeFromCache(lock.c_str());
+		FSLVGL::removeFromCache(unlock.c_str());
 	}
 
 	for(const auto& img : BgImgs){
 		FSLVGL::removeFromCache(img);
 	}
+}
+
+std::string MainMenu::imgUnl(const char* game){
+	std::string path("S:/GameIcons/");
+	path.append(game);
+	path.append(".bin");
+	return path;
+}
+
+std::string MainMenu::imgLoc(const char* game){
+	std::string path("S:/GameIcons/");
+	path.append(game);
+	path.append("L.bin");
+	return path;
 }

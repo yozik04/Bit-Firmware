@@ -9,6 +9,8 @@ public:
 
 	void setBorder(bool enabled);
 
+	void setIcon(const char* path);
+
 private:
 	lv_obj_t* img;
 	lv_obj_t* border;
