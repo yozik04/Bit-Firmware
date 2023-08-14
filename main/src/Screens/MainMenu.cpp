@@ -4,25 +4,32 @@
 #include "Services/GameManager.h"
 #include "Util/Services.h"
 #include "Util/stdafx.h"
+#include "UIThread.h"
+#include <Games/TestGame.h>
 
 struct Entry {
 	const char* icon;
 	Robot rob = Robot::COUNT;
+	Games game = Games::COUNT;
 };
 
 static constexpr Entry MenuEntries[] = {
-		{ .icon = "Blocks" },
-		{ .icon = "Pong" },
-		{ .icon = "Snake" },
-		{ .icon = "Arte", .rob = Artemis },
-		{ .icon = "Bee", .rob = MrBee },
-		{ .icon = "Bob", .rob = Bob },
-		{ .icon = "Butt", .rob = Buttons },
-		{ .icon = "Capa", .rob = Capacitron },
-		{ .icon = "Hertz", .rob = Hertz },
-		{ .icon = "Marv", .rob = Marv },
-		{ .icon = "Resis", .rob = Resistron },
-		{ .icon = "Robby", .rob = Robby }
+		{ .icon = "Blocks", .game = Games::Blocks },
+		{ .icon = "Pong", .game = Games::Pong },
+		{ .icon = "Snake", .game = Games::Snake },
+		{ .icon = "Arte", .rob = Artemis, .game = Games::Artemis },
+		{ .icon = "Bee", .rob = MrBee, .game = Games::MrBee },
+		{ .icon = "Bob", .rob = Bob, .game = Games::Bob },
+		{ .icon = "Butt", .rob = Buttons, .game = Games::Buttons },
+		{ .icon = "Capa", .rob = Capacitron, .game = Games::Capacitron },
+		{ .icon = "Hertz", .rob = Hertz, .game = Games::Hertz },
+		{ .icon = "Marv", .rob = Marv, .game = Games::Marv },
+		{ .icon = "Resis", .rob = Resistron, .game = Games::Resistron },
+		{ .icon = "Robby", .rob = Robby, .game = Games::Robby }
+};
+
+static const std::unordered_map<Games, std::function<void(UIThread* ui)>> Launcher {
+		{ Games::MrBee, [](UIThread* ui){ ui->startGame([](Sprite& canvas){ return std::make_unique<TestGame>(canvas); }); } }
 };
 
 // Ordered by adress
@@ -47,6 +54,17 @@ MainMenu::MainMenu() : events(12){
 MainMenu::~MainMenu(){
 	Events::unlisten(&events);
 	unloadCache();
+}
+
+void MainMenu::launch(Games game){
+	if(!Launcher.contains(game)) return;
+
+	auto games = (GameManager*) Services.get(Service::Games);
+	if(!games->isUnlocked(game)) return;
+
+	auto ui = (UIThread*) Services.get(Service::UI);
+	auto launch = Launcher.at(game);
+	launch(ui);
 }
 
 void MainMenu::onStarting(){
@@ -113,7 +131,7 @@ void MainMenu::buildUI(){
 	items.reserve(sizeof(MenuEntries) / sizeof(MenuEntries[0]));
 	for(const auto& entry : MenuEntries){
 		std::string path;
-		if(entry.rob == COUNT || games->isUnlocked(entry.rob)){
+		if(entry.rob == COUNT || entry.game == Games::COUNT || games->isUnlocked(entry.game)){
 			path = imgUnl(entry.icon);
 		}else{
 			path = imgLoc(entry.icon);
@@ -127,6 +145,13 @@ void MainMenu::buildUI(){
 		if(entry.rob != COUNT){
 			robGames.insert(std::make_pair(entry.rob, item));
 		}
+
+		lv_obj_add_event_cb(*item, [](lv_event_t* e){
+			auto menu = (MainMenu*) e->user_data;
+			auto index = lv_obj_get_index(e->current_target);
+			auto game = MenuEntries[index].game;
+			menu->launch(game);
+		}, LV_EVENT_CLICKED, this);
 	}
 
 	lv_obj_refr_size(itemCont);

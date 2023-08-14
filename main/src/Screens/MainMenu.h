@@ -6,6 +6,7 @@
 #include "LV_Interface/LVGIF.h"
 #include "Util/Events.h"
 #include "Services/Robots.h"
+#include "Services/GameManager.h"
 
 class MainMenu : public LVScreen {
 public:
@@ -35,6 +36,8 @@ private:
 
 	EventQueue events;
 	void loop() override;
+
+	void launch(Games game);
 
 };
 
