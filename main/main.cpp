@@ -97,6 +97,8 @@ void init(){
 	MainMenu::loadCache();
 
 	auto ui = new UIThread(*lvgl, *gamer);
+	Services.set(Service::UI, ui);
+
 	ui->startScreen([](){ return std::make_unique<IntroScreen>(); });
 
 	if(settings->get().sound){
