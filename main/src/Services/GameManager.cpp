@@ -2,6 +2,18 @@
 #include "Settings/Settings.h"
 #include "Util/Services.h"
 
+static const std::unordered_map<Games, Robot> GameRobot = {
+		{ Games::MrBee, Robot::MrBee },
+		{ Games::Artemis, Robot::Artemis },
+		{ Games::Bob, Robot::Bob },
+		{ Games::Hertz, Robot::Hertz },
+		{ Games::Robby, Robot::Robby },
+		{ Games::Resistron, Robot::Resistron },
+		{ Games::Capacitron, Robot::Capacitron },
+		{ Games::Marv, Robot::Marv },
+		{ Games::Buttons, Robot::Buttons }
+};
+
 GameManager::GameManager() : Threaded("GameMan", 2 * 1024), events(12){
 	auto set = (Settings*) Services.get(Service::Settings);
 	const auto all = set->get();
@@ -15,7 +27,9 @@ GameManager::GameManager() : Threaded("GameMan", 2 * 1024), events(12){
 	start();
 }
 
-bool GameManager::isUnlocked(Robot rob){
+bool GameManager::isUnlocked(Games game){
+	if(!GameRobot.contains(game)) return false;
+	auto rob = GameRobot.at(game);
 	return unlocked.count(rob);
 }
 

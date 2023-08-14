@@ -6,6 +6,8 @@
 #include "Util/Events.h"
 #include <unordered_set>
 
+enum class Games : uint8_t { Blocks, Pong, Snake, Artemis, MrBee, Bob, Buttons, Capacitron, Hertz, Marv, Resistron, Robby, COUNT };
+
 class GameManager : private Threaded {
 public:
 	GameManager();
@@ -16,7 +18,7 @@ public:
 		bool isNew;
 	};
 
-	bool isUnlocked(Robot rob);
+	bool isUnlocked(Games game);
 
 private:
 	std::unordered_set<Robot> unlocked;
