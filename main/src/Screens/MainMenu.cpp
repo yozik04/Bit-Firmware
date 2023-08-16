@@ -32,19 +32,6 @@ static const std::unordered_map<Games, std::function<void(UIThread* ui)>> Launch
 		{ Games::MrBee, [](UIThread* ui){ ui->startGame([](Sprite& canvas){ return std::make_unique<TestGame>(canvas); }); } }
 };
 
-// Ordered by adress
-static constexpr const char* RobotIcons[] = {
-		"Bee",
-		"Resis",
-		"Arte",
-		"Robby",
-		"Marv",
-		"Capa",
-		"Bob",
-		"Butt",
-		"Hertz"
-};
-
 MainMenu::MainMenu() : events(12){
 	loadCache();
 	Events::listen(Facility::Games, &events);
