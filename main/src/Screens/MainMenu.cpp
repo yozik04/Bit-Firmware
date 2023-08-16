@@ -7,6 +7,7 @@
 #include "UIThread.h"
 #include <Games/TestGame.h>
 #include <Modals/NewRobot.h>
+#include <Modals/LockedGame.h>
 
 struct Entry {
 	const char* icon;
@@ -48,7 +49,15 @@ void MainMenu::launch(Games game){
 	if(!Launcher.contains(game)) return;
 
 	auto games = (GameManager*) Services.get(Service::Games);
-	if(!games->isUnlocked(game)) return;
+	if(!games->isUnlocked(game)){
+		const auto rob = GameManager::GameRobot.at(game);
+
+		modal.reset();
+		modal = std::make_unique<LockedGame>(this, rob);
+		modal->start();
+
+		return;
+	}
 
 	auto ui = (UIThread*) Services.get(Service::UI);
 	auto launch = Launcher.at(game);
