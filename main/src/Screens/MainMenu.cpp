@@ -6,6 +6,7 @@
 #include "Util/stdafx.h"
 #include "UIThread.h"
 #include <Games/TestGame.h>
+#include <Modals/NewRobot.h>
 
 struct Entry {
 	const char* icon;
@@ -82,6 +83,10 @@ void MainMenu::loop(){
 			const auto path = imgUnl(icon);
 			item->setIcon(path.c_str());
 		}
+
+		modal.reset();
+		modal = std::make_unique<NewRobot>(this, rob, data->isNew);
+		modal->start();
 
 		free(evt.data);
 	}
