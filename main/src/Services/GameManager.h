@@ -45,6 +45,8 @@ public:
 
 	bool isUnlocked(Games game);
 
+	static const std::unordered_map<Games, Robot> GameRobot;
+
 private:
 	std::unordered_set<Robot> unlocked;
 
