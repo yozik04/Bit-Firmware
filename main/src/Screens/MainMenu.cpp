@@ -60,6 +60,8 @@ void MainMenu::launch(Games game){
 		return;
 	}
 
+	modal.reset();
+
 	auto ui = (UIThread*) Services.get(Service::UI);
 	auto launch = Launcher.at(game);
 	launch(ui);
