@@ -10,6 +10,11 @@ LVModal::LVModal(LVScreen* parent) : LVObject((lv_obj_t*) *parent), parentScreen
 	container = lv_obj_create(*parent);
 	lv_obj_set_parent(*this, container);
 
+	lv_obj_add_event_cb(obj, [](lv_event_t* event){
+		auto container = (lv_obj_t*) event->user_data;
+		lv_obj_del_async(container);
+	}, LV_EVENT_DELETE, container);
+
 	lv_obj_set_size(container, 102, 92);
 	lv_obj_set_style_pad_all(container, 8, 0);
 	lv_obj_set_style_bg_img_src(container, "S:/ModalBg.bin", 0);
