@@ -9,6 +9,7 @@
 #include <Modals/NewRobot.h>
 #include <Modals/LockedGame.h>
 #include <Modals/UnknownRobot.h>
+#include "Games/Flappy/Flappy.h"
 
 struct Entry {
 	const char* icon;
@@ -31,8 +32,8 @@ static constexpr Entry MenuEntries[] = {
 		{ .icon = "Robby", .rob = Robby, .game = Games::Robby }
 };
 
-static const std::unordered_map<Games, std::function<void(UIThread* ui)>> Launcher {
-		{ Games::MrBee, [](UIThread* ui){ ui->startGame([](Sprite& canvas){ return std::make_unique<TestGame>(canvas); }); } }
+static const std::unordered_map<Games, std::function<void(UIThread* ui)>> Launcher{
+		{ Games::MrBee, [](UIThread* ui){ ui->startGame([](Sprite& canvas){ return std::make_unique<Flappy>(canvas); }); } }
 };
 
 MainMenu::MainMenu() : events(12){
