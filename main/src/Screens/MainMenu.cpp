@@ -13,6 +13,7 @@
 #include "Games/Pong/Pong.h"
 #include "Games/Snake/Snake.h"
 #include "Games/Blocks/Blocks.h"
+#include "Games/MarvGame/MarvGame.h"
 
 struct Entry {
 	const char* icon;
@@ -39,7 +40,8 @@ static const std::unordered_map<Games, std::function<void(UIThread* ui)>> Launch
 		{ Games::MrBee, [](UIThread* ui){ ui->startGame([](Sprite& canvas){ return std::make_unique<Flappy>(canvas); }); } },
 		{ Games::Pong, [](UIThread* ui){ ui->startGame([](Sprite& canvas){ return std::make_unique<Pong>(canvas); }); } },
 		{ Games::Snake, [](UIThread* ui){ ui->startGame([](Sprite& canvas){ return std::make_unique<Snake>(canvas); }); } },
-		{ Games::Blocks, [](UIThread* ui){ ui->startGame([](Sprite& canvas){ return std::make_unique<Blocks>(canvas); }); } }
+		{ Games::Blocks, [](UIThread* ui){ ui->startGame([](Sprite& canvas){ return std::make_unique<Blocks>(canvas); }); } },
+		{ Games::Marv, [](UIThread* ui){ ui->startGame([](Sprite& canvas){ return std::make_unique<MarvGame::MarvGame>(canvas); }); } }
 };
 
 MainMenu::MainMenu() : events(12){
