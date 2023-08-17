@@ -30,6 +30,7 @@ LVModal::LVModal(LVScreen* parent) : LVObject((lv_obj_t*) *parent), parentScreen
 
 LVModal::~LVModal(){
 	if(active){
+		current = nullptr;
 		lv_indev_set_group(InputLVGL::getInstance()->getIndev(), parentScreen->getInputGroup());
 	}
 	lv_group_del(inputGroup);
