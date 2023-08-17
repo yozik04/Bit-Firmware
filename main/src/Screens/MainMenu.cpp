@@ -122,6 +122,7 @@ void MainMenu::buildUI(){
 	lv_obj_set_style_pad_ver(contentContainer, 13, 0);
 
 	itemCont = lv_obj_create(contentContainer);
+	lv_obj_add_flag(itemCont, LV_OBJ_FLAG_OVERFLOW_VISIBLE);
 	lv_obj_set_size(itemCont, 128, LV_SIZE_CONTENT);
 	lv_obj_set_flex_flow(itemCont, LV_FLEX_FLOW_ROW_WRAP);
 	lv_obj_set_flex_align(itemCont, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START);
