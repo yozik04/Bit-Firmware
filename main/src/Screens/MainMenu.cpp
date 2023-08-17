@@ -8,6 +8,7 @@
 #include <Games/TestGame.h>
 #include <Modals/NewRobot.h>
 #include <Modals/LockedGame.h>
+#include <Modals/UnknownRobot.h>
 
 struct Entry {
 	const char* icon;
@@ -82,23 +83,32 @@ void MainMenu::loop(){
 	Event evt{};
 	if(events.get(evt, 0)){
 		auto data = (GameManager::Event*) evt.data;
-		auto rob = data->rob;
-
-		// TODO: show inserted popup
-		// TODO: show unlock popup if new
-		if(data->isNew && robGames.count(rob)){
-			MenuItem* item = robGames.at(rob);
-			const auto icon = RobotIcons[rob];
-			const auto path = imgUnl(icon);
-			item->setIcon(path.c_str());
-		}
-
-		modal.reset();
-		modal = std::make_unique<NewRobot>(this, rob, data->isNew);
-		modal->start();
-
+		handleInsert(*data);
 		free(evt.data);
 	}
+}
+
+void MainMenu::handleInsert(const GameManager::Event& evt){
+	if(evt.action == GameManager::Event::Unknown){
+		modal.reset();
+		modal = std::make_unique<UnknownRobot>(this);
+		modal->start();
+		return;
+	}else if(evt.action != GameManager::Event::Inserted) return;
+
+	auto rob = evt.rob;
+	auto isNew = evt.isNew;
+
+	if(isNew && robGames.count(rob)){
+		MenuItem* item = robGames.at(rob);
+		const auto icon = RobotIcons[rob];
+		const auto path = imgUnl(icon);
+		item->setIcon(path.c_str());
+	}
+
+	modal.reset();
+	modal = std::make_unique<NewRobot>(this, rob, isNew);
+	modal->start();
 }
 
 void MainMenu::buildUI(){
