@@ -47,7 +47,7 @@ void UnknownRobot::buildUI(){
 
 	label(container, "Go to");
 	auto link = label(container, " code.circuitmess.com ");
-	label(container, "to update firmware.");
+	label(container, "to update firmware");
 
 	lv_obj_add_flag(*this, LV_OBJ_FLAG_OVERFLOW_VISIBLE);
 	lv_obj_add_flag(container, LV_OBJ_FLAG_OVERFLOW_VISIBLE);
