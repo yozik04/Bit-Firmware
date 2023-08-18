@@ -63,15 +63,9 @@ void MainMenu::launch(Games game){
 	auto games = (GameManager*) Services.get(Service::Games);
 	if(!games->isUnlocked(game)){
 		const auto rob = GameManager::GameRobot.at(game);
-
-		modal.reset();
-		modal = std::make_unique<LockedGame>(this, rob);
-		modal->start();
-
+		new LockedGame(this, rob);
 		return;
 	}
-
-	modal.reset();
 
 	auto ui = (UIThread*) Services.get(Service::UI);
 	auto launch = Launcher.at(game);
@@ -103,9 +97,7 @@ void MainMenu::loop(){
 
 void MainMenu::handleInsert(const GameManager::Event& evt){
 	if(evt.action == GameManager::Event::Unknown){
-		modal.reset();
-		modal = std::make_unique<UnknownRobot>(this);
-		modal->start();
+		new UnknownRobot(this);
 		return;
 	}else if(evt.action != GameManager::Event::Inserted) return;
 
@@ -119,9 +111,7 @@ void MainMenu::handleInsert(const GameManager::Event& evt){
 		item->setIcon(path.c_str());
 	}
 
-	modal.reset();
-	modal = std::make_unique<NewRobot>(this, rob, isNew);
-	modal->start();
+	new NewRobot(this, rob, isNew);
 }
 
 void MainMenu::buildUI(){
