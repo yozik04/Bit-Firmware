@@ -73,6 +73,7 @@ void init(){
 
 	auto buzzPwm = new PWM(PIN_BUZZ, LEDC_CHANNEL_0);
 	auto audio = new ChirpSystem(*buzzPwm);
+	audio->setMute(!settings->get().sound);
 	Services.set(Service::Audio, audio);
 
 	auto disp = new Display();
