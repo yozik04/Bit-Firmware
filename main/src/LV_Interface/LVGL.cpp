@@ -37,6 +37,7 @@ void LVGL::loop(){
 	if(currentScreen){
 		currentScreen->loop();
 	}
+	if(!currentScreen) return;
 
 	auto ttn = lv_timer_handler();
 	if(ttn <= 0 || ttn > LV_DISP_DEF_REFR_PERIOD) ttn = 1;
