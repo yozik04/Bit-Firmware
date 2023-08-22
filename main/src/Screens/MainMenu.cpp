@@ -9,6 +9,7 @@
 #include <Modals/NewRobot.h>
 #include <Modals/LockedGame.h>
 #include <Modals/UnknownRobot.h>
+#include <Screens/Settings/SettingsScreen.h>
 
 struct Entry {
 	const char* icon;
@@ -34,6 +35,7 @@ static constexpr Entry MenuEntries[] = {
 MainMenu::MainMenu() : events(12){
 	loadCache();
 	Events::listen(Facility::Games, &events);
+	Events::listen(Facility::Input, &events);
 	buildUI();
 }
 
@@ -71,8 +73,13 @@ void MainMenu::onStop(){
 void MainMenu::loop(){
 	Event evt{};
 	if(events.get(evt, 0)){
-		auto data = (GameManager::Event*) evt.data;
-		handleInsert(*data);
+		if(evt.facility == Facility::Games){
+			auto data = (GameManager::Event*) evt.data;
+			handleInsert(*data);
+		}else if(evt.facility == Facility::Input){
+			auto data = (Input::Data*) evt.data;
+			handleInput(*data);
+		}
 		free(evt.data);
 	}
 }
@@ -94,6 +101,13 @@ void MainMenu::handleInsert(const GameManager::Event& evt){
 	}
 
 	new NewRobot(this, rob, isNew);
+}
+
+void MainMenu::handleInput(const Input::Data& evt){
+	if(evt.btn == Input::Menu && evt.action == Input::Data::Release){
+		auto ui = (UIThread*) Services.get(Service::UI);
+		ui->startScreen([](){ return std::make_unique<SettingsScreen>(); });
+	}
 }
 
 void MainMenu::buildUI(){
