@@ -32,6 +32,7 @@ private:
 	void loop() override;
 
 	void showControls();
+	void exit();
 
 };
 

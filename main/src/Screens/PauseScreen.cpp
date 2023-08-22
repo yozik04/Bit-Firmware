@@ -68,6 +68,15 @@ void PauseScreen::showControls(){
 	lv_obj_invalidate(*this);
 }
 
+void PauseScreen::exit(){
+	auto disp = (Display*) Services.get(Service::Display);
+	auto lgfx = disp->getLGFX();
+	lgfx.drawBmpFile("/spiffs/bg.bmp");
+
+	auto ui = (UIThread*) Services.get(Service::UI);
+	ui->startScreen([](){ return std::make_unique<MainMenu>(); });
+}
+
 void PauseScreen::buildUI(){
 	lv_obj_set_flex_flow(*this, LV_FLEX_FLOW_COLUMN);
 
@@ -143,9 +152,11 @@ void PauseScreen::buildUI(){
 	}, LV_EVENT_CLICKED, this);
 
 	lv_obj_add_event_cb(exit, [](lv_event_t* e){
-		auto ui = (UIThread*) Services.get(Service::UI);
-		ui->startScreen([](){ return std::make_unique<MainMenu>(); });
-	}, LV_EVENT_CLICKED, nullptr);
+		lv_async_call([](void* arg){
+			auto pause = (PauseScreen*) arg;
+			pause->exit();
+		}, e->user_data);
+	}, LV_EVENT_CLICKED, this);
 
 	lv_group_focus_obj(lv_obj_get_child(rest, 0)); // TODO: move to onStarting if this is a persistent screen
 }
