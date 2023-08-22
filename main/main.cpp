@@ -7,6 +7,7 @@
 #include "Pins.hpp"
 #include "Services/BacklightBrightness.h"
 #include "Services/ChirpSystem.h"
+#include "Services/Sleep.h"
 #include "Periph/I2C.h"
 #include "Devices/Display.h"
 #include "Devices/Input.h"
@@ -97,6 +98,8 @@ void init(){
 	auto battery = new Battery(); // Battery is doing shutdown
 	if(battery->isShutdown()) return; // Stop initialization if battery is critical
 	Services.set(Service::Battery, battery);
+
+	auto sleep = new Sleep();
 
 	// GameManager before robot detector, in case robot is plugged in during boot
 	auto games = new GameManager();
