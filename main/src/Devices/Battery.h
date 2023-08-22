@@ -10,15 +10,12 @@
 #include <mutex>
 #include <esp_efuse.h>
 
-class Battery : private Threaded {
+class Battery : private SleepyThreaded {
 public:
 	Battery();
-	~Battery() override;
 	void begin();
 
 	enum Level { Critical = 0, VeryLow, Low, Mid, Full, COUNT };
-
-	void setSleep(bool sleep);
 
 	uint8_t getPerc() const;
 	Level getLevel() const;
@@ -38,28 +35,17 @@ public:
 	bool isShutdown() const;
 
 private:
-	static constexpr uint32_t ShortMeasureIntverval = 100;
-	static constexpr uint32_t LongMeasureIntverval = 6000;
+	static constexpr uint32_t MeasureIntverval = 100;
 
 	ADC adc;
-
 	Hysteresis hysteresis;
 
-	std::mutex mut;
-
-	bool sleep = false;
-
-	std::atomic_bool abortFlag = false;
-
-	SemaphoreHandle_t sem;
-	Timer timer;
-	static void isr(void* arg);
-	void loop() override;
+	void sleepyLoop() override;
 
 	void sample(bool fresh = false);
-	void startTimer();
-
 	bool shutdown = false;
+
+	void off();
 
 	static constexpr esp_efuse_desc_t adc1_low = { EFUSE_BLK3, 96, 7 };
 	static constexpr const esp_efuse_desc_t* efuse_adc1_low[] = { &adc1_low, nullptr };

@@ -11,27 +11,14 @@
 #define MAX_READ 4050 // 4.5V
 #define MIN_READ 3170 // 3.6V
 
-
-
-Battery::Battery() : Threaded("Battery", 3 * 1024, 5), adc((gpio_num_t) PIN_BATT, 0.05, MIN_READ, MAX_READ, getVoltOffset()),
-					 hysteresis({ 0, 4, 15, 30, 70, 100 }, 3), sem(xSemaphoreCreateBinary()), timer(ShortMeasureIntverval, isr, sem){
+Battery::Battery() : SleepyThreaded(MeasureIntverval, "Battery", 3 * 1024, 5), adc((gpio_num_t) PIN_BATT, 0.05, MIN_READ, MAX_READ, getVoltOffset()),
+					 hysteresis({ 0, 4, 15, 30, 70, 100 }, 3){
 
 	sample(true); // this will initiate shutdown if battery is critical
 }
 
-Battery::~Battery(){
-	timer.stop();
-	stop(0);
-	abortFlag = true;
-	xSemaphoreGive(sem);
-	while(running()){
-		vTaskDelay(1);
-	}
-}
-
 void Battery::begin(){
 	start();
-	startTimer();
 }
 
 uint16_t Battery::mapRawReading(uint16_t reading){
@@ -63,54 +50,22 @@ void Battery::sample(bool fresh){
 	}
 
 	if(getLevel() == Critical){
-		//TODO - shutdown
-//		shutdown = true;
-//		extern void shutdown();
-//		shutdown();
+		stop(0);
+		shutdown = true;
+		off();
+		return;
 	}
 }
 
-void Battery::loop(){
-	while(!xSemaphoreTake(sem, portMAX_DELAY)){
-		timer.stop();
-		startTimer();
-	}
-	timer.stop();
-
-	if(abortFlag || shutdown) return;
-
-	std::lock_guard lock(mut);
-
-	sample();
-
-	startTimer();
+void Battery::off(){
+	// TODO: show low battery notification, then shut off
+	extern void shutdown();
+	shutdown();
 }
 
-void Battery::startTimer(){
-	timer.stop();
+void Battery::sleepyLoop(){
 	if(shutdown) return;
-
-	if(!sleep){
-		timer.setPeriod(ShortMeasureIntverval);
-	}else{
-		timer.setPeriod(LongMeasureIntverval);
-	}
-	timer.start();
-}
-
-void IRAM_ATTR Battery::isr(void* arg){
-	BaseType_t priority = pdFALSE;
-	xSemaphoreGiveFromISR(arg, &priority);
-}
-
-void Battery::setSleep(bool sleep){
-	timer.stop();
-	std::lock_guard lock(mut);
-
-	adc.setEmaA(sleep ? 0.5 : 0.05);
-
-	this->sleep = sleep;
-	xSemaphoreGive(sem);
+	sample();
 }
 
 uint8_t Battery::getPerc() const{
