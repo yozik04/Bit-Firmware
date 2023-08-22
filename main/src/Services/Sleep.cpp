@@ -28,7 +28,6 @@ void Sleep::loop(){
 	}
 
 	const auto waitTime = sleepMillis - timeSinceAct;
-	printf("Sleep time: %lu s, wait time: %llu ms\n", Settings::SleepSeconds[set.sleepTime], waitTime);
 
 	Event evt;
 	if(!evts.get(evt, waitTime)){
