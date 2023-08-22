@@ -33,12 +33,11 @@ static constexpr Entry MenuEntries[] = {
 };
 
 MainMenu::MainMenu() : events(12){
-	loadCache();
 	buildUI();
 }
 
 MainMenu::~MainMenu(){
-	unloadCache();
+
 }
 
 void MainMenu::launch(Games game){
@@ -175,34 +174,6 @@ void MainMenu::buildUI(){
 
 	auto padBot = lv_obj_create(*this);
 	lv_obj_set_size(padBot, 128, lv_obj_get_height(itemCont));
-}
-
-void MainMenu::loadCache(){
-	for(const auto& img : BgImgs){
-		FSLVGL::addToCache(img);
-	}
-
-	// TODO: Only locked/unlocked icons for the games that are locked/unlocked
-	// With this there is ~40kb free heap in MainMenu as of writing this
-	for(const auto& entry : MenuEntries){
-		auto lock = imgLoc(entry.icon); lock.erase(0, 2);
-		auto unlock = imgUnl(entry.icon); unlock.erase(0, 2);
-		FSLVGL::addToCache(lock.c_str());
-		FSLVGL::addToCache(unlock.c_str());
-	}
-}
-
-void MainMenu::unloadCache(){
-	for(const auto& entry : MenuEntries){
-		auto lock = imgLoc(entry.icon); lock.erase(0, 2);
-		auto unlock = imgUnl(entry.icon); unlock.erase(0, 2);
-		FSLVGL::removeFromCache(lock.c_str());
-		FSLVGL::removeFromCache(unlock.c_str());
-	}
-
-	for(const auto& img : BgImgs){
-		FSLVGL::removeFromCache(img);
-	}
 }
 
 std::string MainMenu::imgUnl(const char* game){

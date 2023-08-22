@@ -15,8 +15,6 @@ public:
 	MainMenu();
 	virtual ~MainMenu();
 
-	static void loadCache();
-
 private:
 	void buildUI();
 
@@ -29,9 +27,6 @@ private:
 	void onStarting() override;
 	void onStart() override;
 	void onStop() override;
-
-	static constexpr const char* BgImgs[] = { "/bg/0.bin", "/bg/1.bin", "/bg/2.bin", "/bg/3.bin", };
-	static void unloadCache();
 
 	static std::string imgUnl(const char* game);
 	static std::string imgLoc(const char* game);

@@ -10,7 +10,31 @@
 #include <unordered_map>
 
 static const char* Cached[] = {
-	// "/bg.bin"
+		"/bg/0.bin",
+		"/bg/1.bin",
+		"/bg/2.bin",
+		"/bg/3.bin",
+		"/GameIcons/Arte.bin",
+		"/GameIcons/ArteL.bin",
+		"/GameIcons/Bee.bin",
+		"/GameIcons/BeeL.bin",
+		"/GameIcons/Blocks.bin",
+		"/GameIcons/Bob.bin",
+		"/GameIcons/BobL.bin",
+		"/GameIcons/Butt.bin",
+		"/GameIcons/ButtL.bin",
+		"/GameIcons/Capa.bin",
+		"/GameIcons/CapaL.bin",
+		"/GameIcons/Hertz.bin",
+		"/GameIcons/HertzL.bin",
+		"/GameIcons/Marv.bin",
+		"/GameIcons/MarvL.bin",
+		"/GameIcons/Pong.bin",
+		"/GameIcons/Resis.bin",
+		"/GameIcons/ResisL.bin",
+		"/GameIcons/Robby.bin",
+		"/GameIcons/RobbyL.bin",
+		"/GameIcons/Snake.bin"
 };
 
 const char* TAG = "FSLVGL";
@@ -120,6 +144,12 @@ void FSLVGL::removeFromCache(const char* path){
 void FSLVGL::loadCache(){
 	for(const auto& path : Cached){
 		addToCache(path);
+	}
+}
+
+void FSLVGL::unloadCache(){
+	for(const auto& path : Cached){
+		removeFromCache(path);
 	}
 }
 

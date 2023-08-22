@@ -20,7 +20,6 @@
 #include "LV_Interface/LVGL.h"
 #include "LV_Interface/InputLVGL.h"
 #include "LV_Interface/FSLVGL.h"
-#include "Screens/MainMenu.h"
 #include "Screens/IntroScreen.h"
 #include <esp_sleep.h>
 
@@ -112,7 +111,7 @@ void init(){
 
 	auto gamer = new GameRunner(*disp);
 
-	MainMenu::loadCache();
+	FSLVGL::loadCache();
 
 	auto ui = new UIThread(*lvgl, *gamer);
 	Services.set(Service::UI, ui);

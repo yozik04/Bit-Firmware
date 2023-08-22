@@ -22,6 +22,7 @@ public:
 	static void removeFromCache(const char* path);
 
 	static void loadCache();
+	static void unloadCache();
 
 private:
 	lv_fs_drv_t drv;                   /*Needs to be static or global*/
