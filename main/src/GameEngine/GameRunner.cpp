@@ -22,6 +22,10 @@ GameRunner::GameRunner(Display& display) : display(display){
 
 }
 
+Games GameRunner::getCurrent(){
+	return currentGameEnum;
+}
+
 void GameRunner::startGame(Games game){
 	endGame();
 
@@ -61,6 +65,7 @@ void GameRunner::startGame(Games game){
 	}
 	Events::unlisten(&evts);
 
+	currentGameEnum = game;
 	currentGame = std::move(inst);
 	currentGame->start();
 	lastMicros = micros();
@@ -70,6 +75,7 @@ void GameRunner::endGame(){
 	if(!currentGame) return;
 	currentGame->stop();
 	currentGame.reset();
+	currentGameEnum = Games::COUNT;
 }
 
 void GameRunner::resume(){

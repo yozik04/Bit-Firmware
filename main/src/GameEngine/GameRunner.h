@@ -10,6 +10,8 @@ class GameRunner{
 public:
 	GameRunner(Display& display);
 
+	Games getCurrent();
+
 	void startGame(Games game);
 	void endGame();
 
@@ -22,6 +24,7 @@ private:
 	uint64_t lastMicros;
 
 	std::unique_ptr<Game> currentGame;
+	Games currentGameEnum = Games::COUNT;
 
 	static constexpr uint32_t FrameTime = 25; // [ms]
 
