@@ -34,13 +34,10 @@ static constexpr Entry MenuEntries[] = {
 
 MainMenu::MainMenu() : events(12){
 	loadCache();
-	Events::listen(Facility::Games, &events);
-	Events::listen(Facility::Input, &events);
 	buildUI();
 }
 
 MainMenu::~MainMenu(){
-	Events::unlisten(&events);
 	unloadCache();
 }
 
@@ -62,12 +59,15 @@ void MainMenu::onStarting(){
 }
 
 void MainMenu::onStart(){
+	Events::listen(Facility::Games, &events);
+	Events::listen(Facility::Input, &events);
 	bg->start();
 	lv_obj_scroll_to(*this, 0, 128, LV_ANIM_ON);
 }
 
 void MainMenu::onStop(){
 	bg->stop();
+	Events::unlisten(&events);
 }
 
 void MainMenu::loop(){
