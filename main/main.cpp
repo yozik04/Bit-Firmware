@@ -21,8 +21,20 @@
 #include "LV_Interface/FSLVGL.h"
 #include "Screens/MainMenu.h"
 #include "Screens/IntroScreen.h"
+#include <esp_sleep.h>
 
 BacklightBrightness* bl;
+
+void shutdown(){
+	bl->fadeOut();
+
+	esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_PERIPH, ESP_PD_OPTION_AUTO);
+	esp_sleep_pd_config(ESP_PD_DOMAIN_RC_FAST, ESP_PD_OPTION_AUTO);
+	esp_sleep_pd_config(ESP_PD_DOMAIN_CPU, ESP_PD_OPTION_AUTO);
+	esp_sleep_pd_config(ESP_PD_DOMAIN_XTAL, ESP_PD_OPTION_AUTO);
+	esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_ALL);
+	esp_deep_sleep_start();
+}
 
 bool initSPIFFS(){
 	esp_vfs_spiffs_conf_t conf = {
