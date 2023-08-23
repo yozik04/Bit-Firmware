@@ -1,6 +1,7 @@
 #include "ResourceManager.h"
 #include "FS/RamFile.h"
 #include "FS/SPIFFS.h"
+#include "Util/stdafx.h"
 #include <esp_log.h>
 
 ResourceManager::ResourceManager(const char* root) : root(root){}
@@ -9,6 +10,8 @@ void ResourceManager::load(const std::vector<ResDescriptor>& descriptors){
 //	uint8_t copyBuffer[1024];
 
 	for(auto descriptor : descriptors){
+		delayMillis(1);
+
 		std::string path;
 
 		if(descriptor.path[0] == 'c'){
