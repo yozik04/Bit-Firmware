@@ -60,20 +60,18 @@ bool initSPIFFS(){
 }
 
 void init(){
-	auto ret = nvs_flash_init();
-	if(ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND){
-		ESP_ERROR_CHECK(nvs_flash_erase());
-		ret = nvs_flash_init();
-	}
-	ESP_ERROR_CHECK(ret);
-
 	gpio_config_t cfg = {
 			.pin_bit_mask = (1ULL << I2C_SDA) | (1ULL << I2C_SCL),
 			.mode = GPIO_MODE_INPUT
 	};
 	gpio_config(&cfg);
 
-	if(!initSPIFFS()) return;
+	auto ret = nvs_flash_init();
+	if(ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND){
+		ESP_ERROR_CHECK(nvs_flash_erase());
+		ret = nvs_flash_init();
+	}
+	ESP_ERROR_CHECK(ret);
 
 	auto settings = new Settings();
 	Services.set(Service::Settings, settings);
@@ -82,6 +80,12 @@ void init(){
 	blPwm->detach();
 	bl = new BacklightBrightness(blPwm);
 	Services.set(Service::Backlight, bl);
+
+	auto battery = new Battery(); // Battery is doing shutdown
+	if(battery->isShutdown()) return; // Stop initialization if battery is critical
+	Services.set(Service::Battery, battery);
+
+	if(!initSPIFFS()) return;
 
 	auto buzzPwm = new PWM(PIN_BUZZ, LEDC_CHANNEL_0);
 	auto audio = new ChirpSystem(*buzzPwm);
@@ -93,10 +97,6 @@ void init(){
 
 	auto input = new Input(true);
 	Services.set(Service::Input, input);
-
-	auto battery = new Battery(); // Battery is doing shutdown
-	if(battery->isShutdown()) return; // Stop initialization if battery is critical
-	Services.set(Service::Battery, battery);
 
 	auto sleep = new Sleep();
 
