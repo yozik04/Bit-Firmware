@@ -7,7 +7,7 @@
 struct SettingsStruct {
 	bool sound = true;
 	uint8_t screenBrightness = 100;
-	uint8_t sleepTime = 1;
+	uint8_t sleepTime = 3;
 	uint8_t robotsSeen[Robot::COUNT] = {0};
 };
 
