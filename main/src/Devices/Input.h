@@ -40,8 +40,8 @@ private:
 		Release, Press, None
 	};
 	std::unordered_map<Button, uint64_t> dbTime;
-	static constexpr uint64_t SleepTime = 20; // [ms]
-	static constexpr uint64_t DebounceTime = 5; // [ms]
+	static constexpr uint64_t SleepTime = 8; // [ms]
+	static constexpr uint64_t DebounceTime = 20; // [ms]
 
 	void sleepyLoop() override;
 
