@@ -14,7 +14,7 @@ const std::unordered_map<Games, Robot> GameManager::GameRobot = {
 		{ Games::Buttons, Robot::Buttons }
 };
 
-GameManager::GameManager() : Threaded("GameMan", 2 * 1024), events(12){
+GameManager::GameManager() : Threaded("GameMan", 2 * 1024, 5, 1), events(12){
 	auto set = (Settings*) Services.get(Service::Settings);
 	const auto all = set->get();
 	for(int i = 0; i < Robot::COUNT; i++){

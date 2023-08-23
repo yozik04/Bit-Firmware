@@ -25,7 +25,7 @@ const std::unordered_map<Input::Button, const char*> Input::PinLabels{
 		{ Menu,  "Menu" }
 };
 
-Input::Input(bool invertLogic) : SleepyThreaded(SleepTime, "Input", 2048, 6, 0), invertLogic(invertLogic){
+Input::Input(bool invertLogic) : SleepyThreaded(SleepTime, "Input", 2048, 6, 1), invertLogic(invertLogic){
 	auto mask = 0ULL;
 	for(const auto& pair : PinMap){
 		const auto port = pair.first;

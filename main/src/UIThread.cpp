@@ -5,7 +5,7 @@
 #include "Screens/PauseScreen.h"
 #include "LV_Interface/FSLVGL.h"
 
-UIThread::UIThread(LVGL& lvgl, GameRunner& gameRunner) : Threaded("UI", 4 * 1024, 5, 1), lvgl(lvgl), gamer(gameRunner){
+UIThread::UIThread(LVGL& lvgl, GameRunner& gameRunner) : Threaded("UI", 4 * 1024, 5, 0), lvgl(lvgl), gamer(gameRunner){
 	start();
 }
 

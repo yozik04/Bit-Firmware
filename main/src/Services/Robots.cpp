@@ -2,7 +2,7 @@
 #include "Util/Events.h"
 #include <driver/gpio.h>
 
-Robots::Robots() : SleepyThreaded(CheckInterval, "Robots", 4 * 1024){
+Robots::Robots() : SleepyThreaded(CheckInterval, "Robots", 2 * 1024, 5, 1){
 	gpio_config_t cfg = {};
 	for(const auto& pin : AddrPins){
 		cfg.pin_bit_mask |= 1ULL << pin;

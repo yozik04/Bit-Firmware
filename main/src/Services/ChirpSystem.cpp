@@ -4,7 +4,7 @@
 
 static const char* TAG = "ChirpSystem";
 
-ChirpSystem::ChirpSystem(PWM& pwm) : Threaded("ChirpSystem", 3072, UINT8_MAX, 0), pwm(pwm), queue(xQueueCreate(QueueLength, sizeof(QueueItem))),
+ChirpSystem::ChirpSystem(PWM& pwm) : Threaded("ChirpSystem", 3072, configMAX_PRIORITIES-1, 1), pwm(pwm), queue(xQueueCreate(QueueLength, sizeof(QueueItem))),
 									 timerSem(xSemaphoreCreateBinary()), timer(MinimumLength * 1000, isr, timerSem){
 
 	pwm.detach();

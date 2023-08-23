@@ -11,7 +11,7 @@
 #define MAX_READ 4050 // 4.5V
 #define MIN_READ 3170 // 3.6V
 
-Battery::Battery() : SleepyThreaded(MeasureIntverval, "Battery", 3 * 1024, 5), adc((gpio_num_t) PIN_BATT, 0.05, MIN_READ, MAX_READ, getVoltOffset()),
+Battery::Battery() : SleepyThreaded(MeasureIntverval, "Battery", 3 * 1024, 5, 1), adc((gpio_num_t) PIN_BATT, 0.05, MIN_READ, MAX_READ, getVoltOffset()),
 					 hysteresis({ 0, 4, 15, 30, 70, 100 }, 3){
 
 	sample(true); // this will initiate shutdown if battery is critical
