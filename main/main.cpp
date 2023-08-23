@@ -22,6 +22,7 @@
 #include "LV_Interface/FSLVGL.h"
 #include "Screens/IntroScreen.h"
 #include <esp_sleep.h>
+#include <Util/stdafx.h>
 
 BacklightBrightness* bl;
 
@@ -87,13 +88,16 @@ void init(){
 
 	if(!initSPIFFS()) return;
 
+	auto disp = new Display();
+	Services.set(Service::Display, disp);
+
+	disp->getLGFX().drawBmpFile("/spiffs/Logo.bmp", 36, 50);
+	bl->fadeIn();
+
 	auto buzzPwm = new PWM(PIN_BUZZ, LEDC_CHANNEL_0);
 	auto audio = new ChirpSystem(*buzzPwm);
 	audio->setMute(!settings->get().sound);
 	Services.set(Service::Audio, audio);
-
-	auto disp = new Display();
-	Services.set(Service::Display, disp);
 
 	auto input = new Input(true);
 	Services.set(Service::Input, input);
@@ -122,7 +126,9 @@ void init(){
 		//TODO - startup chime
 	}
 
+	bl->fadeOut();
 	ui->start();
+	delayMillis(200);
 	bl->fadeIn();
 
 	// Start Battery scanning after everything else, otherwise Critical
