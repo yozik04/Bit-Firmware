@@ -19,3 +19,11 @@ void RenderComponent::setVisible(bool visible){
 void RenderComponent::update(uint32_t deltaMicros){
 
 }
+
+void RenderComponent::setFlipX(bool flipX){
+	RenderComponent::flipX = flipX;
+}
+
+void RenderComponent::setFlipY(bool flipY){
+	RenderComponent::flipY = flipY;
+}

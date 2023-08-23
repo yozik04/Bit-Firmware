@@ -9,7 +9,7 @@ std::shared_ptr<Sprite> SpriteRC::getSprite() const{
 	return sprite;
 }
 
-void SpriteRC::push(Sprite& parent, PixelDim pos, float rot) const{
+void SpriteRC::push(Sprite& parent, PixelDim pos, float rot, bool flipX, bool flipY) const{
 	if(rot == 0){
 		sprite->pushSprite(&parent, pos.x, pos.y, TFT_TRANSPARENT);
 	}else{

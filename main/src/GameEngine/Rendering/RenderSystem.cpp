@@ -31,7 +31,8 @@ void RenderSystem::update(uint32_t deltaMicros){
 		for(const auto& object : layerMap[layer]){
 			object->getRenderComponent()->update(deltaMicros);
 			auto pos = object->getPos();
-			object->getRenderComponent()->push(canvas, { (int16_t) std::round(pos.x), (int16_t) std::round(pos.y) }, object->getRot());
+			object->getRenderComponent()->push(canvas, { (int16_t) std::round(pos.x), (int16_t) std::round(pos.y) }, object->getRot(),
+											   object->getRenderComponent()->flipX, object->getRenderComponent()->flipY);
 		}
 	}
 }

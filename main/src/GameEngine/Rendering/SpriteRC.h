@@ -13,7 +13,7 @@ public:
 	std::shared_ptr<Sprite> getSprite() const;
 
 protected:
-	void push(Sprite& parent, PixelDim pos, float rot) const override;
+	void push(Sprite& parent, PixelDim pos, float rot, bool flipX, bool flipY) const override;
 
 private:
 	std::shared_ptr<Sprite> sprite;

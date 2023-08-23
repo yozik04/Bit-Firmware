@@ -17,7 +17,7 @@ public:
 	void setFile(File file, PixelDim dim); //change in dim
 
 protected:
-	void push(Sprite& parent, PixelDim pos, float rot) const override;
+	void push(Sprite& parent, PixelDim pos, float rot, bool flipX, bool flipY) const override;
 
 private:
 	File file;

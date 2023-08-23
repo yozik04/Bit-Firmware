@@ -3,7 +3,7 @@
 TextRC::TextRC(std::string text, TextStyle style) : text(text), style(style){
 }
 
-void TextRC::push(Sprite& parent, PixelDim pos, float rot) const{
+void TextRC::push(Sprite& parent, PixelDim pos, float rot, bool flipX, bool flipY) const{
 	parent.setFont(style.font);
 	parent.setTextDatum(style.datum);
 	parent.setTextColor(style.color);

@@ -16,6 +16,8 @@ public:
 
 	bool isVisible() const;
 	void setVisible(bool visible);
+	void setFlipX(bool flipX);
+	void setFlipY(bool flipY);
 
 protected:
 	/**
@@ -23,11 +25,14 @@ protected:
 	 * @param deltaMicros Time delta since last update.
 	 */
 	virtual void update(uint32_t deltaMicros);
-	virtual void push(Sprite& parent, PixelDim pos, float rot) const = 0;
+	//TODO - apply flip transformation for all RenderComponent types
+	virtual void push(Sprite& parent, PixelDim pos, float rot, bool flipX = false, bool flipY = false) const = 0;
 
 private:
 	bool visible = true;
 	int8_t layer = 0;
+	bool flipX = false;
+	bool flipY = false;
 };
 
 
