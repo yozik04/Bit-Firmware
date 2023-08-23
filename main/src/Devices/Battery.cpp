@@ -6,10 +6,8 @@
 #include <cmath>
 #include <driver/gpio.h>
 
-//voltage divider means that for 4.6V on battery there is ( 4.6V * 2 / 3 ) = 3.067V voltage on pin, mapped so that 4095 equals 3.1V:
-//expected ADC value is 3.067V / 3.1V * 4095 = 4051, taken a conservative estimate to 4050
-#define MAX_READ 4050 // 4.5V
-#define MIN_READ 3170 // 3.6V
+#define MAX_READ 3820 // 4.5V
+#define MIN_READ 2870 // 3.6V
 
 Battery::Battery() : SleepyThreaded(MeasureIntverval, "Battery", 3 * 1024, 5, 1), adc((gpio_num_t) PIN_BATT, 0.05, MIN_READ, MAX_READ, getVoltOffset()),
 					 hysteresis({ 0, 4, 15, 30, 70, 100 }, 3){
