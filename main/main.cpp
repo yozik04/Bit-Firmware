@@ -91,7 +91,7 @@ void init(){
 	auto disp = new Display();
 	Services.set(Service::Display, disp);
 
-	disp->getLGFX().drawBmpFile("/spiffs/Logo.bmp", 36, 50);
+	disp->getLGFX().drawBmpFile("/spiffs/Splash.bmp", 36, 11);
 	bl->fadeIn();
 
 	auto buzzPwm = new PWM(PIN_BUZZ, LEDC_CHANNEL_0);
