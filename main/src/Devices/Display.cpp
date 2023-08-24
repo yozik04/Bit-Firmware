@@ -55,7 +55,6 @@ void Display::setupPanel(){
 			.bus_shared = false
 	};
 	panel.config(cfg);
-	panel.setBus(&bus);
 }
 
 LGFX_Device& Display::getLGFX(){
