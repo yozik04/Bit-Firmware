@@ -43,6 +43,7 @@ SliderElement::SliderElement(lv_obj_t* parent, const char* name, std::function<v
 	lv_style_set_bg_color(sliderKnobStyle, lv_color_make(217, 153, 186));
 	lv_style_set_radius(sliderKnobStyle, LV_RADIUS_CIRCLE);
 	lv_style_set_pad_all(sliderKnobStyle, -1);
+	lv_style_set_pad_left(sliderKnobStyle, 0);
 	lv_obj_add_style(slider, sliderKnobStyle, LV_PART_KNOB);
 	lv_obj_set_style_bg_color(slider, lv_color_hex(0xa34578), LV_PART_KNOB | LV_STATE_EDITED);
 
