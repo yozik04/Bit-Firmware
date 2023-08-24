@@ -40,7 +40,7 @@ DiscreteSliderElement::DiscreteSliderElement(lv_obj_t* parent, const char* name,
 	lv_obj_add_style(slider, sliderMainStyle, LV_PART_MAIN);
 
 	lv_style_set_bg_opa(sliderKnobStyle, LV_OPA_100);
-	lv_style_set_bg_color(sliderKnobStyle, lv_color_make(217, 153, 186));
+	lv_style_set_bg_color(sliderKnobStyle, lv_color_hex(0xa34578));
 	lv_style_set_radius(sliderKnobStyle, LV_RADIUS_CIRCLE);
 	lv_style_set_pad_all(sliderKnobStyle, -1);
 	lv_style_set_pad_left(sliderKnobStyle, 0);
