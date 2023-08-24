@@ -3,6 +3,7 @@
 #include "Screens/Settings/BoolElement.h"
 #include "Screens/Settings/SliderElement.h"
 #include "Devices/Input.h"
+#include "LV_Interface/InputLVGL.h"
 #include "UIThread.h"
 #include "Util/Services.h"
 #include "Services/BacklightBrightness.h"
@@ -15,11 +16,13 @@ PauseScreen::PauseScreen(Games current) : evts(6), currentGame(current){
 void PauseScreen::onStart(){
 	bg->start();
 	Events::listen(Facility::Input, &evts);
+	InputLVGL::getInstance()->setVertNav(true);
 }
 
 void PauseScreen::onStop(){
 	bg->stop();
 	Events::unlisten(&evts);
+	InputLVGL::getInstance()->setVertNav(false);
 
 	auto settings = (Settings*) Services.get(Service::Settings);
 

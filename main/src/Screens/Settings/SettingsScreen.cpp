@@ -1,5 +1,6 @@
 #include "SettingsScreen.h"
 #include "Devices/Input.h"
+#include "LV_Interface/InputLVGL.h"
 #include "Util/Services.h"
 #include "Screens/MainMenu.h"
 #include "BoolElement.h"
@@ -14,11 +15,13 @@ SettingsScreen::SettingsScreen() : evts(6), settings(*(Settings*) Services.get(S
 void SettingsScreen::onStart(){
 	bg->start();
 	Events::listen(Facility::Input, &evts);
+	InputLVGL::getInstance()->setVertNav(true);
 }
 
 void SettingsScreen::onStop(){
 	bg->stop();
 	Events::unlisten(&evts);
+	InputLVGL::getInstance()->setVertNav(false);
 
 	auto set = settings.get();
 	set.screenBrightness = blSlider->getValue();

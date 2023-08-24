@@ -6,7 +6,7 @@
 #include "LV_Interface/LVSelectable.h"
 #include "LV_Interface/LVStyle.h"
 
-class SliderElement : public LVSelectable {
+class SliderElement : public LVObject {
 public:
 	explicit SliderElement(lv_obj_t* parent, const char* name, std::function<void(uint8_t)> cb, uint8_t value = 0);
 

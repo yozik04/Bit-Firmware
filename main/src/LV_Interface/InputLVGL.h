@@ -16,15 +16,19 @@ public:
 
 	[[nodiscard]] lv_indev_t* getIndev() const;
 
+	void setVertNav(bool vertNav);
+
 protected:
 	void loop() override;
 
 private:
 	static const std::map<Input::Button, lv_key_t> keyMap;
+	static const std::map<lv_key_t, lv_key_t> vertRemap;
 	lv_indev_t* inputDevice;
 
 	Input::Button lastKey = Input::Menu;
 	Input::Data::Action action = Input::Data::Release;
+	bool vertNav = false;
 
 	EventQueue queue;
 	static constexpr size_t QueueSize = 5;

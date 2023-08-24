@@ -1,6 +1,6 @@
 #include "SliderElement.h"
 
-SliderElement::SliderElement(lv_obj_t* parent, const char* name, std::function<void(uint8_t)> cb, uint8_t value) : LVSelectable(parent), value(value),
+SliderElement::SliderElement(lv_obj_t* parent, const char* name, std::function<void(uint8_t)> cb, uint8_t value) : LVObject(parent), value(value),
 																												   cb(std::move(cb)){
 
 	lv_style_set_width(defaultStyle, lv_pct(100));
@@ -46,13 +46,6 @@ SliderElement::SliderElement(lv_obj_t* parent, const char* name, std::function<v
 	lv_obj_add_style(slider, sliderKnobStyle, LV_PART_KNOB);
 	lv_obj_set_style_bg_color(slider, lv_color_hex(0xa34578), LV_PART_KNOB | LV_STATE_EDITED);
 
-	lv_group_add_obj(inputGroup, slider);
-
-	lv_obj_add_event_cb(slider, [](lv_event_t* e){
-		auto element = static_cast<SliderElement*>(e->user_data);
-		element->deselect();
-	}, LV_EVENT_CLICKED, this);
-
 	lv_obj_add_event_cb(slider, [](lv_event_t* e){
 		auto element = static_cast<SliderElement*>(e->user_data);
 		element->value = lv_slider_get_value(element->slider) * MaxValue / SliderRange;
@@ -61,8 +54,11 @@ SliderElement::SliderElement(lv_obj_t* parent, const char* name, std::function<v
 
 	lv_obj_add_event_cb(obj, [](lv_event_t* e){
 		auto element = static_cast<SliderElement*>(e->user_data);
-		lv_group_set_editing(element->inputGroup, true);
-	}, LV_EVENT_CLICKED, this);
+		auto key = *((uint32_t*) e->param);
+		if(key != LV_KEY_UP && key != LV_KEY_DOWN) return;
+		uint32_t sendKey = key == LV_KEY_UP ? LV_KEY_RIGHT : LV_KEY_LEFT;
+		lv_event_send(element->slider, LV_EVENT_KEY, &sendKey);
+	}, LV_EVENT_KEY, this);
 
 	setValue(value);
 }

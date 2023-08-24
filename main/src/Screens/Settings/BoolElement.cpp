@@ -60,6 +60,13 @@ BoolElement::BoolElement(lv_obj_t* parent, const char* name, std::function<void(
 		lv_event_send(element->switchElement, LV_EVENT_VALUE_CHANGED, nullptr);
 	}, LV_EVENT_CLICKED, this);
 
+	lv_obj_add_event_cb(obj, [](lv_event_t* e){
+		auto element = static_cast<BoolElement*>(e->user_data);
+		auto key = *((uint32_t*) e->param);
+		if((key == LV_KEY_UP && !element->value) || (key == LV_KEY_DOWN && element->value)){
+			lv_event_send(*element, LV_EVENT_CLICKED, nullptr);
+		}
+	}, LV_EVENT_KEY, this);
 
 	lv_obj_add_style(switchElement, switchStyle, 0);
 	lv_obj_add_style(switchElement, switchCheckedStyle, LV_PART_INDICATOR | LV_STATE_CHECKED);

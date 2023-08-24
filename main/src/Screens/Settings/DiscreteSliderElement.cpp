@@ -1,7 +1,7 @@
 #include "DiscreteSliderElement.h"
 
 DiscreteSliderElement::DiscreteSliderElement(lv_obj_t* parent, const char* name, std::function<void(uint8_t)> cb, std::vector<const char*> displayValues,
-											 uint8_t value) : LVSelectable(parent), value(value), cb(std::move(cb)), displayValues(std::move(displayValues)){
+											 uint8_t value) : LVObject(parent), value(value), cb(std::move(cb)), displayValues(std::move(displayValues)){
 
 	lv_style_set_width(defaultStyle, lv_pct(100));
 	lv_style_set_height(defaultStyle, 17);
@@ -53,13 +53,6 @@ DiscreteSliderElement::DiscreteSliderElement(lv_obj_t* parent, const char* name,
 	lv_obj_set_style_pad_top(valueLabel, 1, 0);
 	lv_obj_set_style_text_color(valueLabel, lv_color_white(), 0);
 
-	lv_group_add_obj(inputGroup, slider);
-
-	lv_obj_add_event_cb(slider, [](lv_event_t* e){
-		auto element = static_cast<DiscreteSliderElement*>(e->user_data);
-		element->deselect();
-	}, LV_EVENT_CLICKED, this);
-
 	lv_obj_add_event_cb(slider, [](lv_event_t* e){
 		auto element = static_cast<DiscreteSliderElement*>(e->user_data);
 		element->value = lv_slider_get_value(element->slider);
@@ -73,8 +66,11 @@ DiscreteSliderElement::DiscreteSliderElement(lv_obj_t* parent, const char* name,
 
 	lv_obj_add_event_cb(obj, [](lv_event_t* e){
 		auto element = static_cast<DiscreteSliderElement*>(e->user_data);
-		lv_group_set_editing(element->inputGroup, true);
-	}, LV_EVENT_CLICKED, this);
+		auto key = *((uint32_t*) e->param);
+		if(key != LV_KEY_UP && key != LV_KEY_DOWN) return;
+		uint32_t sendKey = key == LV_KEY_UP ? LV_KEY_RIGHT : LV_KEY_LEFT;
+		lv_event_send(element->slider, LV_EVENT_KEY, &sendKey);
+	}, LV_EVENT_KEY, this);
 
 	setValue(value);
 

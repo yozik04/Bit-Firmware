@@ -9,6 +9,11 @@ const std::map<Input::Button, lv_key_t> InputLVGL::keyMap = {{ Input::Button::Up
 															 { Input::Button::A,     LV_KEY_ENTER },
 															 { Input::Button::B,     LV_KEY_ESC }};
 
+const std::map<lv_key_t, lv_key_t> InputLVGL::vertRemap = {{ LV_KEY_UP,    LV_KEY_LEFT },
+														   { LV_KEY_DOWN,  LV_KEY_RIGHT },
+														   { LV_KEY_LEFT,  LV_KEY_DOWN },
+														   { LV_KEY_RIGHT, LV_KEY_UP }};
+
 InputLVGL::InputLVGL() : Threaded("InputLVGL", 1024, 6, 0), queue(QueueSize){
 	instance = this;
 
@@ -27,7 +32,13 @@ InputLVGL::InputLVGL() : Threaded("InputLVGL", 1024, 6, 0), queue(QueueSize){
 
 void InputLVGL::read(lv_indev_drv_t* drv, lv_indev_data_t* data){
 	if(keyMap.count(lastKey) == 0) return;
-	data->key = keyMap.at(lastKey);
+
+	auto key = keyMap.at(lastKey);
+	if(vertNav && vertRemap.contains(key)){
+		key = vertRemap.at(key);
+	}
+
+	data->key = key;
 	data->state = (action == Input::Data::Action::Press) ? LV_INDEV_STATE_PRESSED : LV_INDEV_STATE_RELEASED;
 }
 
@@ -48,4 +59,8 @@ void InputLVGL::loop(){
 
 lv_indev_t* InputLVGL::getIndev() const{
 	return inputDevice;
+}
+
+void InputLVGL::setVertNav(bool vertNav){
+	InputLVGL::vertNav = vertNav;
 }
