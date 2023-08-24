@@ -9,6 +9,7 @@
 #include "Services/Robots.h"
 #include "Services/GameManager.h"
 #include "Devices/Input.h"
+#include "BatteryElement.h"
 
 class MainMenu : public LVScreen {
 public:
@@ -18,6 +19,7 @@ public:
 private:
 	void buildUI();
 
+	BatteryElement* batt;
 	std::vector<MenuItem*> items;
 	std::unordered_map<Robot, MenuItem*> robGames;
 	lv_obj_t* itemCont;

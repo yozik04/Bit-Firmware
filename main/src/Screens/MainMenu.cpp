@@ -70,6 +70,8 @@ void MainMenu::onStop(){
 }
 
 void MainMenu::loop(){
+	batt->loop();
+
 	Event evt{};
 	if(events.get(evt, 0)){
 		if(evt.facility == Facility::Games){
@@ -182,6 +184,11 @@ void MainMenu::buildUI(){
 	lv_obj_refr_size(itemCont);
 	lv_obj_refresh_self_size(itemCont);
 	lv_group_focus_obj(*items.front());
+
+	// Battery
+	batt = new BatteryElement(*this);
+	lv_obj_add_flag(*batt, LV_OBJ_FLAG_FLOATING);
+	lv_obj_align(*batt, LV_ALIGN_TOP_RIGHT, -2, 2);
 
 	// Padding for intro scroll
 	lv_obj_set_layout(*this, LV_LAYOUT_FLEX);

@@ -35,6 +35,8 @@ void PauseScreen::onStop(){
 }
 
 void PauseScreen::loop(){
+	batt->loop();
+
 	Event e;
 	if(evts.get(e, 0)){
 		auto data = (Input::Data*) e.data;
@@ -88,11 +90,16 @@ void PauseScreen::buildUI(){
 
 	auto top = lv_obj_create(*this);
 	lv_obj_set_size(top, 128, 32);
+	lv_obj_set_flex_flow(top, LV_FLEX_FLOW_ROW);
+	lv_obj_set_flex_align(top, LV_FLEX_ALIGN_SPACE_BETWEEN, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
 	lv_obj_set_style_pad_ver(top, 4, 0);
+	lv_obj_set_style_pad_right(top, 2, 0);
+	lv_obj_set_style_pad_left(top, 6, 0);
 
 	auto img = lv_img_create(top);
 	lv_img_set_src(img, "S:/Paused.bin");
-	lv_obj_center(img);
+
+	batt = new BatteryElement(top);
 
 	auto rest = lv_obj_create(*this);
 	lv_obj_set_size(rest, 128, 96);
