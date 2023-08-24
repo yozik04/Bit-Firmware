@@ -77,7 +77,9 @@ BoolElement::BoolElement(lv_obj_t* parent, const char* name, std::function<void(
 	lv_obj_set_style_transition(switchElement, &Transition, LV_PART_INDICATOR);
 	lv_obj_set_style_transition(switchElement, &Transition, LV_PART_INDICATOR | LV_STATE_CHECKED);
 
+	Transition.time = 0;
 	setValue(value);
+	Transition.time = 150;
 }
 
 void BoolElement::setValue(bool value){
