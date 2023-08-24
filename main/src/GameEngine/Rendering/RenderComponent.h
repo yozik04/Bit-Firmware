@@ -6,8 +6,11 @@
 
 class RenderSystem;
 
+class MultiRC;
+
 class RenderComponent {
 	friend RenderSystem;
+	friend MultiRC;
 
 public:
 	virtual ~RenderComponent() = default;
