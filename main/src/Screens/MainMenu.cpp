@@ -137,6 +137,25 @@ void MainMenu::buildUI(){
 	lv_obj_set_style_pad_gap(itemCont, 6, 0);
 	lv_obj_set_style_pad_hor(itemCont, 19, 0);
 
+	auto onClick = [](lv_event_t* e){
+		auto menu = (MainMenu*) e->user_data;
+		auto index = lv_obj_get_index(e->current_target);
+		auto game = MenuEntries[index].game;
+		menu->launch(game);
+	};
+
+	auto onKey = [](lv_event_t* e){
+		auto group = (lv_group_t*) e->user_data;
+		auto key = *((uint32_t*) e->param);
+		if(key == LV_KEY_UP){
+			lv_group_focus_prev(group);
+			lv_group_focus_prev(group);
+		}else if(key == LV_KEY_DOWN){
+			lv_group_focus_next(group);
+			lv_group_focus_next(group);
+		}
+	};
+
 	auto games = (GameManager*) Services.get(Service::Games);
 	items.reserve(sizeof(MenuEntries) / sizeof(MenuEntries[0]));
 	for(const auto& entry : MenuEntries){
@@ -156,12 +175,8 @@ void MainMenu::buildUI(){
 			robGames.insert(std::make_pair(entry.rob, item));
 		}
 
-		lv_obj_add_event_cb(*item, [](lv_event_t* e){
-			auto menu = (MainMenu*) e->user_data;
-			auto index = lv_obj_get_index(e->current_target);
-			auto game = MenuEntries[index].game;
-			menu->launch(game);
-		}, LV_EVENT_CLICKED, this);
+		lv_obj_add_event_cb(*item, onClick, LV_EVENT_CLICKED, this);
+		lv_obj_add_event_cb(*item, onKey, LV_EVENT_KEY, inputGroup);
 	}
 
 	lv_obj_refr_size(itemCont);
