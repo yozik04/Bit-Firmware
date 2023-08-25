@@ -97,7 +97,7 @@ void PauseScreen::showControls(){
 void PauseScreen::exit(){
 	auto disp = (Display*) Services.get(Service::Display);
 	auto lgfx = disp->getLGFX();
-	lgfx.drawBmpFile("/spiffs/bg.bmp");
+	lgfx.drawBmpFile("/spiffs/bgSplash.bmp");
 
 	auto ui = (UIThread*) Services.get(Service::UI);
 	ui->startScreen([](){ return std::make_unique<MainMenu>(); });
