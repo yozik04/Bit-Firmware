@@ -51,7 +51,7 @@ void GameRunner::startGame(Games game){
 	Events::listen(Facility::Battery, &evts);
 
 	inst->load();
-	while(!inst->isLoaded() || (millis() - startTime) < 3000){
+	while(!inst->isLoaded() || (millis() - startTime) < 2000){
 		delayMillis(1);
 	}
 	lgfx.drawBmpFile(instr.c_str());
