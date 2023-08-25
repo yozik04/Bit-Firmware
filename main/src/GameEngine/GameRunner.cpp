@@ -45,6 +45,9 @@ void GameRunner::startGame(Games game){
 	const auto startTime = millis();
 
 	auto launcher = Launcher.at(game);
+
+	srand(micros());
+
 	auto inst = launcher(display.getCanvas());
 
 	EventQueue evts(12);

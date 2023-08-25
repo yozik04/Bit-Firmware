@@ -8,7 +8,6 @@
 CapacitronGame::TileManager::TileManager(std::vector<GameObjPtr>& tileObjs, std::vector<std::set<GameObjPtr>>& padObjs,
 										 std::vector<GameObjPtr>& powerupObjs) :
 		tileObjs(tileObjs), padObjs(padObjs), powerupObjs(powerupObjs){
-	srand(time(nullptr));
 }
 
 void CapacitronGame::TileManager::addFiles(FileList bgFiles, FileList wallLFiles, FileList wallRFiles, FileList padFiles, FileList powerupFiles){
