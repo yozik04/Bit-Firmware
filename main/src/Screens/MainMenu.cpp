@@ -120,7 +120,6 @@ void MainMenu::buildUI(){
 	bg = new LVGIF(*this, "S:/bg");
 	lv_obj_add_flag(*bg, LV_OBJ_FLAG_FLOATING);
 	lv_obj_set_pos(*bg, 0, 0);
-	bg->start();
 
 	padTop = lv_obj_create(*this);
 	lv_obj_set_size(padTop, 128, 128);
