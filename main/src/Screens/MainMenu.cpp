@@ -1,6 +1,7 @@
 #include "MainMenu.h"
 #include "MenuItem.h"
 #include "LV_Interface/FSLVGL.h"
+#include "LV_Interface/InputLVGL.h"
 #include "Services/GameManager.h"
 #include "Util/Services.h"
 #include "Util/stdafx.h"
@@ -37,7 +38,7 @@ MainMenu::MainMenu() : events(12){
 }
 
 MainMenu::~MainMenu(){
-
+	lv_obj_remove_event_cb(*this, onScrollEnd); // just in case
 }
 
 void MainMenu::launch(Games game){
@@ -55,22 +56,39 @@ void MainMenu::launch(Games game){
 void MainMenu::onStarting(){
 	const auto height = lv_obj_get_height(itemCont) + 128 + 2*13;
 	lv_obj_scroll_to(*this, 0, 0, LV_ANIM_OFF); // set y to <height> to scroll from top. 0 to scroll from bottom
+
+	loopBlocked = true;
 }
 
 void MainMenu::onStart(){
 	Events::listen(Facility::Games, &events);
 	Events::listen(Facility::Input, &events);
 	bg->start();
+	lv_indev_set_group(InputLVGL::getInstance()->getIndev(), nullptr);
+
 	lv_obj_scroll_to(*this, 0, 128, LV_ANIM_ON);
+	lv_obj_add_event_cb(*this, MainMenu::onScrollEnd, LV_EVENT_SCROLL_END, this);
+}
+
+void MainMenu::onScrollEnd(lv_event_t* evt){
+	auto menu = (MainMenu*) evt->user_data;
+	lv_obj_remove_event_cb(*menu, onScrollEnd);
+
+	lv_indev_set_group(InputLVGL::getInstance()->getIndev(), menu->inputGroup);
+	menu->loopBlocked = false;
+	menu->events.reset();
 }
 
 void MainMenu::onStop(){
 	bg->stop();
 	Events::unlisten(&events);
+	lv_obj_remove_event_cb(*this, onScrollEnd);
 }
 
 void MainMenu::loop(){
 	batt->loop();
+
+	if(loopBlocked) return;
 
 	Event evt{};
 	if(events.get(evt, 0)){

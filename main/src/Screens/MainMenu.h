@@ -29,6 +29,8 @@ private:
 	void onStarting() override;
 	void onStart() override;
 	void onStop() override;
+	static void onScrollEnd(lv_event_t*);
+	bool loopBlocked = true;
 
 	static std::string imgUnl(const char* game);
 	static std::string imgLoc(const char* game);
