@@ -1,5 +1,6 @@
 #include "GameRunner.h"
 #include "Util/stdafx.h"
+#include "Devices/Battery.h"
 #include "Games/Flappy/Flappy.h"
 #include "Games/Pong/Pong.h"
 #include "Games/Snake/Snake.h"
@@ -46,22 +47,32 @@ void GameRunner::startGame(Games game){
 	auto launcher = Launcher.at(game);
 	auto inst = launcher(display.getCanvas());
 
+	EventQueue evts(12);
+	Events::listen(Facility::Battery, &evts);
+
 	inst->load();
 	while(!inst->isLoaded() || (millis() - startTime) < 3000){
 		delayMillis(1);
 	}
-
 	lgfx.drawBmpFile(instr.c_str());
 
-	EventQueue evts(6);
 	Events::listen(Facility::Input, &evts);
 	for(;;){
-		Event evt;
+		Event evt{};
 		if(!evts.get(evt, portMAX_DELAY)) continue;
-		auto data = (Input::Data*) evt.data;
-		if(data->btn != Input::Menu && data->action == Input::Data::Release){
-			free(evt.data);
-			break;
+
+		if(evt.facility == Facility::Input){
+			auto data = (Input::Data*) evt.data;
+			if(data->btn != Input::Menu && data->action == Input::Data::Release){
+				free(evt.data);
+				break;
+			}
+		}else if(evt.facility == Facility::Battery){
+			auto data = (Battery::Event*) evt.data;
+			if(data->action == Battery::Event::LevelChange && data->level == Battery::Critical){
+				free(evt.data);
+				return;
+			}
 		}
 		free(evt.data);
 	}

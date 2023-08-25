@@ -37,8 +37,13 @@ void PauseScreen::onStop(){
 void PauseScreen::loop(){
 	batt->loop();
 
-	Event e;
+	Event e{};
 	if(evts.get(e, 0)){
+		if(e.facility != Facility::Input){
+			free(e.data);
+			return;
+		}
+
 		auto data = (Input::Data*) e.data;
 		if((data->btn == Input::Menu || data->btn == Input::B) && data->action == Input::Data::Release){
 			auto ui = (UIThread*) Services.get(Service::UI);
@@ -60,16 +65,32 @@ void PauseScreen::showControls(){
 	lgfx.drawBmpFile(instr.c_str());
 
 	evts.reset();
+	Events::listen(Facility::Battery, &evts);
 	for(;;){
-		Event evt;
+		Event evt{};
 		if(!evts.get(evt, portMAX_DELAY)) continue;
-		auto data = (Input::Data*) evt.data;
-		if(data->action == Input::Data::Release){
-			free(evt.data);
-			break;
+
+		if(evt.facility == Facility::Input){
+			auto data = (Input::Data*) evt.data;
+			if(data->action == Input::Data::Release){
+				free(evt.data);
+				break;
+			}
+		}else if(evt.facility == Facility::Battery){
+			auto data = (Battery::Event*) evt.data;
+			if(data->action == Battery::Event::LevelChange && data->level == Battery::Critical){
+				free(evt.data);
+				return;
+			}
 		}
+
 		free(evt.data);
 	}
+	Events::unlisten(&evts);
+
+	evts.reset();
+	Events::listen(Facility::Input, &evts);
+
 	lv_obj_invalidate(*this);
 }
 
