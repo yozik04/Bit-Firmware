@@ -82,8 +82,11 @@ void init(){
 	bl = new BacklightBrightness(blPwm);
 	Services.set(Service::Backlight, bl);
 
-	auto battery = new Battery(); // Battery is doing shutdown
-	if(battery->isShutdown()) return; // Stop initialization if battery is critical
+	auto battery = new Battery();
+	if(battery->isShutdown()){
+		shutdown();
+		return;
+	}
 	Services.set(Service::Battery, battery);
 
 	if(!initSPIFFS()) return;
