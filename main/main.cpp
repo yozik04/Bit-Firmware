@@ -96,6 +96,7 @@ void init(){
 
 	disp->getLGFX().drawBmpFile("/spiffs/Splash.bmp", 36, 11);
 	bl->fadeIn();
+	auto splashStart = millis();
 
 	auto buzzPwm = new PWM(PIN_BUZZ, LEDC_CHANNEL_0);
 	auto audio = new ChirpSystem(*buzzPwm);
@@ -122,6 +123,10 @@ void init(){
 
 	auto ui = new UIThread(*lvgl, *gamer);
 	Services.set(Service::UI, ui);
+
+	while(millis() - splashStart < 2000){
+		delayMillis(10);
+	}
 
 	ui->startScreen([](){ return std::make_unique<IntroScreen>(); });
 
