@@ -84,7 +84,7 @@ void Blocks::onLoop(float deltaTime){
 		moveBuffer += deltaTime * speed;
 		if(moveBuffer >= TileDim.y){
 			moveBuffer -= TileDim.y;
-			moveBlock();
+			moveBlock(false);
 		}
 	}else if(state == State::GameOver){
 		popCounter += deltaTime;
@@ -122,9 +122,15 @@ void Blocks::handleInput(const Input::Data& data){
 	if(data.btn == Input::B || data.btn == Input::Menu) return;
 
 	if(data.btn == Input::A){
+		audio.play({ { 400, 600, 50 } });
 		blocks.back().rotate((const bool*) blocksMatrix);
 	}else if(data.btn == Input::Up){
-		while(!moveBlock());
+		audio.play({ { 600, 600, 50 },
+					 { 0,   0,   50 },
+					 { 90,  90,  50 } });
+
+		while(!moveBlock(true));
+
 	}else if(data.btn == Input::Down){
 		fastDrop = true;
 	}
@@ -146,11 +152,9 @@ void Blocks::handleInput(const Input::Data& data){
 
 void Blocks::gameOver(){
 	state = State::GameOver;
-	audio.play({ { 400, 300, 200 },
-				 { 0,   0,   50 },
-				 { 300, 200, 200 },
-				 { 0,   0,   50 },
-				 { 200, 50,  400 } });
+	audio.play({ { 800, 100, 700 },
+				 { 0,   0,   100 },
+				 { 80,  80,  300 } });
 }
 
 void Blocks::newBlock(){
@@ -165,7 +169,7 @@ void Blocks::newBlock(){
 	}
 }
 
-bool Blocks::moveBlock(){
+bool Blocks::moveBlock(bool fastDrop){
 	bool collide = false;
 
 	for(const auto& seg : blocks.back().segments){
@@ -183,6 +187,10 @@ bool Blocks::moveBlock(){
 	if(collide){
 		bool kill = false;
 		blocks.back().placed();
+		if(!fastDrop){
+			audio.play({ { 80, 200, 100 } });
+		}
+
 		for(auto& segment : blocks.back().segments){
 			auto gridpos = globalToGridPos(segment->getPos());
 			blocksMatrix[gridpos.x][gridpos.y] = true;
@@ -307,6 +315,12 @@ void Blocks::checkLineClear(){
 		}
 	}
 	score += (multipleLinesCleared > 1) ? (multipleLinesCleared * (level + 1)) : multipleLinesCleared;
+	if(multipleLinesCleared){
+		audio.stop();
+		audio.play({ { 80,  700, (uint16_t) (150 * multipleLinesCleared) },
+					 { 800, 800, 50 } });
+	}
+
 	linesCleared += multipleLinesCleared;
 	if(linesCleared >= (level * 10)){
 		if((level + 1) <= MaxLevel){

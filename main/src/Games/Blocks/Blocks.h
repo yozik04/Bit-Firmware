@@ -80,7 +80,7 @@ private:
 
 	void newBlock();
 	void gameOver();
-	bool moveBlock();
+	bool moveBlock(bool fastDrop);
 	void handleInputRepeat(float deltaT);
 	void sendLastInput();
 	bool checkBoundLeft(const Block& block);
