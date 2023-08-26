@@ -86,7 +86,9 @@ void Flappy::onLoop(float deltaTime){
 
 	for(auto& obstacle : obstacles){
 		if(obstacle.top->getPos().x + 15 <= duckPosX && !obstacle.passed && state == Play){
-			audio.play({ { 900, 900, 50 } });
+			audio.play({ { 600, 900, 50 },
+						 { 0,   0,   50 },
+						 { 600, 900, 50 } });
 //			RGB.blink(Pixel::Green);
 			score++;
 			obstacle.passed = true;
@@ -186,7 +188,9 @@ void Flappy::handleInput(const Input::Data& data){
 	anim->start();
 
 	velocity.y = -flapSpeedY;
-	audio.play({ { 400, 800, 100 } });
+	audio.play({ { 90,  90,  50 },
+				 { 0,   0,   50 },
+				 { 200, 600, 100 } });
 }
 
 void Flappy::resetDuck(){
@@ -265,13 +269,13 @@ void Flappy::die(){
 
 	life--;
 	if(life > 0){
-		audio.play({ { 200, 50, 100 } });
+		audio.play({ { 60,  60, 50 },
+					 { 0,   0,  50 },
+					 { 300, 60, 150 } });
 	}else{
-		audio.play({ { 400, 300, 200 },
-					 { 0,   0,   50 },
-					 { 300, 200, 200 },
-					 { 0,   0,   50 },
-					 { 200, 50,  400 } });
+		audio.play({ { 1000, 150, 1000 },
+					 { 0,    0,   50 },
+					 { 70,   70,  200 } });
 	}
 	hearts->setLives(life);
 
