@@ -33,8 +33,8 @@ void BacklightBrightness::fadeIn(){
 	pwm.attach();
 	Settings& settings = *(Settings*) Services.get(Service::Settings);
 
-	for(uint8_t i = 0; i < 100; i++){
-		uint8_t val = map(i, 0, 100, 0, mapDuty(settings.get().screenBrightness));
+	for(int i = 0; i <= 100; i++){
+		uint8_t val = map((double) i, 0, 100, 0, mapDuty(settings.get().screenBrightness));
 		pwm.setDuty(val);
 		vTaskDelay(FadeDelay / portTICK_PERIOD_MS);
 	}
@@ -46,8 +46,8 @@ void BacklightBrightness::fadeOut(){
 
 	Settings& settings = *(Settings*) Services.get(Service::Settings);
 
-	for(uint8_t i = 100; i > 0; i--){
-		uint8_t val = map(i, 0, 100, 0, mapDuty(settings.get().screenBrightness));
+	for(int i = 100; i >= 0; i--){
+		uint8_t val = map((double) i, 0, 100, 0, mapDuty(settings.get().screenBrightness));
 		pwm.setDuty(val);
 		vTaskDelay(FadeDelay / portTICK_PERIOD_MS);
 	}
