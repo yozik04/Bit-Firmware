@@ -209,7 +209,6 @@ void CapacitronGame::CapacitronGame::handleInput(const Input::Data& data){
 }
 
 void CapacitronGame::CapacitronGame::createPad(float surface, bool powerupsEnabled, uint8_t powerupRate){
-	printf("surface: %.2f\n", surface);
 	tileManager->createPads(surface, powerupsEnabled, powerupRate);
 	for(const auto& obj : padObjs.back()){
 		addObject(obj);

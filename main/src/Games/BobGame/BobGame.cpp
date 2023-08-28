@@ -116,7 +116,6 @@ void BobGame::BobGame::spawnItem(BobGame::BobGame::Template temp){
 	);
 	addObject(go);
 	float speed = (rand() % (speedMax - speedMin + 1)) + speedMin;
-	printf("speed: %.2f\n", speed);
 
 	movingObjects.insert(std::make_pair(go, speed));
 	go->setPos({ randPos, -temp.dim.y });

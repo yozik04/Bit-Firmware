@@ -119,7 +119,6 @@ void Invaders::Invaders::handleInput(const Input::Data& data){
 }
 
 void Invaders::Invaders::shoot(){
-	heapRep();
 	if(playerBullet) return;
 
 	playerBullet = std::make_shared<GameObject>(
