@@ -57,7 +57,9 @@ private:
 	static constexpr float LevelSpeedFactors[MaxLevel] = { 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3 };
 	static constexpr uint32_t BlockTypesNum = 7;
 	static constexpr uint32_t BlockColorsNum = 6;
-	static constexpr Color colors[BlockColorsNum] = { TFT_RED, TFT_GREEN, TFT_YELLOW, TFT_CYAN, TFT_GOLD, TFT_PURPLE };
+	static constexpr const char* Sprites[BlockColorsNum + 1] = {
+			"/red.raw", "/green.raw", "/yellow.raw", "/cyan.raw", "/gold.raw", "/purple.raw", "/placed.raw"
+	};
 
 //	static constexpr float AnimPeriod = 0.2;
 //	static constexpr uint8_t AnimLoops = 3;
