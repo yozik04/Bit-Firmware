@@ -80,6 +80,7 @@ void PauseScreen::showControls(){
 			auto data = (Battery::Event*) evt.data;
 			if(data->action == Battery::Event::LevelChange && data->level == Battery::Critical){
 				free(evt.data);
+				Events::unlisten(&evts);
 				return;
 			}
 		}
