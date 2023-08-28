@@ -76,7 +76,8 @@ void MarvGame::Player::walk(){
 void MarvGame::Player::jump(){
 	if(isJumping) return;
 
-	gamePtr->audio.play({ { 400, 800, 100 } });
+	gamePtr->audio.play({ { 200, 200, 50 },
+						  { 200, 800, 200 } });
 	isJumping = true;
 	velocity = 2 * maxHeight * gamePtr->getSpeed() / posXForMaxHeight;
 	gravity = -2 * maxHeight * pow(gamePtr->getSpeed(), 2) / pow(posXForMaxHeight, 2);
@@ -131,7 +132,8 @@ void MarvGame::Player::win(){
 
 void MarvGame::Player::duckPressed(){
 	duckHold = true;
-	gamePtr->audio.play({ { 500, 400, 100 } });
+	gamePtr->audio.play({ { 400, 500, 80 },
+						  { 500, 300, 150 } });
 	if(isJumping){
 		multiplier = 10.0f;
 	}else{
