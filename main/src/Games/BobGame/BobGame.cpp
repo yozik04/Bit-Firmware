@@ -83,6 +83,11 @@ void BobGame::BobGame::onLoop(float deltaTime){
 	}
 }
 
+void BobGame::BobGame::onStop(){
+	player->btnReleased(Input::Left);
+	player->btnReleased(Input::Right);
+}
+
 void BobGame::BobGame::addTemplate(std::string file, PixelDim dim, int value){
 	Template temp{ file, dim, value };
 	if(value > 0){

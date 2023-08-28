@@ -208,6 +208,11 @@ void CapacitronGame::CapacitronGame::handleInput(const Input::Data& data){
 	}
 }
 
+void CapacitronGame::CapacitronGame::onStop(){
+	player->btnReleased(Input::Left);
+	player->btnReleased(Input::Right);
+}
+
 void CapacitronGame::CapacitronGame::createPad(float surface, bool powerupsEnabled, uint8_t powerupRate){
 	tileManager->createPads(surface, powerupsEnabled, powerupRate);
 	for(const auto& obj : padObjs.back()){

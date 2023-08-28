@@ -21,6 +21,7 @@ protected:
 	void onLoad() override;
 	void onLoop(float deltaTime) override;
 	void handleInput(const Input::Data& data) override;
+	void onStop() override;
 
 private:
 	std::unique_ptr<TileManager> tileManager;

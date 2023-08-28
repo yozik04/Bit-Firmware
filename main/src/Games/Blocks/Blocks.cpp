@@ -4,7 +4,14 @@
 #include "GameEngine/Collision/RectCC.h"
 
 Blocks::Blocks(Sprite& canvas) : Game(canvas, "/Games/Blocks", {
-}), nextBlock(Block::Type::ReverseS, TFT_BLACK, NextBlockPos){
+		{ Sprites[0], {}, true },
+		{ Sprites[1], {}, true },
+		{ Sprites[2], {}, true },
+		{ Sprites[3], {}, true },
+		{ Sprites[4], {}, true },
+		{ Sprites[5], {}, true },
+		{ Sprites[6], {}, true }
+}), nextBlock(Block::Type::ReverseS, getFile(Sprites[0]), NextBlockPos){
 
 }
 
@@ -64,7 +71,7 @@ void Blocks::onLoad(){
 	linesTextRC = std::static_pointer_cast<TextRC>(linesNumLabel->getRenderComponent());
 	addObject(linesNumLabel);
 
-	nextBlock = Block(Block::Type((rand() % BlockTypesNum) + 1), colors[rand() % BlockColorsNum], NextBlockPos);
+	nextBlock = Block(Block::Type((rand() % BlockTypesNum) + 1), getFile(Sprites[rand() % BlockColorsNum]), NextBlockPos);
 	for(auto& segment : nextBlock.segments){
 		addObject(segment);
 	}
@@ -135,10 +142,11 @@ void Blocks::handleInput(const Input::Data& data){
 		fastDrop = true;
 	}
 
-	if(data.btn != Input::Left && data.btn != Input::Right) return;
-
 	lastButton = data.btn;
 	lastButtonState = Pressed;
+
+	if(data.btn != Input::Left && data.btn != Input::Right) return;
+
 	btnHoldTimer = 0;
 
 	if(data.btn == Input::Left){
@@ -148,6 +156,10 @@ void Blocks::handleInput(const Input::Data& data){
 		if(checkBoundRight(blocks.back())) return;
 		blocks.back().setPos(blocks.back().getPos() + PixelDim{ 1, 0 });
 	}
+}
+
+void Blocks::onStop(){
+	handleInput({ lastButton, Input::Data::Release });
 }
 
 void Blocks::gameOver(){
@@ -162,7 +174,7 @@ void Blocks::newBlock(){
 	blocks.push_back(std::move(nextBlock));
 
 
-	nextBlock = Block(Block::Type((rand() % BlockTypesNum) + 1), colors[rand() % BlockColorsNum], NextBlockPos);
+	nextBlock = Block(Block::Type((rand() % BlockTypesNum) + 1), getFile(Sprites[rand() % BlockColorsNum]), NextBlockPos);
 
 	for(auto& segment : nextBlock.segments){
 		addObject(segment);
@@ -186,7 +198,7 @@ bool Blocks::moveBlock(bool fastDrop){
 
 	if(collide){
 		bool kill = false;
-		blocks.back().placed();
+		blocks.back().placed(getFile(Sprites[BlockColorsNum]));
 		if(!fastDrop){
 			audio.play({ { 80, 200, 100 } });
 		}

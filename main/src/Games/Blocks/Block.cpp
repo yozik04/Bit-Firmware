@@ -1,16 +1,13 @@
 #include "Block.h"
-#include "GameEngine/Rendering/SpriteRC.h"
+#include "GameEngine/Rendering/StaticRC.h"
 #include "Blocks.h"
 
-Block::Block(Block::Type type, Color c, const PixelDim& gridPos) : type(type), color(c), gridPos(gridPos){
+Block::Block(Block::Type type, File f, const PixelDim& gridPos) : type(type), file(f), gridPos(gridPos){
 	for(auto& segment : segments){
 		segment = std::make_shared<GameObject>(
-				std::make_unique<SpriteRC>(Blocks::TileDim),
+				std::make_unique<StaticRC>(file, Blocks::TileDim),
 				nullptr
 		);
-		auto sprite = std::static_pointer_cast<SpriteRC>(segment->getRenderComponent())->getSprite();
-		sprite->clear(TFT_TRANSPARENT);
-		sprite->drawRect(0, 0, Blocks::TileDim.x, Blocks::TileDim.y, color);
 	}
 
 	switch(type){
@@ -107,11 +104,10 @@ void Block::rotate(const bool* blocksMatrix){
 	}
 }
 
-void Block::placed(){
+void Block::placed(File placed){
 	for(auto& segment : segments){
-		auto sprite = std::static_pointer_cast<SpriteRC>(segment->getRenderComponent())->getSprite();
-		sprite->clear(TFT_TRANSPARENT);
-		sprite->fillRect(0, 0, Blocks::TileDim.x, Blocks::TileDim.y, TFT_BLUE);
+		auto rc = std::static_pointer_cast<StaticRC>(segment->getRenderComponent());
+		rc->setFile(placed);
 	}
 }
 
