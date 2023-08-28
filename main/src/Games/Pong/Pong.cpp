@@ -62,6 +62,11 @@ void Pong::handleInput(const Input::Data& data){
 	}
 }
 
+void Pong::onStop(){
+	handleInput({ Input::Button::Up, Input::Data::Release });
+	handleInput({ Input::Button::Down, Input::Data::Release });
+}
+
 void Pong::buildElements(){
 	auto staticRC = std::make_unique<StaticRC>(getFile("/bg.raw"), PixelDim{ 128, 128 });
 	staticRC->setLayer(-2);

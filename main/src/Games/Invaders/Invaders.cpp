@@ -118,6 +118,11 @@ void Invaders::Invaders::handleInput(const Input::Data& data){
 	}
 }
 
+void Invaders::Invaders::onStop(){
+	player->btnReleased(Input::Left);
+	player->btnReleased(Input::Right);
+}
+
 void Invaders::Invaders::shoot(){
 	if(playerBullet) return;
 
