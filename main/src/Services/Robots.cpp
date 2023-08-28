@@ -25,6 +25,11 @@ Robots::Robots() : SleepyThreaded(CheckInterval, "Robots", 2 * 1024, 5, 1){
 	start();
 }
 
+Robot Robots::getInserted(){
+	if(!inserted) return Robot::COUNT;
+	return (Robot) current;
+}
+
 void Robots::sleepyLoop(){
 	bool nowInserted = checkInserted();
 
