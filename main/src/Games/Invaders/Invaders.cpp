@@ -121,6 +121,11 @@ void Invaders::Invaders::handleInput(const Input::Data& data){
 void Invaders::Invaders::shoot(){
 	if(playerBullet) return;
 
+	audio.play({ { 100, 500, 50 },
+				 { 0,   0,   50 },
+				 { 200, 400, 100 },
+				 { 400, 200, 50 } });
+
 	playerBullet = std::make_shared<GameObject>(
 			std::make_unique<StaticRC>(getFile("/bullet.raw"), PlayerBulletDim),
 			std::make_unique<RectCC>(PlayerBulletDim)
@@ -152,6 +157,10 @@ void Invaders::Invaders::shoot(){
 				invaders.shrink_to_fit();
 				score += hp;
 				scoreDisplay->setScore(score);
+
+				audio.play({ { 200, 600, 100 },
+							 { 600, 80,  300 } });
+
 			}
 		});
 	}
@@ -170,6 +179,9 @@ void Invaders::Invaders::shoot(){
 bool Invaders::Invaders::enemyShoot(){
 	if(enemyBullet) return false;
 	if(invaders.empty()) return false;
+
+	audio.play({ { 100, 300, 100 },
+				 { 300, 80,  200 } });
 
 	const auto& inv = invaders[rand() % invaders.size()];
 	auto invObj = inv.obj;
@@ -194,8 +206,18 @@ bool Invaders::Invaders::enemyShoot(){
 		hearts->setLives(--lives);
 		if(lives == 0){
 			player->death();
+			audio.play({ { 300, 400, 200 },
+						 { 400, 300, 200 },
+						 { 200, 300, 200 },
+						 { 300, 200, 200 },
+						 { 80,  80,  400 } });
 		}else{
 			player->damage();
+			audio.play({ { 100, 100, 50 },
+						 { 0,   0,   50 },
+						 { 100, 100, 100 },
+						 { 0,   0,   100 },
+						 { 150, 75,  300 } });
 		}
 	});
 
@@ -254,7 +276,8 @@ Invaders::Invaders::Invader& Invaders::Invaders::spawnInvader(uint8_t type, uint
 	addObject(invaderObj);
 	std::weak_ptr<GameObject> weakPtr(invaderObj);
 	if(playerBullet){
-		collision.addPair(*playerBullet, *invaderObj, [this, weakPtr](){
+		const uint8_t hp = hitpoints;
+		collision.addPair(*playerBullet, *invaderObj, [this, weakPtr, hp](){
 			removeObject(playerBullet);
 			playerBullet.reset();
 			auto it = std::find_if(invaders.begin(), invaders.end(), [weakPtr](const Invader& inv){
@@ -266,12 +289,22 @@ Invaders::Invaders::Invader& Invaders::Invaders::spawnInvader(uint8_t type, uint
 				removeObject(invObj);
 				invaders.erase(it);
 				invaders.shrink_to_fit();
+				score += hp;
+				scoreDisplay->setScore(score);
+				audio.play({ { 200, 600, 100 },
+							 { 600, 80,  300 } });
+
 			}
 		});
 	}
 
 	collision.addPair(*killWall, *invaderObj, [this](){
 		player->death();
+		audio.play({ { 300, 400, 100 },
+					 { 400, 300, 100 },
+					 { 200, 300, 100 },
+					 { 300, 200, 100 },
+					 { 80,  80,  300 } });
 	});
 
 	invaders.emplace_back(invaderObj, hitpoints, hitpoints, type);

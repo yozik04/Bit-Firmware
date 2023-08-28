@@ -142,8 +142,13 @@ void BobGame::BobGame::collisionHandler(Item item){
 		hungerMeter = std::min(hungerMeter + item.value, hungerMeterMax);
 		drawBar();
 		if(hungerMeter >= hungerMeterMax){
-			Sound s = { { 600, 400,  200 },
-						{ 400, 1000, 200 } };
+			Sound s = { { 400, 600, 200 },
+						{ 0, 0, 50 },
+						{ 400, 800, 200 },
+						{ 0, 0, 50 },
+						{ 400, 1000, 200 },
+						{ 0, 0, 150 },
+						{ 800, 1000, 50 }};
 			audio.play(s);
 			player->filled(this);
 			state = Win;
@@ -155,19 +160,19 @@ void BobGame::BobGame::collisionHandler(Item item){
 //		RGB.blink(Pixel::Red);
 		lives--;
 		if(lives > 0){
-			audio.play({ { 300, 300, 100 },
-						 { 0,   0,   20 },
-						 { 100, 100, 100 } });
+			audio.play({ { 80,  300, 50 },
+						 { 0,   0,   50 },
+						 { 200, 50,  100 } });
 		}
 		hearts->setLives(lives);
 	}
 	if(lives <= 0){
 		player->killed(this);
-		audio.play({ { 400, 300, 200 },
-					 { 0,   0,   50 },
-					 { 300, 200, 200 },
-					 { 0,   0,   50 },
-					 { 200, 50,  400 } });
+		audio.play({ { 300, 400, 100 },
+					 { 400, 300, 100 },
+					 { 200, 300, 100 },
+					 { 300, 200, 100 },
+					 { 80,  80,  300 } });
 		state = Dead;
 	}
 

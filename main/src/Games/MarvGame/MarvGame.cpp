@@ -252,15 +252,17 @@ void MarvGame::MarvGame::duckHit(){
 		speed = 0.0f;
 		spawnRate = 10000.0f;
 		duck->death();
-		audio.play({ { 400, 300, 200 },
-					 { 0,   0,   50 },
-					 { 300, 200, 200 },
-					 { 0,   0,   50 },
-					 { 200, 50,  400 } });
+		audio.play({ { 300, 400, 100 },
+					 { 400, 300, 100 },
+					 { 200, 300, 100 },
+					 { 300, 200, 100 },
+					 { 80,  80,  300 } });
 		return;
 	}
 	duck->invincible = true;
-	audio.play({ { 100, 100, 50 } });
+	audio.play({ { 100, 100, 50 },
+				 { 0,   0,   25 },
+				 { 300, 100, 100 } });
 }
 
 float MarvGame::MarvGame::getSpeed(){
@@ -268,7 +270,9 @@ float MarvGame::MarvGame::getSpeed(){
 }
 
 void MarvGame::MarvGame::scoreUp(){
-	audio.play({ { 900, 900, 50 } });
+	audio.play({ { 400, 600, 75 },
+				 { 0, 0, 50 },
+				 { 500, 900, 75 } });
 //	RGB.blink(Pixel::Green);
 	score++;
 	std::string scoreText = "Score:" + std::to_string(score) + "/" + std::to_string(scoreMax);

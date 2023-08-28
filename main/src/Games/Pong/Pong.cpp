@@ -141,7 +141,7 @@ void Pong::setCollision(){
 		ballSpeed.x = BallBaseSpeed * cos(bounceAngle);
 		ballSpeed.y = BallBaseSpeed * -sin(bounceAngle);
 
-		audio.play({ { 100, 100, 50 } });
+		audio.play({ { 100, 400, 100 } });
 	});
 
 	collision.addPair(*enemy, *ball, [this](){
@@ -154,13 +154,16 @@ void Pong::setCollision(){
 		ballSpeed.y = BallBaseSpeed * -sin(bounceAngle);
 
 		ballSpeed.x = -abs(ballSpeed.x);
-		audio.play({ { 150, 150, 50 } });
+		audio.play({ { 100, 300, 50 },
+					 { 300, 100, 50 } });
 	});
 
 	collision.wallsHorizontal(*ball, [this](){
 		auto p = ball->getPos();
 		ball->setPos(p.x, std::clamp(p.y, 0.f, 128.f));
 		ballSpeed.y *= -1;
+
+		audio.play({ { 50, 150, 100 } });
 	});
 
 	collision.wallLeft(*ball, [this](){
@@ -177,6 +180,10 @@ void Pong::setCollision(){
 			ballSpeed.y = 0;
 			changeState(State::PressToStart);
 		}
+
+		audio.play({ { 400, 100, 200 },
+					 { 0,   0,   80 },
+					 { 150, 100, 300 } });
 	});
 
 	collision.wallRight(*ball, [this](){
@@ -193,6 +200,12 @@ void Pong::setCollision(){
 			ballSpeed.y = 0;
 			changeState(State::PressToStart);
 		}
+
+		audio.play({ { 200, 400, 100 },
+					 { 0,   0,   80 },
+					 { 200, 400, 100 },
+					 { 0,   0,   80 },
+					 { 200, 800, 200 } });
 	});
 }
 

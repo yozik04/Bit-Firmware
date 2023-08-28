@@ -16,7 +16,7 @@ protected:
 
 private:
 	enum class State {
-		Running, GameOver, GameWin
+		Running, GameOver, GameWin, DonePause
 	} state = State::Running;
 
 	GameObjPtr bg;
@@ -53,6 +53,7 @@ private:
 	static constexpr PixelDim TileDim = { 5, 5 };
 	static constexpr int8_t PaddingGap = -1;
 	static constexpr PixelDim GridDim = { 26, 26 };
+	float donePause = 0;
 
 	static constexpr PixelDim HitboxDim = { 3, 3 };
 	static constexpr uint8_t StartingLength = 2;

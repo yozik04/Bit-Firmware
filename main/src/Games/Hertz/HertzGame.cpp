@@ -92,18 +92,14 @@ void HertzGame::addPoints(int difference){
 	progressBar->fill(fillPercent);
 	bar->resetGoal();
 
-	if(indicator->getDifference() < 30){
-		audio.play({ { 250, 200, 50 },
-					 { 400, 700, 50 } });
-	}else if(indicator->getDifference() >= 30){
-		audio.play({ { 300, 300, 50 },
-					 { 0,   0,   50 },
-					 { 300, 300, 50 } });
-	}
-
 	if(fillPercent >= 0.999f){
-		Sound s = { { 600, 400,  200 },
-					{ 400, 1000, 200 } };
+		Sound s = { { 400, 300,  100 },
+					{ 0,   0,    25 },
+					{ 300, 200,  100 },
+					{ 0,   0,    25 },
+					{ 300, 200,  100 },
+					{ 0,   0,    25 },
+					{ 800, 1000, 200 } };
 		audio.play(s);
 //		removeObject(barGO);
 //		removeObject(indicatorGO);
@@ -117,12 +113,15 @@ void HertzGame::addPoints(int difference){
 		});
 
 		if(indicator->getDifference() < 30){
-			audio.play({ { 250, 200, 50 },
-						 { 400, 700, 50 } });
+			audio.play({ { 80,   800,  100 },
+						 { 0,    0,    50 },
+						 { 80,   1000, 150 },
+						 { 1000, 80,   150 } });
+
 		}else if(indicator->getDifference() >= 30){
-			audio.play({ { 300, 300, 50 },
-						 { 0,   0,   50 },
-						 { 300, 300, 50 } });
+			audio.play({ { 400, 200, 100 },
+						 { 0,   0,   100 },
+						 { 200,  70,  100 } });
 		}
 	}
 
