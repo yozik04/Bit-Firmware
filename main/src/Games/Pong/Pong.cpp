@@ -19,16 +19,11 @@ void Pong::onLoad(){
 void Pong::onLoop(float deltaTime){
 	switch(state){
 		case State::PressToStart:
-			player->setPos(player->getPos() + glm::vec2{ 0, playerSpeed } * deltaTime);
+			player->setPos(player->getPos().x, std::clamp(player->getPos().y + playerSpeed * deltaTime, 0.f, 128.f - PlayerDim.y));
 			break;
 		case State::Game:
 			moveEnemy();
-			player->setPos(player->getPos() + glm::vec2{ 0, playerSpeed } * deltaTime);
-			if(player->getPos().y > 128 - PlayerDim.y || player->getPos().y < 0){
-				auto pos = player->getPos();
-				pos.y = std::clamp(pos.y, 0.f, 128.f - PlayerDim.y);
-				player->setPos(pos);
-			}
+			player->setPos(player->getPos().x, std::clamp(player->getPos().y + playerSpeed * deltaTime, 0.f, 128.f - PlayerDim.y));
 			enemy->setPos(enemy->getPos().x, std::clamp(enemy->getPos().y + enemySpeed * deltaTime, 0.f, 128.f - EnemyDim.y));
 			ball->setPos(ball->getPos() + ballSpeed * deltaTime);
 			break;

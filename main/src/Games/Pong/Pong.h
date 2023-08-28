@@ -38,7 +38,7 @@ private:
 	uint8_t playerScore = 0, enemyScore = 0;
 	float playerSpeed = 0, enemySpeed = 0;
 
-	static constexpr float BallBaseSpeed = 100.0;
+	static constexpr float BallBaseSpeed = 120.0;
 	static constexpr float PlayerBaseSpeed = 60.0;
 	static constexpr float EnemyBaseSpeed = 60.0;
 	glm::vec2 ballSpeed = {};
