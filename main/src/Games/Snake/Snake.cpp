@@ -76,7 +76,8 @@ void Snake::onLoop(float deltaTime){
 		}
 	}else if(state == State::GameOver){
 		if(snake.empty()){
-			exit();
+			state = State::DonePause;
+			gameWinCounter = 0;
 			return;
 		}
 
@@ -85,11 +86,19 @@ void Snake::onLoop(float deltaTime){
 			removeObject(snake.back());
 			snake.pop_back();
 			moveBuffer = 0;
-
 		}
 	}else if(state == State::GameWin){
 		gameWinCounter += deltaTime;
 		if(gameWinCounter >= GameWinPause){
+			exit();
+			return;
+		}
+	}else if(state == State::DonePause){
+		gameWinCounter += deltaTime;
+		audio.play({ { 0,   0,   50 },
+					 { 200, 700, 75 } });
+		if(gameWinCounter >= donePause){
+
 			exit();
 			return;
 		}
@@ -99,8 +108,7 @@ void Snake::onLoop(float deltaTime){
 void Snake::handleInput(const Input::Data& data){
 	if(data.action != Input::Data::Press) return;
 
-	if(state == State::GameOver || state == State::GameWin){
-		exit();
+	if(state == State::DonePause || state == State::GameWin || state == State::GameOver){
 		return;
 	}
 
@@ -136,7 +144,7 @@ void Snake::handleInput(const Input::Data& data){
 	inputInterrupt = true;
 	moveBuffer = 0;
 	drawHead(*headSprite);
-	audio.play({ { 100, 100, 100 } });
+	audio.play({ { 200, 600, 75 } });
 
 }
 
@@ -235,23 +243,32 @@ void Snake::moveSnake(glm::vec2 speed){
 
 void Snake::gameOver(){
 	state = State::GameOver;
-	audio.play({ { 400, 300, 200 },
-				 { 0,   0,   50 },
-				 { 300, 200, 200 },
-				 { 0,   0,   50 },
-				 { 200, 50,  400 } });
+	const uint16_t duration = std::clamp((int) score * 100, 400, 1400);
+	audio.play({ { 100,  80,  100 },
+				 { 0,    0,   250 },
+				 { 1000, 300, duration } });
+	donePause = 0.5;
 }
 
 void Snake::foodEaten(bool initial){
 	if(!initial){
-		audio.play({ { 100, 100, 100 } });
+
+		static const Sound EatSounds[] = {
+				{ { 250, 200, 50 }, { 400, 700, 50 } },
+				{ { 150, 150, 75 }, { 0,   0,   75 }, { 150, 150, 75 }, { 200, 700, 100 } },
+				{ { 150, 150, 75 }, { 0,   0,   75 }, { 150, 150, 75 }, { 200, 700, 100 } },
+				{ { 400, 600, 75 }, { 0,   0,   50 }, { 500, 900, 75 } }
+		};
+		audio.play(EatSounds[rand() % (sizeof(EatSounds) / sizeof(EatSounds[0]))]);
+
 		scoreElement->setScore(++score);
 		addSegment();
 
 		if(score >= GridDim.x * GridDim.y){
 			gameWinCounter = 0;
+			audio.stop();
 			audio.play({ { 600, 400,  200 },
-						 { 400, 1000, 200 } });
+						 { 400, 1000, 400 } });
 			state = State::GameWin;
 			return;
 		}
