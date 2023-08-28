@@ -9,6 +9,7 @@
 #include <Games/TestGame.h>
 #include <Modals/NewRobot.h>
 #include <Modals/LockedGame.h>
+#include <Modals/UpdateRobot.h>
 #include <Modals/UnknownRobot.h>
 #include <Screens/Settings/SettingsScreen.h>
 
@@ -111,6 +112,12 @@ void MainMenu::handleInsert(const GameManager::Event& evt){
 
 	auto rob = evt.rob;
 	auto isNew = evt.isNew;
+
+	std::unordered_set<Robot> comingSoon = { Robot::Artemis, Robot::Buttons, Robot::Robby };
+	if(comingSoon.contains(rob)){
+		new UpdateRobot(this);
+		return;
+	}
 
 	if(isNew && robGames.count(rob)){
 		MenuItem* item = robGames.at(rob);
