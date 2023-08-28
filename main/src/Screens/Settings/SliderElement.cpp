@@ -1,7 +1,8 @@
+#include <cmath>
 #include "SliderElement.h"
 
-SliderElement::SliderElement(lv_obj_t* parent, const char* name, std::function<void(uint8_t)> cb, uint8_t value) : LVObject(parent), value(value),
-																												   cb(std::move(cb)){
+SliderElement::SliderElement(lv_obj_t* parent, const char* name, std::function<void(uint8_t)> cb, uint8_t value, float multiplier) : LVObject(parent),
+																												   cb(std::move(cb)), multi(multiplier){
 
 	lv_style_set_width(defaultStyle, lv_pct(100));
 	lv_style_set_height(defaultStyle, 17);
@@ -35,7 +36,7 @@ SliderElement::SliderElement(lv_obj_t* parent, const char* name, std::function<v
 	lv_obj_align(slider, LV_ALIGN_RIGHT_MID, 0, 0);
 	lv_obj_set_size(slider, SliderWidth, SliderHeight);
 
-	lv_slider_set_range(slider, 0, SliderRange);
+	lv_slider_set_range(slider, 0, std::round(100.0f / multi));
 	lv_obj_set_style_pad_hor(slider, 5, 0);
 	lv_obj_add_style(slider, sliderMainStyle, LV_PART_MAIN);
 
@@ -48,9 +49,8 @@ SliderElement::SliderElement(lv_obj_t* parent, const char* name, std::function<v
 	lv_obj_set_style_bg_color(slider, lv_color_hex(0xa34578), LV_PART_KNOB | LV_STATE_EDITED);
 
 	lv_obj_add_event_cb(slider, [](lv_event_t* e){
-		auto element = static_cast<SliderElement*>(e->user_data);
-		element->value = lv_slider_get_value(element->slider) * MaxValue / SliderRange;
-		if(element->cb) element->cb(element->value);
+		auto el = static_cast<SliderElement*>(e->user_data);
+		if(el->cb) el->cb(el->getValue());
 	}, LV_EVENT_VALUE_CHANGED, this);
 
 	lv_obj_add_event_cb(obj, [](lv_event_t* e){
@@ -64,11 +64,12 @@ SliderElement::SliderElement(lv_obj_t* parent, const char* name, std::function<v
 	setValue(value);
 }
 
-void SliderElement::setValue(uint8_t value){
-	this->value = value;
-	lv_slider_set_value(slider, value * SliderRange / MaxValue, LV_ANIM_OFF);
+void SliderElement::setValue(uint8_t val){
+	val = std::round((float) val / multi);
+	lv_slider_set_value(slider, val, LV_ANIM_OFF);
 }
 
 uint8_t SliderElement::getValue() const{
-	return value;
+	float val = lv_slider_get_value(slider);
+	return std::clamp(std::round(val * multi), 0.0f, 100.0f);
 }

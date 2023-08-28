@@ -8,7 +8,7 @@
 
 class SliderElement : public LVObject {
 public:
-	explicit SliderElement(lv_obj_t* parent, const char* name, std::function<void(uint8_t)> cb, uint8_t value = 0);
+	explicit SliderElement(lv_obj_t* parent, const char* name, std::function<void(uint8_t)> cb, uint8_t value = 0, float multiplier = 10);
 
 	void setValue(uint8_t value); //0-100
 	[[nodiscard]] uint8_t getValue() const; //0-100
@@ -25,8 +25,8 @@ private:
 	LVStyle sliderMainStyle;
 	LVStyle sliderKnobStyle;
 
-	uint8_t value; //0-100
 	std::function<void(uint8_t)> cb;
+	float multi;
 
 	static constexpr uint8_t SliderWidth = 45;
 	static constexpr uint8_t SliderHeight = 9;
