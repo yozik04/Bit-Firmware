@@ -62,8 +62,7 @@ bool initSPIFFS(){
 }
 
 void init(){
-
-	if(JigHWTest::checkJig() || true){
+	if(JigHWTest::checkJig()){
 		printf("Jig\n");
 		auto test = new JigHWTest();
 		test->start();
