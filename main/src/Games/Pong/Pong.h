@@ -34,7 +34,7 @@ private:
 	static constexpr float MaxBounceAngleDeg = 65;
 	static constexpr float MaxBounceAngleRad = MaxBounceAngleDeg * M_PI / 180.0;
 	static constexpr uint8_t PaddleEdgeGap = 5; //gap from paddle to respective screen border
-	static constexpr uint8_t ScoreLimit = 5; //First to 5 points
+	static constexpr uint8_t ScoreLimit = 3; //First to 5 points
 	uint8_t playerScore = 0, enemyScore = 0;
 	float playerSpeed = 0, enemySpeed = 0;
 
