@@ -135,10 +135,11 @@ void Blocks::handleInput(const Input::Data& data){
 		fastDrop = true;
 	}
 
-	if(data.btn != Input::Left && data.btn != Input::Right) return;
-
 	lastButton = data.btn;
 	lastButtonState = Pressed;
+
+	if(data.btn != Input::Left && data.btn != Input::Right) return;
+
 	btnHoldTimer = 0;
 
 	if(data.btn == Input::Left){
@@ -148,6 +149,10 @@ void Blocks::handleInput(const Input::Data& data){
 		if(checkBoundRight(blocks.back())) return;
 		blocks.back().setPos(blocks.back().getPos() + PixelDim{ 1, 0 });
 	}
+}
+
+void Blocks::onStop(){
+	handleInput({ lastButton, Input::Data::Release });
 }
 
 void Blocks::gameOver(){
