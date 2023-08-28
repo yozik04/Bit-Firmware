@@ -12,6 +12,7 @@
 #include <Modals/UpdateRobot.h>
 #include <Modals/UnknownRobot.h>
 #include <Screens/Settings/SettingsScreen.h>
+#include <unordered_set>
 
 struct Entry {
 	const char* icon;
@@ -23,15 +24,15 @@ static constexpr Entry MenuEntries[] = {
 		{ .icon = "Blocks", .game = Games::Blocks },
 		{ .icon = "Pong", .game = Games::Pong },
 		{ .icon = "Snake", .game = Games::Snake },
-		{ .icon = "Arte", .rob = Artemis, .game = Games::Artemis },
+		// { .icon = "Arte", .rob = Artemis, .game = Games::Artemis },
 		{ .icon = "Bee", .rob = MrBee, .game = Games::MrBee },
 		{ .icon = "Bob", .rob = Bob, .game = Games::Bob },
-		{ .icon = "Butt", .rob = Buttons, .game = Games::Buttons },
+		// { .icon = "Butt", .rob = Buttons, .game = Games::Buttons },
 		{ .icon = "Capa", .rob = Capacitron, .game = Games::Capacitron },
 		{ .icon = "Hertz", .rob = Hertz, .game = Games::Hertz },
 		{ .icon = "Marv", .rob = Marv, .game = Games::Marv },
 		{ .icon = "Resis", .rob = Resistron, .game = Games::Resistron },
-		{ .icon = "Robby", .rob = Robby, .game = Games::Robby }
+		// { .icon = "Robby", .rob = Robby, .game = Games::Robby }
 };
 
 MainMenu::MainMenu() : events(12){
