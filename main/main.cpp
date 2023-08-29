@@ -129,6 +129,21 @@ void init(){
 
 	auto gamer = new GameRunner(*disp);
 
+	if(settings->get().sound){
+		audio->play({
+				Chirp { NOTE_D4, NOTE_A4, 100 },
+				Chirp { 0, 0, 50 },
+				Chirp { NOTE_D5, NOTE_D5, 100 },
+				Chirp { 0, 0, 50 },
+				Chirp { NOTE_A4, NOTE_A4, 100 },
+				Chirp { 0, 0, 50 },
+				Chirp { NOTE_G5, NOTE_G4, 100 },
+				Chirp { 0, 0, 50 },
+				Chirp { NOTE_D4, NOTE_A4, 100 },
+				Chirp { NOTE_D5, NOTE_D5, 100 },
+		});
+	}
+
 	FSLVGL::loadCache();
 
 	auto ui = new UIThread(*lvgl, *gamer);
@@ -139,10 +154,6 @@ void init(){
 	}
 
 	ui->startScreen([](){ return std::make_unique<IntroScreen>(); });
-
-	if(settings->get().sound){
-		//TODO - startup chime
-	}
 
 	bl->fadeOut();
 	ui->start();

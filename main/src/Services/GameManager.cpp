@@ -68,11 +68,14 @@ void GameManager::loop(){
 		}
 
 		auto audio = (ChirpSystem*) Services.get(Service::Audio);
-		audio->play({
-				Chirp{ NOTE_C3, NOTE_C4, 100 },
-				Chirp{ 0, 0, 100 },
-				Chirp{ NOTE_C4, NOTE_C4, 100 }
-		});
+		if(!audio->isPlaying()){
+			audio->play({
+					Chirp{ NOTE_C3, NOTE_C4, 100 },
+					Chirp{ 0, 0, 100 },
+					Chirp{ NOTE_C4, NOTE_C4, 100 }
+			});
+		}
+
 
 		Events::post(Facility::Games, Event { .action = Event::Inserted, .rob = rob, .isNew = isNew });
 	}
