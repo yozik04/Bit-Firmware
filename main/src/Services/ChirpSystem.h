@@ -6,6 +6,7 @@
 #include "Periph/Timer.h"
 #include "Util/Threaded.h"
 #include <array>
+#include <atomic>
 
 /**
  * A chirp is a waveform that “sweeps” from a starting frequency to an ending frequency, during the specified duration of time.
@@ -47,8 +48,9 @@ public:
 	void setPersistentAttach(bool persistent);
 
 	void setMute(bool mute);
-	[[nodiscard]] bool isMuted() const;
+	bool isMuted() const;
 
+	bool isPlaying();
 
 private:
 	PWM& pwm;
@@ -86,6 +88,8 @@ private:
 			uint16_t numToClear;
 		} data;
 	};
+
+	std::atomic<bool> playing = false;
 };
 
 #endif //BIT_FIRMWARE_CHIRPSYSTEM_H
