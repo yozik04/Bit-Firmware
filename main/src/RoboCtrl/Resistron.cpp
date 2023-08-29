@@ -3,6 +3,11 @@
 RoboCtrl::Resistron::Resistron() : RobotDriver(Robot::Resistron), led1(CTRL_1), led2(CTRL_2){
 }
 
+RoboCtrl::Resistron::~Resistron(){
+	led1.end();
+	led2.end();
+}
+
 void RoboCtrl::Resistron::blink(){
 	led1.blink(255);
 	led2.blink(255);

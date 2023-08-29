@@ -9,6 +9,7 @@ namespace RoboCtrl {
 class Capacitron : public RobotDriver{
 public:
 	Capacitron();
+	virtual ~Capacitron();
 	void hello() override;
 
 	void leftRightContinuous(uint32_t period); //default

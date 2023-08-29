@@ -10,7 +10,7 @@ namespace RoboCtrl {
 class Hertz : public RobotDriver {
 public:
 	Hertz();
-
+	virtual ~Hertz();
 	void playGood();
 	void playBad();
 	void playDone();

@@ -10,6 +10,7 @@ namespace RoboCtrl {
 class Resistron : public RobotDriver {
 public:
 	Resistron();
+	virtual ~Resistron();
 	void blink();
 	void blinkTwice();
 	void blinkContinuous();

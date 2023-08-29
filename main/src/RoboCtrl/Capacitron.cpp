@@ -5,6 +5,11 @@ RoboCtrl::Capacitron::Capacitron() : RobotDriver(Robot::Capacitron), led1(CTRL_1
 
 }
 
+RoboCtrl::Capacitron::~Capacitron(){
+	led1.end();
+	led2.end();
+}
+
 void RoboCtrl::Capacitron::hello(){
 
 }

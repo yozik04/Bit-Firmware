@@ -9,10 +9,11 @@ namespace RoboCtrl {
 class Bob : public RobotDriver {
 public:
 	Bob();
-
+	virtual ~Bob();
 	void hello() override;
 
 	void blink();
+	void blinkTwice();
 	void blinkContinuousSlow();
 	void blinkContinuousFast();
 
