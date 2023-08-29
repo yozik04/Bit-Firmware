@@ -15,8 +15,6 @@ public:
 	void blinkContinuous();
 
 private:
-	PinOut led1Pin;
-	PinOut led2Pin;
 	DigitalLEDController led1;
 	DigitalLEDController led2;
 

@@ -22,9 +22,7 @@ protected:
 private:
 	PWM pwm;
 	ChirpSystem chirpSystem;
-	PinOut ledPin;
 	DigitalLEDController led;
-
 };
 
 }

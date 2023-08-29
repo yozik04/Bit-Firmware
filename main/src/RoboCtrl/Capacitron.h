@@ -20,8 +20,6 @@ protected:
 	void deinit() override;
 
 private:
-	PinOut led1Pinout;
-	PinOut led2Pinout;
 	DigitalLEDController led1;
 	DigitalLEDController led2;
 };

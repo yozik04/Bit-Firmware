@@ -1,7 +1,7 @@
 #include "Capacitron.h"
 #include "Pins.hpp"
 
-RoboCtrl::Capacitron::Capacitron() : RobotDriver(Robot::Capacitron), led1Pinout(CTRL_1), led2Pinout(CTRL_2), led1(led1Pinout), led2(led2Pinout){
+RoboCtrl::Capacitron::Capacitron() : RobotDriver(Robot::Capacitron), led1(CTRL_1), led2(CTRL_2){
 
 }
 

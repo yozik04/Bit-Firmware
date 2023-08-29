@@ -10,6 +10,7 @@ namespace RoboCtrl {
 class MrBee : public RobotDriver {
 public:
 	MrBee();
+	virtual ~MrBee();
 	void blink();
 	void hello() override;
 
@@ -18,7 +19,6 @@ protected:
 	void deinit() override;
 
 private:
-	PinOut ledPin;
 	DigitalLEDController led;
 };
 

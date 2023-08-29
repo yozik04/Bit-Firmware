@@ -1,7 +1,7 @@
 #include "Bob.h"
 #include "Pins.hpp"
 
-RoboCtrl::Bob::Bob() : RobotDriver(Robot::Capacitron), ledsPinout(CTRL_1), leds(ledsPinout){
+RoboCtrl::Bob::Bob() : RobotDriver(Robot::Capacitron), leds(CTRL_1){
 }
 
 void RoboCtrl::Bob::hello(){

@@ -1,7 +1,11 @@
 #include "MrBee.h"
 
-RoboCtrl::MrBee::MrBee() : RobotDriver(Robot::MrBee), ledPin(CTRL_1), led(ledPin){
+RoboCtrl::MrBee::MrBee() : RobotDriver(Robot::MrBee), led(CTRL_1){
 
+}
+
+RoboCtrl::MrBee::~MrBee(){
+	led.end();
 }
 
 void RoboCtrl::MrBee::blink(){

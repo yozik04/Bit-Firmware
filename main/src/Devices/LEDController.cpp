@@ -14,11 +14,19 @@ LEDController<T>::LEDController() : Threaded("LEDController", 2048, 6), /*sleepL
 
 template <typename T>
 LEDController<T>::~LEDController(){
-	end();
+	timer.stop();
+	stop(0);
+	abortFlag = true;
+	xSemaphoreGive(timerSem);
+	while(running()){
+		vTaskDelay(1);
+	}
+//	sleepLock.release();
 }
 
 template <typename T>
 void LEDController<T>::begin(){
+	abortFlag = false;
 	init();
 	clear();
 	start();
@@ -328,7 +336,7 @@ void RGBLEDController::write(glm::vec3 val){
 	pwmB.setDuty(val.z);
 }
 
-DigitalLEDController::DigitalLEDController(PinOut& led) : led(led){
+DigitalLEDController::DigitalLEDController(uint8_t pin, bool inverted) : led(pin, inverted){
 }
 
 void DigitalLEDController::write(uint8_t val){

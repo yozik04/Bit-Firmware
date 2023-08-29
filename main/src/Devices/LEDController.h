@@ -141,7 +141,7 @@ private:
 
 class DigitalLEDController : public LEDController<uint8_t> {
 public:
-	explicit DigitalLEDController(PinOut& led);
+	explicit DigitalLEDController(uint8_t pin, bool inverted = false);
 
 protected:
 	void write(uint8_t val) override;
@@ -150,7 +150,7 @@ protected:
 	void deinit() override;
 
 private:
-	PinOut& led;
+	PinOut led;
 };
 
 

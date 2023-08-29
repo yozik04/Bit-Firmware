@@ -1,6 +1,6 @@
 #include "Resistron.h"
 
-RoboCtrl::Resistron::Resistron() : RobotDriver(Robot::Resistron), led1Pin(CTRL_1), led2Pin(CTRL_2), led1(led1Pin), led2(led2Pin){
+RoboCtrl::Resistron::Resistron() : RobotDriver(Robot::Resistron), led1(CTRL_1), led2(CTRL_2){
 }
 
 void RoboCtrl::Resistron::blink(){
