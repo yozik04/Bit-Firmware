@@ -237,7 +237,7 @@ void Pong::changeState(Pong::State newState){
 
 			break;
 		case State::End:
-			statusLabel->setText(std::string(playerScore > enemyScore ? "Player" : "CPU") + " wins!");
+			statusLabel->setText(std::string(playerScore > enemyScore ? "Player" : "Bit") + " wins!");
 			endCounter = 0;
 			break;
 	}
