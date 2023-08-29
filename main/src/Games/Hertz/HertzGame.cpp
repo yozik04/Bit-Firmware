@@ -9,7 +9,10 @@ HertzGame::HertzGame(Sprite& canvas) : Game(canvas, "/Games/Hertz", {
 		{ "/blink.gif", {}, false },
 		{ "/idle.gif",  {}, true },
 
-}){}
+}){
+	robo = std::make_shared<RoboCtrl::Hertz>();
+	setRobot(robo);
+}
 
 void HertzGame::onLoad(){
 	auto spriteBar = std::make_unique<SpriteRC>(PixelDim{ 114, 6 });
@@ -93,6 +96,7 @@ void HertzGame::addPoints(int difference){
 	bar->resetGoal();
 
 	if(fillPercent >= 0.999f){
+		robo->playDone();
 		Sound s = { { 400, 300,  100 },
 					{ 0,   0,    25 },
 					{ 300, 200,  100 },
@@ -100,7 +104,7 @@ void HertzGame::addPoints(int difference){
 					{ 300, 200,  100 },
 					{ 0,   0,    25 },
 					{ 800, 1000, 200 } };
-		audio.play(s);
+		//audio.play(s);
 //		removeObject(barGO);
 //		removeObject(indicatorGO);
 		duckAnim->setAnim(getFile("/win.gif"));
@@ -113,15 +117,17 @@ void HertzGame::addPoints(int difference){
 		});
 
 		if(indicator->getDifference() < 30){
-			audio.play({ { 80,   800,  100 },
+			robo->playBad();
+/*			audio.play({ { 80,   800,  100 },
 						 { 0,    0,    50 },
 						 { 80,   1000, 150 },
-						 { 1000, 80,   150 } });
+						 { 1000, 80,   150 } });*/
 
 		}else if(indicator->getDifference() >= 30){
-			audio.play({ { 400, 200, 100 },
+			robo->playGood();
+/*			audio.play({ { 400, 200, 100 },
 						 { 0,   0,   100 },
-						 { 200,  70,  100 } });
+						 { 200,  70,  100 } });*/
 		}
 	}
 
