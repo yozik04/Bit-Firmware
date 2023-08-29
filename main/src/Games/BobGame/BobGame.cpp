@@ -55,6 +55,9 @@ void BobGame::BobGame::onLoad(){
 	barGO->setPos({ 1, 2 });
 	hungerBar->clear(TFT_TRANSPARENT);
 	Display::drawFile(*hungerBar, getFile("/BarFrame.raw"), 0, 0, 6, 120);
+
+	robot = std::make_shared<RoboCtrl::Bob>();
+	setRobot(robot);
 }
 
 void BobGame::BobGame::onLoop(float deltaTime){
@@ -142,17 +145,19 @@ void BobGame::BobGame::collisionHandler(Item item){
 		hungerMeter = std::min(hungerMeter + item.value, hungerMeterMax);
 		drawBar();
 		if(hungerMeter >= hungerMeterMax){
-			Sound s = { { 400, 600, 200 },
-						{ 0, 0, 50 },
-						{ 400, 800, 200 },
-						{ 0, 0, 50 },
+			robot->blinkContinuousFast();
+			Sound s = { { 400, 600,  200 },
+						{ 0,   0,    50 },
+						{ 400, 800,  200 },
+						{ 0,   0,    50 },
 						{ 400, 1000, 200 },
-						{ 0, 0, 150 },
-						{ 800, 1000, 50 }};
+						{ 0,   0,    150 },
+						{ 800, 1000, 50 } };
 			audio.play(s);
 			player->filled(this);
 			state = Win;
 		}else{
+			robot->blink();
 			audio.play({ { 250, 200, 50 },
 						 { 400, 700, 50 } });
 		}
@@ -163,10 +168,12 @@ void BobGame::BobGame::collisionHandler(Item item){
 			audio.play({ { 80,  300, 50 },
 						 { 0,   0,   50 },
 						 { 200, 50,  100 } });
+			robot->blinkTwice();
 		}
 		hearts->setLives(lives);
 	}
 	if(lives <= 0){
+		robot->blinkContinuousSlow();
 		player->killed(this);
 		audio.play({ { 300, 400, 100 },
 					 { 400, 300, 100 },
