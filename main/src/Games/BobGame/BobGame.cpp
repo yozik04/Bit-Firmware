@@ -47,6 +47,7 @@ void BobGame::BobGame::onLoad(){
 
 	auto barRC = std::make_unique<SpriteRC>(PixelDim{ 8, 122 });
 	hungerBar = barRC->getSprite();
+	barRC->setLayer(2);
 	auto barGO = std::make_shared<GameObject>(
 			std::move(barRC),
 			nullptr
