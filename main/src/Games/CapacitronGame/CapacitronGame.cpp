@@ -218,6 +218,7 @@ void CapacitronGame::CapacitronGame::createPad(float surface, bool powerupsEnabl
 	for(const auto& obj : padObjs.back()){
 		addObject(obj);
 		collision.addPair(*obj, *playerLegsObj, [this](){
+			if(player->isDead()) return;
 			if(player->getYSpeed() < 0) return;
 
 			player->jump();
