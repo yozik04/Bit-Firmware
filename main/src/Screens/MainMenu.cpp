@@ -9,8 +9,10 @@
 #include <Games/TestGame.h>
 #include <Modals/NewRobot.h>
 #include <Modals/LockedGame.h>
+#include <Modals/UpdateRobot.h>
 #include <Modals/UnknownRobot.h>
 #include <Screens/Settings/SettingsScreen.h>
+#include <unordered_set>
 
 struct Entry {
 	const char* icon;
@@ -22,15 +24,15 @@ static constexpr Entry MenuEntries[] = {
 		{ .icon = "Blocks", .game = Games::Blocks },
 		{ .icon = "Pong", .game = Games::Pong },
 		{ .icon = "Snake", .game = Games::Snake },
-		{ .icon = "Arte", .rob = Artemis, .game = Games::Artemis },
+		// { .icon = "Arte", .rob = Artemis, .game = Games::Artemis },
 		{ .icon = "Bee", .rob = MrBee, .game = Games::MrBee },
 		{ .icon = "Bob", .rob = Bob, .game = Games::Bob },
-		{ .icon = "Butt", .rob = Buttons, .game = Games::Buttons },
+		// { .icon = "Butt", .rob = Buttons, .game = Games::Buttons },
 		{ .icon = "Capa", .rob = Capacitron, .game = Games::Capacitron },
 		{ .icon = "Hertz", .rob = Hertz, .game = Games::Hertz },
 		{ .icon = "Marv", .rob = Marv, .game = Games::Marv },
 		{ .icon = "Resis", .rob = Resistron, .game = Games::Resistron },
-		{ .icon = "Robby", .rob = Robby, .game = Games::Robby }
+		// { .icon = "Robby", .rob = Robby, .game = Games::Robby }
 };
 
 MainMenu::MainMenu() : events(12){
@@ -105,12 +107,18 @@ void MainMenu::loop(){
 
 void MainMenu::handleInsert(const GameManager::Event& evt){
 	if(evt.action == GameManager::Event::Unknown){
-		new UnknownRobot(this);
+		new UpdateRobot(this);
 		return;
 	}else if(evt.action != GameManager::Event::Inserted) return;
 
 	auto rob = evt.rob;
 	auto isNew = evt.isNew;
+
+	std::unordered_set<Robot> comingSoon = { Robot::Artemis, Robot::Buttons, Robot::Robby };
+	if(comingSoon.contains(rob)){
+		new UpdateRobot(this);
+		return;
+	}
 
 	if(isNew && robGames.count(rob)){
 		MenuItem* item = robGames.at(rob);
@@ -167,12 +175,21 @@ void MainMenu::buildUI(){
 	auto onKey = [](lv_event_t* e){
 		auto group = (lv_group_t*) e->user_data;
 		auto key = *((uint32_t*) e->param);
+		auto index = lv_obj_get_index(e->target); // TODO: only applies to odd number of menu items; remove once all games are added
 		if(key == LV_KEY_UP){
-			lv_group_focus_prev(group);
-			lv_group_focus_prev(group);
+			if(index == 0){
+				lv_group_focus_prev(group);
+			}else{
+				lv_group_focus_prev(group);
+				lv_group_focus_prev(group);
+			}
 		}else if(key == LV_KEY_DOWN){
-			lv_group_focus_next(group);
-			lv_group_focus_next(group);
+			if(index == 7 || index == 8){
+				lv_group_focus_next(group);
+			}else{
+				lv_group_focus_next(group);
+				lv_group_focus_next(group);
+			}
 		}
 	};
 

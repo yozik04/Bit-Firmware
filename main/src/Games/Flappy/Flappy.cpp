@@ -241,7 +241,7 @@ void Flappy::createObstaclePair(){
 	int offsetTop = rand() % 5;
 	int offsetBot = rand() % 5;
 
-	if(topi == 0 || topi == 1){
+	if(topi != 4){
 		offsetTop = 0;
 		offsetBoth = 0;
 	}

@@ -1,6 +1,8 @@
 #include "GameManager.h"
 #include "Settings/Settings.h"
 #include "Util/Services.h"
+#include "ChirpSystem.h"
+#include "Util/Notes.h"
 
 const std::unordered_map<Games, Robot> GameManager::GameRobot = {
 		{ Games::MrBee, Robot::MrBee },
@@ -64,6 +66,16 @@ void GameManager::loop(){
 			unlocked.insert(rob);
 			storeState();
 		}
+
+		auto audio = (ChirpSystem*) Services.get(Service::Audio);
+		if(!audio->isPlaying()){
+			audio->play({
+					Chirp{ NOTE_C3, NOTE_C4, 100 },
+					Chirp{ 0, 0, 100 },
+					Chirp{ NOTE_C4, NOTE_C4, 100 }
+			});
+		}
+
 
 		Events::post(Facility::Games, Event { .action = Event::Inserted, .rob = rob, .isNew = isNew });
 	}

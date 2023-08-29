@@ -50,6 +50,7 @@ void BobGame::BobGame::onLoad(){
 
 	auto barRC = std::make_unique<SpriteRC>(PixelDim{ 8, 122 });
 	hungerBar = barRC->getSprite();
+	barRC->setLayer(2);
 	auto barGO = std::make_shared<GameObject>(
 			std::move(barRC),
 			nullptr
@@ -84,6 +85,11 @@ void BobGame::BobGame::onLoop(float deltaTime){
 		int x = object.first->getPos().x;
 		object.first->setPos({ x, y });
 	}
+}
+
+void BobGame::BobGame::onStop(){
+	player->btnReleased(Input::Left);
+	player->btnReleased(Input::Right);
 }
 
 void BobGame::BobGame::addTemplate(std::string file, PixelDim dim, int value){

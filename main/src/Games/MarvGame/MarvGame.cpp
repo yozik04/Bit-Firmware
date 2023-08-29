@@ -167,6 +167,10 @@ void MarvGame::MarvGame::onLoop(float deltaTime){
 	}
 }
 
+void MarvGame::MarvGame::onStop(){
+	duck->duckReleased();
+}
+
 void MarvGame::MarvGame::setupObstacles(){
 	obstacleOver.push_back({ getFile("/hydrant.raw"), { 17, 33 }, {} });
 	obstacleOver.push_back({ getFile("/banana.raw"), { 22, 23 }, {} });

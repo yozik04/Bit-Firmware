@@ -216,11 +216,17 @@ void CapacitronGame::CapacitronGame::handleInput(const Input::Data& data){
 	}
 }
 
+void CapacitronGame::CapacitronGame::onStop(){
+	player->btnReleased(Input::Left);
+	player->btnReleased(Input::Right);
+}
+
 void CapacitronGame::CapacitronGame::createPad(float surface, bool powerupsEnabled, uint8_t powerupRate){
 	tileManager->createPads(surface, powerupsEnabled, powerupRate);
 	for(const auto& obj : padObjs.back()){
 		addObject(obj);
 		collision.addPair(*obj, *playerLegsObj, [this](){
+			if(player->isDead()) return;
 			if(player->getYSpeed() < 0) return;
 
 			player->jump();
@@ -339,7 +345,6 @@ void CapacitronGame::CapacitronGame::spawnFireball(){
 
 		if(!player->isInvincible()){
 
-
 			hearts->setLives(--lives);
 			robot->flashingContinuous(-1);
 
@@ -362,7 +367,8 @@ void CapacitronGame::CapacitronGame::spawnFireball(){
 }
 
 void CapacitronGame::CapacitronGame::cleanupPads(){
-	const float surface = StartingSurface - ((float) score / MaxDifficultyScore) * (StartingSurface - MinimumSurface);
+	const float surface = std::clamp(StartingSurface - ((float) score / MaxDifficultyScore) * (StartingSurface - MinimumSurface),
+									 MinimumSurface, StartingSurface);
 	while((**padObjs.front().begin()).getPos().y >= 128){
 
 		for(const auto& obj : padObjs.front()){

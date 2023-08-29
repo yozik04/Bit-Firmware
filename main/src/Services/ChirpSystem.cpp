@@ -63,6 +63,7 @@ void ChirpSystem::play(const Sound& sound){
 			durationSum += constrainedTonePeriod;
 		}
 	}
+	playing = true;
 	const QueueItem endItem = { QueueItem::Type::Tone, { .tone = { 0, 0 } } };
 	xQueueSend(queue, &endItem, portMAX_DELAY);
 }
@@ -128,6 +129,7 @@ void ChirpSystem::stop(){
 	xQueueReset(queue);
 	pwm.stop();
 	detach();
+	playing = false;
 }
 
 void ChirpSystem::setMute(bool mute){
@@ -184,6 +186,7 @@ void ChirpSystem::loop(){
 					if(!pwmPersistence){
 						detach();
 					}
+					playing = false;
 				}
 			}
 			xQueueReceive(queue, &item, portMAX_DELAY);
@@ -218,4 +221,8 @@ void ChirpSystem::processClearTone(uint16_t numToClear){
 
 constexpr long ChirpSystem::freqMap(long val, long fromLow, long fromHigh, long toLow, long toHigh){
 	return (val - fromLow) * (toHigh - toLow) / (fromHigh - fromLow) + toLow;
+}
+
+bool ChirpSystem::isPlaying(){
+	return playing;
 }
