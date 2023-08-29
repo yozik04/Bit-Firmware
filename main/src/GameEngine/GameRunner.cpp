@@ -84,6 +84,8 @@ void GameRunner::startGame(Games game){
 	}
 	Events::unlisten(&evts);
 
+	srand(micros());
+
 	currentGameEnum = game;
 	currentGame = std::move(inst);
 	currentGame->start();
