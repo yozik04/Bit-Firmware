@@ -7,8 +7,10 @@
 namespace RoboCtrl {
 
 class Marv : public RobotDriver {
+public:
 	Marv();
 	void setSpeed(uint32_t tickTime); //[ms]
+	void hello() override;
 
 protected:
 	void init() override;

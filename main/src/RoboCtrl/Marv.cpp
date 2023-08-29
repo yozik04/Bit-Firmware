@@ -37,3 +37,7 @@ void RoboCtrl::Marv::onLoop(uint micros){
 		timer = 0;
 	}
 }
+
+void RoboCtrl::Marv::hello(){
+
+}
