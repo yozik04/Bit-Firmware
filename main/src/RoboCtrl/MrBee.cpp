@@ -1,19 +1,21 @@
 #include "MrBee.h"
 
-RoboCtrl::MrBee::MrBee() : RobotDriver(Robot::MrBee), led(CTRL_1){
-	if(!checkRobot()) return;
+RoboCtrl::MrBee::MrBee() : RobotDriver(Robot::MrBee), ledPin(CTRL_1), led(ledPin){
 
-	led.off();
 }
 
-void RoboCtrl::MrBee::ledOn(){
-	if(!checkRobot()) return;
-
-	led.on();
+void RoboCtrl::MrBee::blink(){
+	led.blink(255);
 }
 
-void RoboCtrl::MrBee::ledOff(){
-	if(!checkRobot()) return;
+void RoboCtrl::MrBee::hello(){
 
-	led.off();
+}
+
+void RoboCtrl::MrBee::init(){
+	led.begin();
+}
+
+void RoboCtrl::MrBee::deinit(){
+	led.end();
 }

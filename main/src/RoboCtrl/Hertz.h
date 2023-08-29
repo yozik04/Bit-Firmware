@@ -3,7 +3,7 @@
 
 #include "RobotDriver.h"
 #include "Services/ChirpSystem.h"
-#include "Periph/PinOut.h"
+#include "Devices/LEDController.h"
 
 namespace RoboCtrl {
 
@@ -11,21 +11,20 @@ class Hertz : public RobotDriver {
 public:
 	Hertz();
 
-	void play(std::initializer_list<Chirp> sound);
-	void play(const Sound& sound);
-	void stop();
+	void playGood();
+	void playBad();
+	void playDone();
 
-	void setMute(bool mute);
-	bool isMuted() const;
-
-	void ledOn();
-	void ledOff();
-
-
+	void hello() override;
+protected:
+	void init() override;
+	void deinit() override;
 private:
 	PWM pwm;
 	ChirpSystem chirpSystem;
-	PinOut led;
+	PinOut ledPin;
+	DigitalLEDController led;
+
 };
 
 }

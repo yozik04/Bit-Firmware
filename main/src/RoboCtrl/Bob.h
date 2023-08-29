@@ -1,7 +1,7 @@
 #ifndef BIT_FIRMWARE_BOB_H
 #define BIT_FIRMWARE_BOB_H
 
-#include "Periph/PinOut.h"
+#include "Devices/LEDController.h"
 #include "RobotDriver.h"
 
 namespace RoboCtrl {
@@ -9,11 +9,20 @@ namespace RoboCtrl {
 class Bob : public RobotDriver {
 public:
 	Bob();
-	void ledsOn();
-	void ledsOff();
+
+	void hello() override;
+
+	void blink();
+	void blinkContinuousSlow();
+	void blinkContinuousFast();
+
+protected:
+	void init() override;
+	void deinit() override;
 
 private:
-	PinOut leds;
+	PinOut ledsPinout;
+	DigitalLEDController leds;
 };
 
 }

@@ -1,20 +1,29 @@
 #include "Bob.h"
 #include "Pins.hpp"
 
-RoboCtrl::Bob::Bob() :  RobotDriver(Robot::Capacitron), leds(CTRL_1){
-	if(!checkRobot()) return;
-
-	leds.off();
+RoboCtrl::Bob::Bob() : RobotDriver(Robot::Capacitron), ledsPinout(CTRL_1), leds(ledsPinout){
 }
 
-void RoboCtrl::Bob::ledsOn(){
-	if(!checkRobot()) return;
+void RoboCtrl::Bob::hello(){
 
-	leds.on();
 }
 
-void RoboCtrl::Bob::ledsOff(){
-	if(!checkRobot()) return;
+void RoboCtrl::Bob::init(){
+	leds.begin();
+}
 
-	leds.off();
+void RoboCtrl::Bob::deinit(){
+	leds.end();
+}
+
+void RoboCtrl::Bob::blink(){
+	leds.blink(255);
+}
+
+void RoboCtrl::Bob::blinkContinuousSlow(){
+	leds.blinkContinuous(255, 4, 1000, 300);
+}
+
+void RoboCtrl::Bob::blinkContinuousFast(){
+	leds.blinkContinuous(255, -1, 300, 300);
 }

@@ -1,21 +1,29 @@
 #ifndef BIT_FIRMWARE_MARV_H
 #define BIT_FIRMWARE_MARV_H
 
-#include "RoboCounter.h"
 #include "RobotDriver.h"
+#include "Periph/PinOut.h"
 
 namespace RoboCtrl {
 
-class Marv : public RobotDriver{
+class Marv : public RobotDriver {
 	Marv();
-	void reset();
-	void nextLED();
-	void startRunning(uint32_t tickTime);
-	void stopRunning();
-	void setSpeed(uint32_t tickTime);
+	void setSpeed(uint32_t tickTime); //[ms]
+
+protected:
+	void init() override;
+	void deinit() override;
+	void onLoop(uint micros) override;
 
 private:
-	RoboCounter counter;
+	void tick();
+	void reset();
+
+	PinOut clockPin;
+	PinOut resetPin;
+
+	uint32_t tickTime = 0;
+	uint32_t timer = 0;
 };
 
 }

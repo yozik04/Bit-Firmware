@@ -1,39 +1,45 @@
 #include "Hertz.h"
 
-RoboCtrl::Hertz::Hertz() : RobotDriver(Robot::Hertz), pwm(CTRL_1, LEDC_CHANNEL_2), chirpSystem(pwm), led(CTRL_2){
-	if(!checkRobot()) return;
-
-	led.off();
+RoboCtrl::Hertz::Hertz() : RobotDriver(Robot::Hertz), pwm(CTRL_1, LEDC_CHANNEL_2), chirpSystem(pwm), ledPin(CTRL_2), led(ledPin){
 }
 
-void RoboCtrl::Hertz::play(std::initializer_list<Chirp> sound){
-	if(!checkRobot()) return;
-	chirpSystem.play(sound);
+void RoboCtrl::Hertz::hello(){
+
 }
 
-void RoboCtrl::Hertz::play(const Sound& sound){
-	if(!checkRobot()) return;
-	chirpSystem.play(sound);
+void RoboCtrl::Hertz::init(){
+	led.begin();
 }
 
-void RoboCtrl::Hertz::stop(){
+void RoboCtrl::Hertz::deinit(){
+	led.end();
 	chirpSystem.stop();
 }
 
-void RoboCtrl::Hertz::setMute(bool mute){
-	chirpSystem.setMute(mute);
+void RoboCtrl::Hertz::playGood(){
+	chirpSystem.play({ { 80,   800,  100 },
+					   { 0,    0,    50 },
+					   { 80,   1000, 150 },
+					   { 1000, 80,   150 } });
+	led.blinkTwice(255);
 }
 
-bool RoboCtrl::Hertz::isMuted() const{
-	return chirpSystem.isMuted();
+void RoboCtrl::Hertz::playBad(){
+	chirpSystem.play({ { 400, 200, 100 },
+					   { 0,   0,   100 },
+					   { 200, 70,  100 } });
+	led.blink(255);
+
 }
 
-void RoboCtrl::Hertz::ledOn(){
-	if(!checkRobot()) return;
-	led.on();
-}
-
-void RoboCtrl::Hertz::ledOff(){
-	if(!checkRobot()) return;
-	led.off();
+void RoboCtrl::Hertz::playDone(){
+	Sound s = { { 400, 300,  100 },
+				{ 0,   0,    25 },
+				{ 300, 200,  100 },
+				{ 0,   0,    25 },
+				{ 300, 200,  100 },
+				{ 0,   0,    25 },
+				{ 800, 1000, 200 } };
+	chirpSystem.play(s);
+	led.blinkContinuous(255);
 }

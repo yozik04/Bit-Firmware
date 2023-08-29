@@ -113,6 +113,10 @@ void Game::loop(uint micros){
 	onRender(base);
 
 //	collision.drawDebug(base);
+
+	if(robot){
+		robot->loop(micros);
+	}
 }
 
 void Game::onStart(){}
@@ -124,3 +128,8 @@ void Game::onLoad(){}
 void Game::onLoop(float deltaTime){}
 
 void Game::onRender(Sprite& canvas){}
+
+void Game::setRobot(std::shared_ptr<RoboCtrl::RobotDriver> robot){
+	this->robot = robot;
+}
+

@@ -1,18 +1,19 @@
 #include "Resistron.h"
 
-RoboCtrl::Resistron::Resistron() : RobotDriver(Robot::Resistron), led1(CTRL_1), led2(CTRL_2){
-	if(!checkRobot()) return;
-
-	led1.off();
-	led2.off();
+RoboCtrl::Resistron::Resistron() : RobotDriver(Robot::Resistron), led1Pin(CTRL_1), led2Pin(CTRL_2), led1(led1Pin), led2(led2Pin){
 }
 
-void RoboCtrl::Resistron::setLeftLED(bool state){
-	if(!checkRobot()) return;
-	state ? led1.on() : led1.off();
+void RoboCtrl::Resistron::blink(){
+	led1.blink(255);
+	led2.blink(255);
 }
 
-void RoboCtrl::Resistron::setRightLED(bool state){
-	if(!checkRobot()) return;
-	state ? led2.on() : led2.off();
+void RoboCtrl::Resistron::blinkContinuous(){
+	led1.blinkContinuous(255);
+	led2.blinkContinuous(255);
+}
+
+void RoboCtrl::Resistron::blinkTwice(){
+	led1.blinkTwice(255);
+	led2.blinkTwice(255);
 }

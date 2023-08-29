@@ -3,16 +3,23 @@
 
 #include "RobotDriver.h"
 #include "Periph/PinOut.h"
+#include "Devices/LEDController.h"
 
 namespace RoboCtrl {
 
 class MrBee : public RobotDriver {
 public:
 	MrBee();
-	void ledOn();
-	void ledOff();
+	void blink();
+	void hello() override;
+
+protected:
+	void init() override;
+	void deinit() override;
+
 private:
-	PinOut led;
+	PinOut ledPin;
+	DigitalLEDController led;
 };
 
 }
