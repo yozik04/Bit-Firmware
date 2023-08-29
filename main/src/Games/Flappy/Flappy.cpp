@@ -17,8 +17,8 @@ Flappy::Flappy(Sprite& canvas) : Game(canvas, "/Games/Flappy", {
 		{ TopObstacles[0].path, {}, true },
 		{ TopObstacles[1].path, {}, true },
 		{ TopObstacles[2].path, {}, true },
-		//{ TopObstacles[3].path, {}, true },
-		//{ TopObstacles[4].path, {}, true },
+		{ TopObstacles[3].path, {}, true },
+		{ TopObstacles[4].path, {}, true },
 		{ BotObstacles[0].path, {}, true },
 		{ BotObstacles[1].path, {}, true },
 		{ BotObstacles[2].path, {}, true },
@@ -213,7 +213,7 @@ void Flappy::createObstaclePair(){
 	const auto& botDesc = BotObstacles[boti];
 
 	GameObjPtr topObj;
-	if(topi == 2){
+	if(topi == 4){
 		topObj = std::make_shared<GameObject>(
 				std::make_unique<AnimRC>(getFile(topDesc.path)),
 				std::make_unique<PolygonCC>(topDesc.collision)
@@ -236,7 +236,7 @@ void Flappy::createObstaclePair(){
 	int offsetTop = rand() % 5;
 	int offsetBot = rand() % 5;
 
-	if(topi == 0 || topi == 1){
+	if(topi != 4){
 		offsetTop = 0;
 		offsetBoth = 0;
 	}
