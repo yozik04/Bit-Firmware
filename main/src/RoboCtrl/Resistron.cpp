@@ -9,16 +9,64 @@ RoboCtrl::Resistron::~Resistron(){
 }
 
 void RoboCtrl::Resistron::blink(){
-	led1.blink(255);
-	led2.blink(255);
+	repeatNum = 2;
+	repeatCounter = 0;
+	timer = 0;
+	leftRightTime = BlinkTime;
+	leftRightAnim = true;
 }
 
 void RoboCtrl::Resistron::blinkContinuous(){
-	led1.blinkContinuous(255);
-	led2.blinkContinuous(255);
+	repeatNum = -1;
+	repeatCounter = 0;
+	timer = 0;
+	leftRightTime = BlinkTime;
+	leftRightAnim = true;
 }
 
 void RoboCtrl::Resistron::blinkTwice(){
-	led1.blinkTwice(255);
-	led2.blinkTwice(255);
+	repeatNum = 4;
+	repeatCounter = 0;
+	timer = 0;
+	leftRightTime = BlinkTime;
+	leftRightAnim = true;
+}
+
+void RoboCtrl::Resistron::hello(){
+
+}
+
+void RoboCtrl::Resistron::init(){
+	led1.begin();
+	led2.begin();
+}
+
+void RoboCtrl::Resistron::deinit(){
+	led1.end();
+	led2.end();
+}
+
+void RoboCtrl::Resistron::onLoop(uint micros){
+	if(!leftRightAnim) return;
+
+	timer += micros;
+	if(timer >= leftRightTime * 1000){
+		if(ledIndex){
+			led1.setSolid(255);
+			led2.setSolid(0);
+		}else{
+			led1.setSolid(0);
+			led2.setSolid(255);
+		}
+		ledIndex = !ledIndex;
+		timer = 0;
+		repeatCounter++;
+		if(repeatCounter > repeatNum){
+			leftRightAnim = false;
+			repeatCounter = 0;
+			led1.clear();
+			led2.clear();
+			return;
+		}
+	}
 }

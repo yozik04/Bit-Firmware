@@ -15,9 +15,24 @@ public:
 	void blinkTwice();
 	void blinkContinuous();
 
+	void hello() override;
+protected:
+	void init() override;
+	void deinit() override;
+	void onLoop(uint micros) override;
+
 private:
 	DigitalLEDController led1;
 	DigitalLEDController led2;
+
+	bool leftRightAnim = false;
+	uint32_t leftRightTime = 0;
+	uint32_t timer = 0;
+	bool ledIndex = false;
+	uint32_t repeatCounter = 0;
+	uint32_t repeatNum = 0;
+
+	static constexpr uint32_t BlinkTime = 100;
 
 };
 
