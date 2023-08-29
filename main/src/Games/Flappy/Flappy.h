@@ -23,7 +23,7 @@ private:
 	static constexpr float flapSpeedY = 80.0f;
 	static constexpr float duckPosX = 25;
 	static constexpr float obstacleSpacing = 75;
-	static constexpr uint8_t MinimumGap = 45;
+	static constexpr uint8_t MinimumGap = 50;
 
 	enum {
 		FlyIn, Wait, Play, FallOut
