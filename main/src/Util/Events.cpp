@@ -57,7 +57,12 @@ bool EventQueue::post(Facility facility, void* data){
 			.data = data
 	};
 
-	return xQueueSend(queue, &event, 0) == pdTRUE;
+	bool success = xQueueSend(queue, &event, 0) == pdTRUE;
+	if(!success){
+		free(data);
+	}
+
+	return success;
 }
 
 void EventQueue::reset(){
