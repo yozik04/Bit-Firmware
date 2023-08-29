@@ -21,7 +21,7 @@ void BobGame::Player::loop(float deltaTime){
 //	if(eating) return;
 	float moveX = deltaTime * velocity * speed;
 	moveX += go->getPos().x;
-	if(moveX < 10 - width / 4 || moveX > 128 - (width * 3) / 4) return;
+	if(moveX < 8 - width / 4 || moveX + width - 10 >= 128) return;
 	go->setPos({ moveX, go->getPos().y });
 }
 
