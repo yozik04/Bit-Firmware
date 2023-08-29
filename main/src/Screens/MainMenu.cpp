@@ -175,12 +175,21 @@ void MainMenu::buildUI(){
 	auto onKey = [](lv_event_t* e){
 		auto group = (lv_group_t*) e->user_data;
 		auto key = *((uint32_t*) e->param);
+		auto index = lv_obj_get_index(e->target); // TODO: only applies to odd number of menu items; remove once all games are added
 		if(key == LV_KEY_UP){
-			lv_group_focus_prev(group);
-			lv_group_focus_prev(group);
+			if(index == 0){
+				lv_group_focus_prev(group);
+			}else{
+				lv_group_focus_prev(group);
+				lv_group_focus_prev(group);
+			}
 		}else if(key == LV_KEY_DOWN){
-			lv_group_focus_next(group);
-			lv_group_focus_next(group);
+			if(index == 7 || index == 8){
+				lv_group_focus_next(group);
+			}else{
+				lv_group_focus_next(group);
+				lv_group_focus_next(group);
+			}
 		}
 	};
 
