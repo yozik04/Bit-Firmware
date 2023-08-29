@@ -335,7 +335,6 @@ void CapacitronGame::CapacitronGame::spawnFireball(){
 
 		if(!player->isInvincible()){
 
-
 			hearts->setLives(--lives);
 			if(lives <= 0){
 				player->death();
@@ -356,7 +355,8 @@ void CapacitronGame::CapacitronGame::spawnFireball(){
 }
 
 void CapacitronGame::CapacitronGame::cleanupPads(){
-	const float surface = StartingSurface - ((float) score / MaxDifficultyScore) * (StartingSurface - MinimumSurface);
+	const float surface = std::clamp(StartingSurface - ((float) score / MaxDifficultyScore) * (StartingSurface - MinimumSurface),
+									 MinimumSurface, StartingSurface);
 	while((**padObjs.front().begin()).getPos().y >= 128){
 
 		for(const auto& obj : padObjs.front()){
