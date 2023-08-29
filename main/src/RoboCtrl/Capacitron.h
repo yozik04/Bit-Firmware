@@ -14,15 +14,22 @@ public:
 
 	void leftRightContinuous(uint32_t period); //default
 	void allOn(); //powerup
-	void flashingContinuous(); //damage/death
+	void flashingContinuous(int32_t repeats); //damage/death
 
 protected:
+	void onLoop(uint micros) override;
+
 	void init() override;
 	void deinit() override;
 
 private:
 	DigitalLEDController led1;
 	DigitalLEDController led2;
+
+	bool leftRightAnim = false;
+	uint32_t leftRightTime = 0;
+	uint32_t timer = 0;
+	bool ledIndex = false;
 };
 }
 

@@ -31,7 +31,10 @@ CapacitronGame::CapacitronGame::CapacitronGame(Sprite& canvas) : Game(canvas, "/
 		{ "/potion.gif", {}, true },
 		RES_HEART,
 		RES_GOBLET
-}){}
+}){
+	robot = std::make_shared<RoboCtrl::Capacitron>();
+	setRobot(robot);
+}
 
 void CapacitronGame::CapacitronGame::onLoad(){
 	///Tiles
@@ -90,6 +93,8 @@ void CapacitronGame::CapacitronGame::onLoad(){
 		}
 
 		hearts->setLives(--lives);
+		robot->flashingContinuous(-1);
+
 		if(lives <= 0){
 			player->death();
 			audio.play({ { 400, 300, 200 },
@@ -130,6 +135,9 @@ void CapacitronGame::CapacitronGame::onLoad(){
 	createPad(0.75, false, 0);
 	createPad(0.75, false, 0);
 	createPad(0.75, false, 0);
+
+	robot->leftRightContinuous(1000);
+
 }
 
 void CapacitronGame::CapacitronGame::onLoop(float deltaTime){
@@ -241,6 +249,7 @@ void CapacitronGame::CapacitronGame::powerupSpawned(Powerup powerup){
 				audio.play({ { 80, 800, 80 },
 							 { 0,  0,   80 },
 							 { 80, 800, 80 } });
+				robot->allOn();
 
 				removeObject(obj);
 				powerupObjs.erase(std::remove(powerupObjs.begin(), powerupObjs.end(), obj));
@@ -332,6 +341,8 @@ void CapacitronGame::CapacitronGame::spawnFireball(){
 
 
 			hearts->setLives(--lives);
+			robot->flashingContinuous(-1);
+
 			if(lives <= 0){
 				player->death();
 				audio.play({ { 400, 300, 200 },
