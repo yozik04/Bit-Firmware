@@ -107,7 +107,7 @@ void MainMenu::loop(){
 
 void MainMenu::handleInsert(const GameManager::Event& evt){
 	if(evt.action == GameManager::Event::Unknown){
-		new UnknownRobot(this);
+		new UpdateRobot(this);
 		return;
 	}else if(evt.action != GameManager::Event::Inserted) return;
 
