@@ -15,7 +15,10 @@ BobGame::BobGame::BobGame(Sprite& canvas) : Game(canvas, "/Games/Bob", {
 		{ "/eatBad.gif", {}, false },
 		{ "/win.gif", {}, false },
 		{ "/eat.gif", {}, false }
-}){}
+}){
+	robot = std::make_shared<RoboCtrl::Bob>();
+	setRobot(robot);
+}
 
 void BobGame::BobGame::onLoad(){
 	bg = std::make_shared<GameObject>(
@@ -55,9 +58,6 @@ void BobGame::BobGame::onLoad(){
 	barGO->setPos({ 1, 2 });
 	hungerBar->clear(TFT_TRANSPARENT);
 	Display::drawFile(*hungerBar, getFile("/BarFrame.raw"), 0, 0, 6, 120);
-
-	robot = std::make_shared<RoboCtrl::Bob>();
-	setRobot(robot);
 }
 
 void BobGame::BobGame::onLoop(float deltaTime){
