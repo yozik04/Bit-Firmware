@@ -26,6 +26,8 @@ Flappy::Flappy(Sprite& canvas) : Game(canvas, "/Games/Flappy", {
 		{ BotObstacles[4].path, {}, true },
 		{ BotObstacles[5].path, {}, true } }){
 
+	robot = std::make_shared<RoboCtrl::MrBee>();
+	setRobot(robot);
 }
 
 void Flappy::onLoad(){
@@ -89,6 +91,7 @@ void Flappy::onLoop(float deltaTime){
 			audio.play({ { 600, 900, 50 },
 						 { 0,   0,   50 },
 						 { 600, 900, 50 } });
+			robot->blink();
 //			RGB.blink(Pixel::Green);
 			score++;
 			obstacle.passed = true;
@@ -202,6 +205,8 @@ void Flappy::resetDuck(){
 	velocity.y = 0;
 	state = FlyIn;
 	entry = 0;
+
+	robot->ledOff();
 }
 
 void Flappy::createObstaclePair(){
@@ -267,6 +272,7 @@ void Flappy::die(){
 	if(state != Play) return;
 //	RGB.blinkTwice(Pixel::Red);
 
+	robot->blinkContinuousFast();
 	life--;
 	if(life > 0){
 		audio.play({ { 60,  60, 50 },

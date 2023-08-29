@@ -23,3 +23,11 @@ void RoboCtrl::MrBee::init(){
 void RoboCtrl::MrBee::deinit(){
 	led.end();
 }
+
+void RoboCtrl::MrBee::blinkContinuousFast(){
+	led.blinkContinuous(255, -1, 100, 100);
+}
+
+void RoboCtrl::MrBee::ledOff(){
+	led.clear();
+}

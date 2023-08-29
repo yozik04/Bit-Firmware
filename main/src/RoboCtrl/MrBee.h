@@ -12,6 +12,8 @@ public:
 	MrBee();
 	virtual ~MrBee();
 	void blink();
+	void blinkContinuousFast();
+	void ledOff();
 	void hello() override;
 
 protected:
