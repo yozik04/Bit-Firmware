@@ -8,6 +8,7 @@
 #include "Util/Services.h"
 #include "Services/BacklightBrightness.h"
 #include "Settings/Settings.h"
+#include "Services/ChirpSystem.h"
 
 PauseScreen::PauseScreen(Games current) : evts(6), currentGame(current){
 	buildUI();
@@ -150,10 +151,10 @@ void PauseScreen::buildUI(){
 
 		auto chirp = (ChirpSystem*) Services.get(Service::Audio);
 		chirp->play({
-				Chirp{ .startFreq = 400, .endFreq = 600, .duration = 50 },
-				Chirp{ .startFreq = 0, .endFreq = 0, .duration = 100 },
-				Chirp{ .startFreq = 600, .endFreq = 400, .duration = 50 }
-		});
+							Chirp{ .startFreq = 400, .endFreq = 600, .duration = 50 },
+							Chirp{ .startFreq = 0, .endFreq = 0, .duration = 100 },
+							Chirp{ .startFreq = 600, .endFreq = 400, .duration = 50 }
+					});
 	}, initSet.sound);
 	lv_group_add_obj(inputGroup, *audioSwitch);
 

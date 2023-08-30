@@ -95,8 +95,6 @@ void Snake::onLoop(float deltaTime){
 		}
 	}else if(state == State::DonePause){
 		gameWinCounter += deltaTime;
-		audio.play({ { 0,   0,   50 },
-					 { 200, 700, 75 } });
 		if(gameWinCounter >= donePause){
 
 			exit();
@@ -144,7 +142,7 @@ void Snake::handleInput(const Input::Data& data){
 	inputInterrupt = true;
 	moveBuffer = 0;
 	drawHead(*headSprite);
-	audio.play({ { 200, 600, 75 } });
+	audio.play({ { 100, 100, 75 } });
 
 }
 
@@ -244,10 +242,12 @@ void Snake::moveSnake(glm::vec2 speed){
 void Snake::gameOver(){
 	state = State::GameOver;
 	const uint16_t duration = std::clamp((int) score * 100, 400, 1400);
-	audio.play({ { 100,  80,  100 },
-				 { 0,    0,   250 },
-				 { 1000, 300, duration } });
-	donePause = 0.5;
+	audio.play({ { 100, 80,  100 },
+				 { 0,   0,   250 },
+				 { 700, 300, static_cast<uint16_t>(duration / 4) },
+				 { 600, 200, static_cast<uint16_t>(duration / 4) },
+				 { 500, 100, static_cast<uint16_t>(duration / 2) } });
+	donePause = 1.5;
 }
 
 void Snake::foodEaten(bool initial){

@@ -3,6 +3,13 @@
 #include "GameEngine/Collision/RectCC.h"
 #include "Util/stdafx.h"
 
+const Sound Invaders::Invaders::InvaderDeathSounds[4] = {
+		{ { 200, 600, 100 }, { 600, 80,  300 } },
+		{ { 200, 600, 100 }, { 600, 200, 100 }, { 100, 500, 100 }, { 500, 100, 200 } },
+		{ { 100, 100, 100 }, { 0,   0,   50 },  { 100, 100, 100 }, { 0,   0,   50 }, { 200, 50, 200 } },
+		{ { 400, 200, 100 }, { 0,   0,   50 },  { 250, 50,  100 } }
+};
+
 Invaders::Invaders::Invaders(Sprite& canvas) : Game(canvas, "/Games/Resistron", {
 		{ "/bg.raw", {}, true },
 
@@ -127,12 +134,8 @@ void Invaders::Invaders::onStop(){
 void Invaders::Invaders::shoot(){
 	if(playerBullet) return;
 
+	audio.play({ { 500, 900, 50 } });
 	robot->blink();
-
-	audio.play({ { 100, 500, 50 },
-				 { 0,   0,   50 },
-				 { 200, 400, 100 },
-				 { 400, 200, 50 } });
 
 	playerBullet = std::make_shared<GameObject>(
 			std::make_unique<StaticRC>(getFile("/bullet.raw"), PlayerBulletDim),
@@ -149,8 +152,9 @@ void Invaders::Invaders::shoot(){
 
 	for(const auto& inv : invaders){
 		const uint8_t hp = inv.startingHP;
+		const uint8_t type = inv.type;
 		std::weak_ptr weakPtr(inv.obj);
-		collision.addPair(*playerBullet, *inv.obj, [this, weakPtr, hp](){
+		collision.addPair(*playerBullet, *inv.obj, [this, weakPtr, hp, type](){
 			removeObject(playerBullet);
 			playerBullet.reset();
 
@@ -166,9 +170,10 @@ void Invaders::Invaders::shoot(){
 				score += hp;
 				scoreDisplay->setScore(score);
 
-				audio.play({ { 200, 600, 100 },
-							 { 600, 80,  300 } });
+				audio.play(InvaderDeathSounds[type]);
 
+			}else{
+				audio.play({ { 80, 80, 80 } });
 			}
 		});
 	}
@@ -188,8 +193,8 @@ bool Invaders::Invaders::enemyShoot(){
 	if(enemyBullet) return false;
 	if(invaders.empty()) return false;
 
-	audio.play({ { 100, 300, 100 },
-				 { 300, 80,  200 } });
+	audio.play({ { 600, 800, 50 },
+				 { 800, 600, 50 } });
 
 	const auto& inv = invaders[rand() % invaders.size()];
 	auto invObj = inv.obj;
@@ -285,7 +290,7 @@ Invaders::Invaders::Invader& Invaders::Invaders::spawnInvader(uint8_t type, uint
 	std::weak_ptr<GameObject> weakPtr(invaderObj);
 	if(playerBullet){
 		const uint8_t hp = hitpoints;
-		collision.addPair(*playerBullet, *invaderObj, [this, weakPtr, hp](){
+		collision.addPair(*playerBullet, *invaderObj, [this, weakPtr, hp, type](){
 			removeObject(playerBullet);
 			playerBullet.reset();
 			auto it = std::find_if(invaders.begin(), invaders.end(), [weakPtr](const Invader& inv){
@@ -299,9 +304,9 @@ Invaders::Invaders::Invader& Invaders::Invaders::spawnInvader(uint8_t type, uint
 				invaders.shrink_to_fit();
 				score += hp;
 				scoreDisplay->setScore(score);
-				audio.play({ { 200, 600, 100 },
-							 { 600, 80,  300 } });
-
+				audio.play(InvaderDeathSounds[type]);
+			}else{
+				audio.play({ { 80, 80, 80 } });
 			}
 		});
 	}
