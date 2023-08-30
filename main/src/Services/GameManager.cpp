@@ -75,5 +75,6 @@ void GameManager::loop(){
 }
 
 void GameManager::sendEvent(GameManager::Event evt){
+	MainMenu::gameEvent(evt);
 	Events::post(Facility::Games, evt);
 }

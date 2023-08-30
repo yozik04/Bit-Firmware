@@ -35,6 +35,9 @@ static constexpr Entry MenuEntries[] = {
 		// { .icon = "Robby", .rob = Robby, .game = Games::Robby }
 };
 
+std::optional<GameManager::Event> MainMenu::gmEvt = std::nullopt;
+std::atomic<bool> MainMenu::running = false;
+
 MainMenu::MainMenu() : events(12){
 	buildUI();
 }
@@ -77,6 +80,13 @@ void MainMenu::onScrollEnd(lv_event_t* evt){
 	lv_obj_remove_event_cb(*menu, onScrollEnd);
 
 	lv_indev_set_group(InputLVGL::getInstance()->getIndev(), menu->inputGroup);
+
+	running = true;
+	if(gmEvt.has_value()){
+		menu->handleInsert(*gmEvt);
+		gmEvt.reset();
+	}
+
 	menu->loopBlocked = false;
 	menu->events.reset();
 }
@@ -85,6 +95,9 @@ void MainMenu::onStop(){
 	bg->stop();
 	Events::unlisten(&events);
 	lv_obj_remove_event_cb(*this, onScrollEnd);
+
+	gmEvt.reset();
+	running = false;
 }
 
 void MainMenu::loop(){
@@ -135,6 +148,15 @@ void MainMenu::handleInput(const Input::Data& evt){
 	if(evt.btn == Input::Menu && evt.action == Input::Data::Release){
 		auto ui = (UIThread*) Services.get(Service::UI);
 		ui->startScreen([](){ return std::make_unique<SettingsScreen>(); });
+	}
+}
+
+void MainMenu::gameEvent(GameManager::Event evt){
+	if(running) return;
+	if(evt.action == GameManager::Event::Remove){
+		gmEvt.reset();
+	}else{
+		gmEvt = { evt };
 	}
 }
 
