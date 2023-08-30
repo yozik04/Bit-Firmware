@@ -86,6 +86,7 @@ private:
 	};
 
 	std::atomic<bool> playing = false;
+	std::atomic_bool abortFlag = false;
 };
 
 #endif //BIT_FIRMWARE_CHIRPSYSTEM_H

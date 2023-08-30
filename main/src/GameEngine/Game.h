@@ -15,6 +15,7 @@
 #include "Devices/Input.h"
 #include "Services/ChirpSystem.h"
 #include <atomic>
+#include "RoboCtrl/RobotDriver.h"
 
 class Game {
 
@@ -54,6 +55,8 @@ protected:
 
 	void exit();
 
+	void setRobot(std::shared_ptr<RoboCtrl::RobotDriver> robot);
+
 private:
 	Sprite& base;
 	ResourceManager resMan;
@@ -70,6 +73,8 @@ private:
 	std::set<GameObjPtr> objects;
 
 	void loadFunc();
+
+	std::shared_ptr<RoboCtrl::RobotDriver> robot;
 };
 
 

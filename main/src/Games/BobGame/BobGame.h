@@ -4,6 +4,7 @@
 #include "GameEngine/Game.h"
 #include "Player.h"
 #include "../Common/Hearts.h"
+#include "RoboCtrl/Bob.h"
 
 namespace BobGame {
 
@@ -69,6 +70,7 @@ private:
 	std::vector<Template> foods;
 	std::vector<Template> bombs;
 
+	std::shared_ptr<RoboCtrl::Bob> robot;
 };
 
 }

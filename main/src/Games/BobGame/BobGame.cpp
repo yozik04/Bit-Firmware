@@ -15,7 +15,10 @@ BobGame::BobGame::BobGame(Sprite& canvas) : Game(canvas, "/Games/Bob", {
 		{ "/eatBad.gif", {}, false },
 		{ "/win.gif", {}, false },
 		{ "/eat.gif", {}, false }
-}){}
+}){
+	robot = std::make_shared<RoboCtrl::Bob>();
+	setRobot(robot);
+}
 
 void BobGame::BobGame::onLoad(){
 	bg = std::make_shared<GameObject>(
@@ -148,17 +151,19 @@ void BobGame::BobGame::collisionHandler(Item item){
 		hungerMeter = std::min(hungerMeter + item.value, hungerMeterMax);
 		drawBar();
 		if(hungerMeter >= hungerMeterMax){
-			Sound s = { { 400, 600, 200 },
-						{ 0, 0, 50 },
-						{ 400, 800, 200 },
-						{ 0, 0, 50 },
+			robot->blinkContinuousFast();
+			Sound s = { { 400, 600,  200 },
+						{ 0,   0,    50 },
+						{ 400, 800,  200 },
+						{ 0,   0,    50 },
 						{ 400, 1000, 200 },
-						{ 0, 0, 150 },
-						{ 800, 1000, 50 }};
+						{ 0,   0,    150 },
+						{ 800, 1000, 50 } };
 			audio.play(s);
 			player->filled(this);
 			state = Win;
 		}else{
+			robot->blink();
 			audio.play({ { 250, 200, 50 },
 						 { 400, 700, 50 } });
 		}
@@ -169,10 +174,12 @@ void BobGame::BobGame::collisionHandler(Item item){
 			audio.play({ { 80,  300, 50 },
 						 { 0,   0,   50 },
 						 { 200, 50,  100 } });
+			robot->blinkTwice();
 		}
 		hearts->setLives(lives);
 	}
 	if(lives <= 0){
+		robot->blinkContinuousSlow();
 		player->killed(this);
 		audio.play({ { 300, 400, 100 },
 					 { 400, 300, 100 },

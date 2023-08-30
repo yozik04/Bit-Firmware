@@ -6,7 +6,7 @@
 
 static const char* TAG = "ChirpSystem";
 
-ChirpSystem::ChirpSystem(PWM& pwm) : Threaded("ChirpSystem", 3072, configMAX_PRIORITIES-1, 1), pwm(pwm), queue(xQueueCreate(QueueLength, sizeof(QueueItem))),
+ChirpSystem::ChirpSystem(PWM& pwm) : Threaded("ChirpSystem", 3072, configMAX_PRIORITIES - 1, 1), pwm(pwm), queue(xQueueCreate(QueueLength, sizeof(QueueItem))),
 									 timerSem(xSemaphoreCreateBinary()), timer(MinimumLength * 1000, isr, timerSem){
 
 	pwm.detach();
@@ -16,10 +16,20 @@ ChirpSystem::ChirpSystem(PWM& pwm) : Threaded("ChirpSystem", 3072, configMAX_PRI
 
 ChirpSystem::~ChirpSystem(){
 	stop();
-	Threaded::stop();
+	Threaded::stop(0);
+	abortFlag = true;
+	xSemaphoreGive(timerSem);
+	QueueItem item = { QueueItem::Type::Tone, { .tone = { 0, 1 } } };
+	xQueueSend(queue, &item, portMAX_DELAY);
+
+	while(running()){
+		vTaskDelay(1);
+	}
+
 	vSemaphoreDelete(timerSem);
 	vQueueDelete(queue);
 	detach();
+
 }
 
 void ChirpSystem::play(std::initializer_list<Chirp> sound){
@@ -164,6 +174,9 @@ void IRAM_ATTR ChirpSystem::isr(void* arg){
 
 void ChirpSystem::loop(){
 	while(!xSemaphoreTake(timerSem, portMAX_DELAY));
+
+	if(abortFlag) return;
+
 	timer.stop();
 
 	QueueItem item{};

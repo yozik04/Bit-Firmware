@@ -7,6 +7,7 @@
 #include "../Common/Hearts.h"
 #include "GameEngine/Rendering/TextRC.h"
 #include "TileManager.h"
+#include "RoboCtrl/Marv.h"
 
 namespace MarvGame {
 class MarvGame : public Game {
@@ -69,6 +70,8 @@ private:
 	std::vector<GameObjPtr> movingObjects;
 	std::vector<GameObjPtr> movingTiles;
 
+	std::shared_ptr<RoboCtrl::Marv> robot;
+	static constexpr uint32_t StartingLightsSpeed = 500;
 };
 }
 
