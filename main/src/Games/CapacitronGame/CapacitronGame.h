@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Games/Common/Hearts.h"
 #include "Games/Common/Score.h"
+#include "RoboCtrl/Capacitron.h"
 
 namespace CapacitronGame {
 
@@ -74,6 +75,8 @@ private:
 	void powerupSpawned(Powerup powerup);
 	void spawnFireball();
 	void cleanupPads();
+
+	std::shared_ptr<RoboCtrl::Capacitron> robot;
 };
 
 }

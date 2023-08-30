@@ -6,6 +6,7 @@
 #include "Indicator.h"
 #include "ProgressBar.h"
 #include "Bar.h"
+#include "RoboCtrl/Hertz.h"
 
 class HertzGame : public Game {
 public:
@@ -24,6 +25,8 @@ protected:
 
 private:
 	void addPoints(int difference);
+
+	std::shared_ptr<RoboCtrl::Hertz> robo;
 
 	std::unique_ptr<Indicator> indicator;
 	std::unique_ptr<ProgressBar> progressBar;

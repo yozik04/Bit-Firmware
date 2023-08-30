@@ -28,7 +28,10 @@ MarvGame::MarvGame::MarvGame(Sprite& canvas) : Game(canvas, "/Games/Marv", {
 		{ "/win.gif", {}, false },
 		{ "/walk.gif", {}, true },
 		RES_HEART
-}){}
+}){
+	robot = std::make_shared<RoboCtrl::Marv>();
+	setRobot(robot);
+}
 
 void MarvGame::MarvGame::onLoad(){
 	setupObstacles();
@@ -110,6 +113,8 @@ void MarvGame::MarvGame::onLoad(){
 	hearts = std::make_unique<Hearts>(getFile(FILE_HEART));
 	hearts->getGO()->setPos({ 2, 2 });
 	addObject(hearts->getGO());
+
+	robot->setSpeed(StartingLightsSpeed);
 }
 
 void MarvGame::MarvGame::onLoop(float deltaTime){
@@ -278,7 +283,10 @@ void MarvGame::MarvGame::scoreUp(){
 				 { 0, 0, 50 },
 				 { 500, 900, 75 } });
 //	RGB.blink(Pixel::Green);
+
 	score++;
+	robot->setSpeed((float)StartingLightsSpeed * (1.0 - (float)score / (float)scoreMax));
+
 	std::string scoreText = "Score:" + std::to_string(score) + "/" + std::to_string(scoreMax);
 	scoreTextRC->setText(scoreText);
 }

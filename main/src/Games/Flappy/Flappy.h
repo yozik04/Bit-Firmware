@@ -6,6 +6,7 @@
 #include <deque>
 #include "Games/Common/Hearts.h"
 #include "Games/Common/Score.h"
+#include "RoboCtrl/MrBee.h"
 
 class Flappy : public Game {
 public:
@@ -81,6 +82,8 @@ private:
 			{ "/down5.raw", { 36, 51 }, { { 0,  50 }, { 0, 20 }, { 11, 0 }, { 29, 2 }, { 35, 41 }, { 35, 50 } } },
 			{ "/down6.raw", { 19, 80 }, { { 9,  79 }, { 0, 22 }, { 0,  0 }, { 18, 0 }, { 18, 22 } } }
 	};
+
+	std::shared_ptr<RoboCtrl::MrBee> robot;
 };
 
 

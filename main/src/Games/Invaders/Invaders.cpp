@@ -25,7 +25,8 @@ Invaders::Invaders::Invaders(Sprite& canvas) : Game(canvas, "/Games/Resistron", 
 		RES_HEART,
 		RES_GOBLET
 }){
-
+	robot = std::make_shared<RoboCtrl::Resistron>();
+	setRobot(robot);
 }
 
 void Invaders::Invaders::onLoad(){
@@ -134,7 +135,7 @@ void Invaders::Invaders::shoot(){
 	if(playerBullet) return;
 
 	audio.play({ { 500, 900, 50 } });
-//	audio.play({ { 500, 1100, 100 } });
+	robot->blink();
 
 	playerBullet = std::make_shared<GameObject>(
 			std::make_unique<StaticRC>(getFile("/bullet.raw"), PlayerBulletDim),

@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Games/Common/Hearts.h"
 #include "Games/Common/Score.h"
+#include "RoboCtrl/Resistron.h"
 
 namespace Invaders {
 
@@ -87,6 +88,8 @@ private:
 	void moveInvaders(float delta); //move left to the edge, then down, then right to the edge, then down etc.
 
 	static const Sound InvaderDeathSounds[4];
+
+	std::shared_ptr<RoboCtrl::Resistron> robot;
 };
 
 }

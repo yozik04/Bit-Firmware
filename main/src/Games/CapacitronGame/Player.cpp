@@ -140,6 +140,7 @@ void CapacitronGame::Player::updateState(float delta){
 				invincibilityTime = 0;
 				state = State::Jumping;
 				anim->setVisible(true);
+				gamePtr->robot->leftRightContinuous(1000);
 			}
 			break;
 		case State::Death:
@@ -156,6 +157,7 @@ void CapacitronGame::Player::updateState(float delta){
 			if(invincibilityTime >= PotionDuration){
 				invincibilityTime = 0;
 				state = State::Jumping;
+				gamePtr->robot->leftRightContinuous(1000);
 				anim->setAnim(jumpFile);
 				anim->start();
 				anim->stop();

@@ -47,14 +47,10 @@ public:
 	 */
 	void setPersistentAttach(bool persistent);
 
-	void setMute(bool mute);
-	bool isMuted() const;
-
 	bool isPlaying();
 
 private:
 	PWM& pwm;
-	bool mute = false;
 
 	void loop() override;
 	void processClearTone(uint16_t numToClear);
@@ -90,6 +86,7 @@ private:
 	};
 
 	std::atomic<bool> playing = false;
+	std::atomic_bool abortFlag = false;
 };
 
 #endif //BIT_FIRMWARE_CHIRPSYSTEM_H
