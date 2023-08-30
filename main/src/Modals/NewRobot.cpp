@@ -1,6 +1,9 @@
 #include "NewRobot.h"
 #include "LV_Interface/LVScreen.h"
+#include "Util/Services.h"
 #include "Services/GameManager.h"
+#include "Services/ChirpSystem.h"
+#include "Util/Notes.h"
 
 NewRobot::NewRobot(LVScreen* parent, Robot rob, bool isNew) : LVModal(parent), rob(rob), isNew(isNew){
 	lv_obj_set_layout(*this, LV_LAYOUT_FLEX);
@@ -21,6 +24,14 @@ NewRobot::NewRobot(LVScreen* parent, Robot rob, bool isNew) : LVModal(parent), r
 
 	lv_group_add_obj(inputGroup, *this);
 	lv_group_focus_obj(*this);
+
+	auto audio = (ChirpSystem*) Services.get(Service::Audio);
+	audio->play({
+			Chirp{ NOTE_C3, NOTE_C4, 100 },
+			Chirp{ NOTE_C4, NOTE_C4, 50 },
+			Chirp{ 0, 0, 50 },
+			Chirp{ NOTE_C5, NOTE_C5, 100 }
+	});
 }
 
 void NewRobot::click(){
@@ -28,6 +39,15 @@ void NewRobot::click(){
 		delete this;
 		return;
 	}
+
+	auto audio = (ChirpSystem*) Services.get(Service::Audio);
+	audio->play({
+			Chirp{ NOTE_G4, NOTE_G4, 100 },
+			Chirp{ 0, 0, 50 },
+			Chirp{ NOTE_DS5, NOTE_DS5, 100 },
+			Chirp{ 0, 0, 50 },
+			Chirp{ NOTE_G5, NOTE_G5, 100 }
+	});
 
 	stage++;
 	lv_obj_clean(*this);

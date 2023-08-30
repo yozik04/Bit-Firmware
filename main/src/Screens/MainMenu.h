@@ -10,11 +10,14 @@
 #include "Services/GameManager.h"
 #include "Devices/Input.h"
 #include "BatteryElement.h"
+#include <optional>
 
 class MainMenu : public LVScreen {
 public:
 	MainMenu();
 	virtual ~MainMenu();
+
+	static void gameEvent(GameManager::Event evt);
 
 private:
 	void buildUI();
@@ -42,6 +45,9 @@ private:
 	void handleInput(const Input::Data& evt);
 
 	void launch(Games game);
+
+	static std::optional<GameManager::Event> gmEvt;
+	static std::atomic<bool> running;
 
 };
 

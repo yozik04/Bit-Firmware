@@ -55,7 +55,7 @@ public:
 	GameManager();
 
 	struct Event {
-		enum { Inserted, Unknown } action;
+		enum { Inserted, Unknown, Remove } action;
 		Robot rob;
 		bool isNew;
 	};
@@ -71,6 +71,8 @@ private:
 
 	EventQueue events;
 	void loop() override;
+
+	void sendEvent(Event evt);
 
 };
 
