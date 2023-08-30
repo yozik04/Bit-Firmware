@@ -1,6 +1,6 @@
 #include "Hertz.h"
 
-RoboCtrl::Hertz::Hertz() : RobotDriver(Robot::Hertz), pwm(CTRL_1, LEDC_CHANNEL_2), chirpSystem(pwm), led(CTRL_2){
+RoboCtrl::Hertz::Hertz() : RobotDriver(Robot::Hertz), pwm(CTRL_1, LEDC_CHANNEL_2), chirpSystem(pwm), led(CTRL_2, true){
 }
 
 RoboCtrl::Hertz::~Hertz(){
