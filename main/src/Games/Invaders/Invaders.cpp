@@ -164,6 +164,8 @@ void Invaders::Invaders::shoot(){
 				audio.play({ { 200, 600, 100 },
 							 { 600, 80,  300 } });
 
+			}else{
+				audio.play({ { 80, 80, 80 } });
 			}
 		});
 	}
@@ -183,8 +185,8 @@ bool Invaders::Invaders::enemyShoot(){
 	if(enemyBullet) return false;
 	if(invaders.empty()) return false;
 
-	audio.play({ { 600,  800, 50 },
-				 { 800, 600,  50 } });
+	audio.play({ { 600, 800, 50 },
+				 { 800, 600, 50 } });
 
 	const auto& inv = invaders[rand() % invaders.size()];
 	auto invObj = inv.obj;
