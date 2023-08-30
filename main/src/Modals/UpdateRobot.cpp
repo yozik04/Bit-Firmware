@@ -1,5 +1,8 @@
 #include <cstdio>
 #include "UpdateRobot.h"
+#include "Services/ChirpSystem.h"
+#include "Util/Notes.h"
+#include "Util/Services.h"
 
 UpdateRobot::UpdateRobot(LVScreen* parent) : LVModal(parent){
 	buildUI();
@@ -16,6 +19,15 @@ UpdateRobot::UpdateRobot(LVScreen* parent) : LVModal(parent){
 
 	lv_group_add_obj(inputGroup, *this);
 	lv_group_focus_obj(*this);
+
+	auto audio = (ChirpSystem*) Services.get(Service::Audio);
+	audio->play({
+			Chirp{ NOTE_G4, NOTE_G4, 100 },
+			Chirp{ 0, 0, 50 },
+			Chirp{ NOTE_DS5, NOTE_DS5, 100 },
+			Chirp{ 0, 0, 50 },
+			Chirp{ NOTE_G5, NOTE_G5, 100 }
+	});
 }
 
 void UpdateRobot::buildUI(){
