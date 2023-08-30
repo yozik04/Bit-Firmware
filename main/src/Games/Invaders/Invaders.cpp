@@ -3,6 +3,13 @@
 #include "GameEngine/Collision/RectCC.h"
 #include "Util/stdafx.h"
 
+const Sound Invaders::Invaders::InvaderDeathSounds[4] = {
+		{ { 200, 600, 100 }, { 600, 80,  300 } },
+		{ { 200, 600, 100 }, { 600, 200, 100 }, { 100, 500, 100 }, { 500, 100, 200 } },
+		{ { 100, 100, 100 }, { 0,   0,   50 },  { 100, 100, 100 }, { 0,   0,   50 }, { 200, 50, 200 } },
+		{ { 400, 200, 100 }, { 0,   0,   50 },  { 250, 50,  100 } }
+};
+
 Invaders::Invaders::Invaders(Sprite& canvas) : Game(canvas, "/Games/Resistron", {
 		{ "/bg.raw", {}, true },
 
@@ -144,8 +151,9 @@ void Invaders::Invaders::shoot(){
 
 	for(const auto& inv : invaders){
 		const uint8_t hp = inv.startingHP;
+		const uint8_t type = inv.type;
 		std::weak_ptr weakPtr(inv.obj);
-		collision.addPair(*playerBullet, *inv.obj, [this, weakPtr, hp](){
+		collision.addPair(*playerBullet, *inv.obj, [this, weakPtr, hp, type](){
 			removeObject(playerBullet);
 			playerBullet.reset();
 
@@ -161,8 +169,7 @@ void Invaders::Invaders::shoot(){
 				score += hp;
 				scoreDisplay->setScore(score);
 
-				audio.play({ { 200, 600, 100 },
-							 { 600, 80,  300 } });
+				audio.play(InvaderDeathSounds[type]);
 
 			}else{
 				audio.play({ { 80, 80, 80 } });
@@ -282,7 +289,7 @@ Invaders::Invaders::Invader& Invaders::Invaders::spawnInvader(uint8_t type, uint
 	std::weak_ptr<GameObject> weakPtr(invaderObj);
 	if(playerBullet){
 		const uint8_t hp = hitpoints;
-		collision.addPair(*playerBullet, *invaderObj, [this, weakPtr, hp](){
+		collision.addPair(*playerBullet, *invaderObj, [this, weakPtr, hp, type](){
 			removeObject(playerBullet);
 			playerBullet.reset();
 			auto it = std::find_if(invaders.begin(), invaders.end(), [weakPtr](const Invader& inv){
@@ -296,9 +303,9 @@ Invaders::Invaders::Invader& Invaders::Invaders::spawnInvader(uint8_t type, uint
 				invaders.shrink_to_fit();
 				score += hp;
 				scoreDisplay->setScore(score);
-				audio.play({ { 200, 600, 100 },
-							 { 600, 80,  300 } });
-
+				audio.play(InvaderDeathSounds[type]);
+			}else{
+				audio.play({ { 80, 80, 80 } });
 			}
 		});
 	}
