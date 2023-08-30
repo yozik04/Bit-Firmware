@@ -21,6 +21,7 @@ LEDController<T>::~LEDController(){
 	while(running()){
 		vTaskDelay(1);
 	}
+	vSemaphoreDelete(timerSem);
 //	sleepLock.release();
 }
 
