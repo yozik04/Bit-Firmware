@@ -11,6 +11,7 @@
 #include "Devices/Input.h"
 #include "BatteryElement.h"
 #include <optional>
+#include "Services/ChirpSystem.h"
 
 class MainMenu : public LVScreen {
 public:
@@ -48,6 +49,8 @@ private:
 
 	static std::optional<GameManager::Event> gmEvt;
 	static std::atomic<bool> running;
+
+	ChirpSystem* audio;
 
 };
 

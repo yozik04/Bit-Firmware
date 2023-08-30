@@ -13,6 +13,7 @@
 #include <Modals/UnknownRobot.h>
 #include <Screens/Settings/SettingsScreen.h>
 #include <unordered_set>
+#include "Util/Notes.h"
 
 struct Entry {
 	const char* icon;
@@ -38,7 +39,7 @@ static constexpr Entry MenuEntries[] = {
 std::optional<GameManager::Event> MainMenu::gmEvt = std::nullopt;
 std::atomic<bool> MainMenu::running = false;
 
-MainMenu::MainMenu() : events(12){
+MainMenu::MainMenu() : events(12), audio((ChirpSystem*) Services.get(Service::Audio)){
 	buildUI();
 }
 
@@ -49,19 +50,27 @@ MainMenu::~MainMenu(){
 void MainMenu::launch(Games game){
 	auto games = (GameManager*) Services.get(Service::Games);
 	if(!games->isUnlocked(game)){
-		auto audio = (ChirpSystem*)Services.get(Service::Audio);
-		audio->play({{300, 300, 50}, {0, 0, 50}, {200, 200, 250}});
+		auto audio = (ChirpSystem*) Services.get(Service::Audio);
+		audio->play({ { 300, 300, 50 },
+					  { 0,   0,   50 },
+					  { 200, 200, 250 } });
 		const auto rob = GameManager::GameRobot.at(game);
 		new LockedGame(this, rob);
 		return;
 	}
+
+	audio->play({ { 100, 100, 80 },
+				  { 0,   0,   80 },
+				  { 300, 300, 80 },
+				  { 0,   0,   80 },
+				  { 500, 500, 80 } });
 
 	auto ui = (UIThread*) Services.get(Service::UI);
 	ui->startGame(game);
 }
 
 void MainMenu::onStarting(){
-	const auto height = lv_obj_get_height(itemCont) + 128 + 2*13;
+	const auto height = lv_obj_get_height(itemCont) + 128 + 2 * 13;
 	lv_obj_scroll_to(*this, 0, 0, LV_ANIM_OFF); // set y to <height> to scroll from top. 0 to scroll from bottom
 
 	loopBlocked = true;
@@ -148,8 +157,19 @@ void MainMenu::handleInsert(const GameManager::Event& evt){
 void MainMenu::handleInput(const Input::Data& evt){
 	if(InputLVGL::getInstance()->getIndev()->group != inputGroup) return;
 	if(evt.btn == Input::Menu && evt.action == Input::Data::Release){
+
+		audio->play({ { 350, 350, 80 },
+					  { 0,   0,   80 },
+					  { 150, 150, 80 },
+					  { 0,   0,   80 },
+					  { 600, 600, 80 } });
+
 		auto ui = (UIThread*) Services.get(Service::UI);
 		ui->startScreen([](){ return std::make_unique<SettingsScreen>(); });
+	}
+
+	if((evt.btn == Input::Left || evt.btn == Input::Right || evt.btn == Input::Up || evt.btn == Input::Down) && evt.action == Input::Data::Press){
+		audio->play({ { 400, 400, 50 } });
 	}
 }
 

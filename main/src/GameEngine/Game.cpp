@@ -4,6 +4,7 @@
 #include "Util/Services.h"
 #include "UIThread.h"
 #include "Screens/MainMenu.h"
+#include "Util/Notes.h"
 
 static bool exited = false; // yolo
 // Exit is going to get called in the game's onLoop, and when exit is called, the Game object
@@ -91,6 +92,11 @@ void Game::loop(uint micros){
 			auto data = (Input::Data*) e.data;
 			if(data->btn == Input::Menu && data->action == Input::Data::Release){
 				stop();
+					audio.play({ { NOTE_E6, NOTE_E6, 100 },
+								  { NOTE_C6, NOTE_C6, 100 },
+								  { NOTE_E6, NOTE_E6, 100 },
+								  { NOTE_C6, NOTE_C6, 100 } });
+
 				auto ui = (UIThread*) Services.get(Service::UI);
 				ui->pauseGame();
 
