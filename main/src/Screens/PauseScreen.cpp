@@ -8,6 +8,8 @@
 #include "Util/Services.h"
 #include "Services/BacklightBrightness.h"
 #include "Settings/Settings.h"
+#include "Services/ChirpSystem.h"
+#include "Util/Notes.h"
 
 PauseScreen::PauseScreen(Games current) : evts(6), currentGame(current){
 	buildUI();
@@ -17,6 +19,11 @@ void PauseScreen::onStart(){
 	bg->start();
 	Events::listen(Facility::Input, &evts);
 	InputLVGL::getInstance()->setVertNav(true);
+	auto audio = (ChirpSystem*) Services.get(Service::Audio);
+	audio->play({ { NOTE_E6, NOTE_E6, 100 },
+				  { NOTE_C6, NOTE_C6, 100 },
+				  { NOTE_E6, NOTE_E6, 100 },
+				  { NOTE_C6, NOTE_C6, 100 } });
 }
 
 void PauseScreen::onStop(){
@@ -146,10 +153,10 @@ void PauseScreen::buildUI(){
 		auto chirp = (ChirpSystem*) Services.get(Service::Audio);
 		chirp->setMute(!value);
 		chirp->play({
-				Chirp{ .startFreq = 400, .endFreq = 600, .duration = 50 },
-				Chirp{ .startFreq = 0, .endFreq = 0, .duration = 100 },
-				Chirp{ .startFreq = 600, .endFreq = 400, .duration = 50 }
-		});
+							Chirp{ .startFreq = 400, .endFreq = 600, .duration = 50 },
+							Chirp{ .startFreq = 0, .endFreq = 0, .duration = 100 },
+							Chirp{ .startFreq = 600, .endFreq = 400, .duration = 50 }
+					});
 	}, initSet.sound);
 	lv_group_add_obj(inputGroup, *audioSwitch);
 
