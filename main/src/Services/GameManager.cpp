@@ -1,6 +1,7 @@
 #include "GameManager.h"
 #include "Settings/Settings.h"
 #include "Util/Services.h"
+#include <Screens/MainMenu.h>
 
 const std::unordered_map<Games, Robot> GameManager::GameRobot = {
 		{ Games::MrBee, Robot::MrBee },
@@ -54,7 +55,7 @@ void GameManager::loop(){
 	if(data->action == Robots::Event::Insert){
 		Robot rob = data->robot;
 		if(rob >= Robot::COUNT){
-			Events::post(Facility::Games, Event { .action = Event::Unknown });
+			sendEvent(Event { .action = Event::Unknown });
 			return;
 		}
 
@@ -65,8 +66,14 @@ void GameManager::loop(){
 			storeState();
 		}
 
-		Events::post(Facility::Games, Event { .action = Event::Inserted, .rob = rob, .isNew = isNew });
+		sendEvent(Event { .action = Event::Inserted, .rob = rob, .isNew = isNew });
+	}else if(data->action == Robots::Event::Remove){
+		sendEvent(Event { .action = Event::Remove });
 	}
 
 	free(evt.data);
+}
+
+void GameManager::sendEvent(GameManager::Event evt){
+	Events::post(Facility::Games, evt);
 }
