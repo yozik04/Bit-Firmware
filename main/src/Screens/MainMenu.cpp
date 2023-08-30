@@ -49,6 +49,8 @@ MainMenu::~MainMenu(){
 void MainMenu::launch(Games game){
 	auto games = (GameManager*) Services.get(Service::Games);
 	if(!games->isUnlocked(game)){
+		auto audio = (ChirpSystem*)Services.get(Service::Audio);
+		audio->play({{300, 300, 50}, {0, 0, 50}, {200, 200, 250}});
 		const auto rob = GameManager::GameRobot.at(game);
 		new LockedGame(this, rob);
 		return;
