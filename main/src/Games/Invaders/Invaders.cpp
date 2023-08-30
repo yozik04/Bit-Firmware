@@ -126,10 +126,8 @@ void Invaders::Invaders::onStop(){
 void Invaders::Invaders::shoot(){
 	if(playerBullet) return;
 
-	audio.play({ { 100, 500, 50 },
-				 { 0,   0,   50 },
-				 { 200, 400, 100 },
-				 { 400, 200, 50 } });
+	audio.play({ { 500, 900, 50 } });
+//	audio.play({ { 500, 1100, 100 } });
 
 	playerBullet = std::make_shared<GameObject>(
 			std::make_unique<StaticRC>(getFile("/bullet.raw"), PlayerBulletDim),
@@ -185,8 +183,8 @@ bool Invaders::Invaders::enemyShoot(){
 	if(enemyBullet) return false;
 	if(invaders.empty()) return false;
 
-	audio.play({ { 100, 300, 100 },
-				 { 300, 80,  200 } });
+	audio.play({ { 600,  800, 50 },
+				 { 800, 600,  50 } });
 
 	const auto& inv = invaders[rand() % invaders.size()];
 	auto invObj = inv.obj;
