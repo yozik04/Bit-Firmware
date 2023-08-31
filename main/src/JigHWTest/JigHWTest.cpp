@@ -27,7 +27,7 @@ JigHWTest::JigHWTest(){
 
 	tests.push_back({ JigHWTest::Robot, "Bob", [](){} });
 	tests.push_back({ JigHWTest::SPIFFSTest, "SPIFFS", [](){} });
-	tests.push_back({ JigHWTest::BatteryCalib, "Batt kalib.", [](){} });
+	tests.push_back({ JigHWTest::BatteryCalib, "Batt kalib", [](){} });
 	tests.push_back({ JigHWTest::BatteryCheck, "Batt provjera", [](){} });
 }
 
@@ -104,7 +104,7 @@ void JigHWTest::start(){
 		bool result = test.test();
 
 		canvas->setTextColor(result ? TFT_GREEN : TFT_RED);
-		canvas->printf("%s\n", result ? "PASSED" : "FAILED");
+		canvas->printf("%s\n", result ? "OK" : "FAIL");
 
 		printf("TEST:endTest:%s\n", result ? "pass" : "fail");
 
@@ -127,9 +127,7 @@ void JigHWTest::start(){
 //------------------------------------------------------
 
 
-	canvas->print("\n\n");
-	canvas->setTextColor(TFT_GREEN);
-	canvas->print("All OK!");
+	canvas->print("\n");
 
 	RobotTest();
 }
@@ -343,35 +341,123 @@ void JigHWTest::RobotTest(){
 	};
 	ledc_channel_config(&ledc_channel);
 
+	const auto buzzDbl = [](){
+		ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, (1 << (10 - 1)) - 1);
+		ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
+		vTaskDelay(BuzzDuration);
+
+		ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, 0);
+		ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
+		vTaskDelay(BuzzDuration);
+
+		ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, (1 << (10 - 1)) - 1);
+		ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
+		vTaskDelay(BuzzDuration);
+
+		ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, 0);
+		ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
+	};
+
+	const auto buzz = [](){
+		ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, (1 << (10 - 1)) - 1);
+		ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
+		vTaskDelay(BuzzDuration);
+
+		ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, 0);
+		ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
+	};
+
+	bool testDone = false;
+	auto frprint = [&testDone](uint16_t color, const char* format, ...)  __attribute__((format(printf, 3, 4))){
+		canvas->fillRect(0, 100, 128, 28, TFT_BLACK);
+		canvas->setTextColor(color);
+		canvas->setCursor(2, 106);
+
+		va_list arg;
+		va_start(arg, format);
+		canvas->vprintf(format, arg);
+		va_end(arg);
+
+		if(testDone){
+			canvas->setTextColor(TFT_GREEN);
+			canvas->setCursor(2, 122);
+			canvas->print("Sve OK! Test Gotov.");
+		}
+	};
+
+	auto print = [](uint16_t color, const char* format, ...)  __attribute__((format(printf, 3, 4))){
+		canvas->setTextColor(color);
+
+		va_list arg;
+		va_start(arg, format);
+		canvas->vprintf(format, arg);
+		va_end(arg);
+	};
+	canvas->setTextColor(TFT_GOLD);
+
+	canvas->print("Sad pritisni sve\ngumbe redom.\n");
+
+	EventQueue evts(12);
+
+	Input input(true);
+	vTaskDelay(200);
+	Events::listen(Facility::Input, &evts);
+
+	std::unordered_set<Input::Button> pressed;
+	std::unordered_set<Input::Button> released;
+
 	for(;;){
-		while(rob.getInserted() != Bob){
-			vTaskDelay(10);
+		Event evt{};
+		if(!evts.get(evt, portMAX_DELAY)) continue;
+
+		auto data = (Input::Data*) evt.data;
+		if(data->action == Input::Data::Press){
+			pressed.insert(data->btn);
+			buzz();
+		}else{
+			released.insert(data->btn);
 		}
 
-		ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, (1 << (10 - 1)) - 1);
-		ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
-		vTaskDelay(BuzzDuration);
+		free(evt.data);
+		if(pressed.size() == 7 && released.size() == 7) break;
+	}
 
-		ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, 0);
-		ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
-		vTaskDelay(BuzzDuration);
+	canvas->print("\nOK, sad makni\npa vrati Boba.\n");
 
-		ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, (1 << (10 - 1)) - 1);
-		ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
-		vTaskDelay(BuzzDuration);
+	Events::unlisten(&evts);
+	evts.reset();
 
-		ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, 0);
-		ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
+	Events::listen(Facility::Robots, &evts);
+	bool bobRem = false;
+	bool bobIns = false;
 
-		while(rob.getInserted() == Bob){
-			vTaskDelay(10);
+	for(;;){
+		Event evt{};
+		if(!evts.get(evt, portMAX_DELAY)) continue;
+
+		auto data = (Robots::Event*) evt.data;
+		if(data->action == Robots::Event::Remove){
+			frprint(TFT_WHITE, "Robot maknut");
+			bobRem = true;
+			if(bobRem && bobIns){
+				testDone = true;
+			}
+			buzz();
+		}else if(data->action == Robots::Event::Insert){
+			if(data->robot == Bob){
+				frprint(TFT_WHITE, "Bob ustekan");
+				bobIns = true;
+				if(bobRem && bobIns){
+					testDone = true;
+				}
+				buzzDbl();
+			}else{
+				bobRem = false;
+				bobIns = false;
+				testDone = false;
+				frprint(TFT_RED, "Greska! Ustekan robot\nkoji nije Bob!");
+			}
 		}
-
-		ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, (1 << (10 - 1)) - 1);
-		ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
-		vTaskDelay(BuzzDuration);
-
-		ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, 0);
-		ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
+		free(evt.data);
 	}
 }
