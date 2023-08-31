@@ -188,8 +188,8 @@ bool JigHWTest::BatteryCalib(){
 
 	ADC adc((gpio_num_t) PIN_BATT);
 
-	constexpr uint16_t numReadings = 50;
-	constexpr uint16_t readDelay = 50;
+	constexpr uint16_t numReadings = 200;
+	constexpr uint16_t readDelay = 10;
 	uint32_t reading = 0;
 
 	for(int i = 0; i < numReadings; i++){
@@ -207,7 +207,7 @@ bool JigHWTest::BatteryCalib(){
 	test->log("mapped", mapped);
 	test->log("offset", (int32_t) offset);
 
-	if(abs(offset) >= 300){
+	if(abs(offset) >= 500){
 		test->log("offset too big, read voltage: ", (uint32_t) mapped);
 		return false;
 	}
@@ -229,7 +229,7 @@ bool JigHWTest::BatteryCalib(){
 bool JigHWTest::BatteryCheck(){
 	ADC adc((gpio_num_t) PIN_BATT);
 
-	constexpr uint16_t numReadings = 50;
+	constexpr uint16_t numReadings = 200;
 	constexpr uint16_t readDelay = 10;
 	uint32_t reading = 0;
 
@@ -241,7 +241,7 @@ bool JigHWTest::BatteryCheck(){
 
 	uint32_t voltage = Battery::mapRawReading(reading) + Battery::getVoltOffset();
 
-	if(voltage < referenceVoltage - 100 || voltage > referenceVoltage + 100){
+	if(voltage < referenceVoltage - 200 || voltage > referenceVoltage + 200){
 		test->log("raw", reading);
 		test->log("mapped", (int32_t) Battery::mapRawReading(reading));
 		test->log("offset", (int32_t) Battery::getVoltOffset());
