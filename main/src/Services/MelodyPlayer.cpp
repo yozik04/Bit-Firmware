@@ -2,7 +2,7 @@
 #include "Util/Services.h"
 #include "Util/stdafx.h"
 
-MelodyPlayer::MelodyPlayer(uint8_t bpm, std::initializer_list<Tone> tones) : Threaded("MelodyPlayer", 2 * 1024, 12, 1), beatDuration((int)(1000.0f * 60.0f / (float) bpm)), tones(tones){
+MelodyPlayer::MelodyPlayer(uint8_t bpm, std::initializer_list<Tone> tones) : Threaded("MelodyPlayer", 2 * 1024, 12, 1), beatDuration((int)(1000.0f * 80.0f / (float) bpm)), tones(tones){
 	audio = (ChirpSystem*) Services.get(Service::Audio);
 	beatDuration /= 5.0f;
 }
