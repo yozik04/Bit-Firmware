@@ -321,6 +321,13 @@ bool JigHWTest::Buttons(){
 	std::unordered_set<Input::Button> released;
 
 	test->instr("Pritisni sve\ngumbe redom.");
+	audio.play({
+		Chirp { 200, 200, 100 },
+		Chirp { 0, 0, 50 },
+		Chirp { 200, 200, 100 },
+		Chirp { 0, 0, 50 },
+		Chirp { 200, 200, 100 }
+	});
 
 	for(;;){
 		Event evt{};
@@ -340,25 +347,41 @@ bool JigHWTest::Buttons(){
 
 	Events::unlisten(&evts);
 
+	vTaskDelay(300);
+	audio.play({
+		   Chirp { 200, 200, 100 },
+		   Chirp { 0, 0, 50 },
+		   Chirp { 200, 200, 100 }
+   });
+	vTaskDelay(500);
+
 	return true;
 }
 
 bool JigHWTest::Robot(){
 	Robots rob;
 	gpio_set_direction((gpio_num_t) CTRL_1, GPIO_MODE_OUTPUT);
-	gpio_set_level((gpio_num_t) CTRL_1, 1);
+	gpio_set_level((gpio_num_t) CTRL_1, 0);
 
 	if(rob.getInserted() == Bob){
 		test->instr("Krivi Bob.\nUzmi iz kutije za\ntestiranje.");
 		test->log("bob", "krivi");
-		gpio_set_level((gpio_num_t) CTRL_1, 0);
 		return false;
 	}else if(!rob.testerBob()){
 		test->instr("Bob nije\numetnut.");
 		test->log("bob", false);
-		gpio_set_level((gpio_num_t) CTRL_1, 0);
 		return false;
 	}
+
+	ThreadedClosure blinker([](){
+		for(int i = 0; i < 2; i++){
+			gpio_set_level((gpio_num_t) CTRL_1, 1);
+			delayMillis(100);
+			gpio_set_level((gpio_num_t) CTRL_1, 0);
+			delayMillis(100);
+		}
+		delayMillis(1000);
+	}, "Blinker", 2048);
 
 	PWM buzzPwm(PIN_BUZZ, LEDC_CHANNEL_0);
 	ChirpSystem audio(buzzPwm);
@@ -376,9 +399,11 @@ bool JigHWTest::Robot(){
 	EventQueue evts(12);
 	Events::listen(Facility::Robots, &evts);
 
-	const auto out = [&evts](){
+	const auto out = [&evts, &blinker](){
 		Events::unlisten(&evts);
+		blinker.stop();
 		gpio_set_level((gpio_num_t) CTRL_1, 0);
+		vTaskDelay(500);
 	};
 
 	auto waitEvt = [&evts](){
@@ -394,6 +419,7 @@ bool JigHWTest::Robot(){
 	};
 
 	test->instr("Makni Boba.\n");
+	blinker.start();
 
 	auto evt = waitEvt();
 	if(evt.action != Robots::Event::Remove){
