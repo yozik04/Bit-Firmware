@@ -269,4 +269,53 @@ const std::unordered_map<Games, std::function<MelodyPlayer*()>> IntroSounds = {
 					Tone { NOTE_FS2, 2 },
 			});
 		} },
+		{ Games::Buttons, [](){
+			return new MelodyPlayer(130, {
+					Tone { NOTE_D4, 1 },
+					Tone { NOTE_E4, 1 },
+					Tone { 0, 1 },
+					Tone { NOTE_G4, 1 },
+					Tone { 0, 1.5 },
+					Tone { NOTE_D4, 0.5 },
+					Tone { NOTE_E4, 1 },
+					Tone { 0, 1 },
+					Tone { NOTE_G4, 1 },
+					Tone { 0, 1 },
+					Tone { NOTE_B3, 1 },
+					Tone { 0, 1 },
+					Tone { NOTE_A3, 1 },
+					Tone { 0, 1 },
+					Tone { NOTE_D4, 1 },
+			});
+		} },
+		{ Games::Artemis, [](){
+			return new MelodyPlayer(130, {
+					Tone { NOTE_E3, 1 },
+					Tone { 0, 1 },
+					Tone { NOTE_A3, 1 },
+					Tone { 0, 1 },
+					Tone { NOTE_B3, 1 },
+					Tone { NOTE_A3, 1 },
+					Tone { NOTE_E4, 2 },
+					Tone { NOTE_G4, 2 },
+					Tone { 0, 2 },
+					Tone { NOTE_B4, 1 },
+					Tone { 0, 1 },
+					Tone { NOTE_A4, 1 },
+					Tone { 0, 1 },
+					Tone { NOTE_E4, 2 },
+			});
+		} },
+		{ Games::Robby, [](){
+			return new MelodyPlayer(130, {
+					Tone { NOTE_E3, 4 },
+					Tone { 0, 2 },
+					Tone { NOTE_A4, 1 },
+					Tone { NOTE_F4, 1 },
+					Tone { NOTE_A3, 4 },
+					Tone { 0, 2 },
+					Tone { NOTE_C4, 1 },
+					Tone { NOTE_E4, 4 },
+			});
+		} },
 };
