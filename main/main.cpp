@@ -62,14 +62,6 @@ bool initSPIFFS(){
 }
 
 void init(){
-	if(JigHWTest::checkJig()){
-		printf("Jig\n");
-		auto test = new JigHWTest();
-		test->start();
-		vTaskDelete(nullptr);
-	}
-
-
 	gpio_config_t cfg = {
 			.pin_bit_mask = (1ULL << I2C_SDA) | (1ULL << I2C_SCL),
 			.mode = GPIO_MODE_INPUT
@@ -85,6 +77,18 @@ void init(){
 
 	auto settings = new Settings();
 	Services.set(Service::Settings, settings);
+
+	if(JigHWTest::checkJig()){
+		printf("Jig\n");
+
+		auto set = settings->get();
+		set.sound = true;
+		settings->set(set);
+
+		auto test = new JigHWTest();
+		test->start();
+		vTaskDelete(nullptr);
+	}
 
 	auto blPwm = new PWM(PIN_BL, LEDC_CHANNEL_1, true);
 	blPwm->detach();
