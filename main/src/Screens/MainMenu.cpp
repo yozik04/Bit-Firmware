@@ -226,7 +226,7 @@ void MainMenu::buildUI(){
 				lv_group_focus_prev(group);
 			}
 		}else if(key == LV_KEY_DOWN){
-			if(itemCount%2 == 1 && (index == 7 || index == 8)){
+			if(itemCount%2 == 1 && (index == itemCount-2 || index == itemCount-1)){
 				lv_group_focus_next(group);
 			}else{
 				lv_group_focus_next(group);
