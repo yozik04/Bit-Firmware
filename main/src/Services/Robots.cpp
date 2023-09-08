@@ -70,3 +70,7 @@ uint8_t Robots::checkAddr(){
 	}
 	return addr;
 }
+
+bool Robots::testerBob(){
+	return checkInserted() && checkAddr() == TesterBobAddr;
+}

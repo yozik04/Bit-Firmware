@@ -18,6 +18,8 @@ public:
 
 	Robot getInserted();
 
+	bool testerBob();
+
 private:
 	static constexpr uint32_t CheckInterval = 500; // [ms]
 
@@ -31,6 +33,8 @@ private:
 
 	bool checkInserted();
 	uint8_t checkAddr();
+
+	static constexpr uint8_t TesterBobAddr = Robot::Bob | 0b00100000;
 
 };
 
