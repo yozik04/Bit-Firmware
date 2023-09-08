@@ -12,6 +12,7 @@
 #include "Games/Invaders/Invaders.h"
 #include "Games/Dance/Dance.h"
 #include "Games/Asteroids/Asteroids.h"
+#include "Games/Artemis/Game.h"
 #include "Services/MelodyPlayer.h"
 #include "Util/Notes.h"
 
@@ -26,7 +27,8 @@ static const std::unordered_map<Games, std::function<std::unique_ptr<Game>(Sprit
 		{ Games::Capacitron, [](Sprite& canvas){ return std::make_unique<CapacitronGame::CapacitronGame>(canvas); } },
 		{ Games::Resistron,  [](Sprite& canvas){ return std::make_unique<Invaders::Invaders>(canvas); } },
 		{ Games::Buttons,  [](Sprite& canvas){ return std::make_unique<Dance>(canvas); } },
-		{ Games::Robby,      [](Sprite& canvas){ return std::make_unique<Asteroids::Asteroids>(canvas); } }
+		{ Games::Robby,      [](Sprite& canvas){ return std::make_unique<Asteroids::Asteroids>(canvas); } },
+		{ Games::Artemis,    [](Sprite& canvas){ return std::make_unique<ArtemisGame::PewPew>(canvas); } }
 };
 
 extern const std::unordered_map<Games, std::function<MelodyPlayer*()>> IntroSounds;
