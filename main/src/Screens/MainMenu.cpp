@@ -132,6 +132,7 @@ void MainMenu::handleInsert(const GameManager::Event& evt){
 	auto rob = evt.rob;
 	auto isNew = evt.isNew;
 
+	// "Coming soon" games
 	std::unordered_set<Robot> comingSoon = { };
 	if(comingSoon.contains(rob)){
 		new UpdateRobot(this);
@@ -213,16 +214,19 @@ void MainMenu::buildUI(){
 	auto onKey = [](lv_event_t* e){
 		auto group = (lv_group_t*) e->user_data;
 		auto key = *((uint32_t*) e->param);
-		auto index = lv_obj_get_index(e->target); // TODO: only applies to odd number of menu items; remove once all games are added
+
+		const auto index = lv_obj_get_index(e->target); // only applies to odd number of menu items
+		const auto itemCount = sizeof(MenuEntries) / sizeof(MenuEntries[0]);
+
 		if(key == LV_KEY_UP){
-			if(index == 0){
+			if(itemCount%2 == 1 && index == 0){
 				lv_group_focus_prev(group);
 			}else{
 				lv_group_focus_prev(group);
 				lv_group_focus_prev(group);
 			}
 		}else if(key == LV_KEY_DOWN){
-			if(index == 7 || index == 8){
+			if(itemCount%2 == 1 && (index == 7 || index == 8)){
 				lv_group_focus_next(group);
 			}else{
 				lv_group_focus_next(group);
