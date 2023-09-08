@@ -9,6 +9,7 @@ enum Robot : uint8_t { MrBee, Resistron, Artemis, Robby, Marv, Capacitron, Bob, 
 class Robots : private SleepyThreaded {
 public:
 	Robots();
+	~Robots() override;
 
 	struct Event {
 		enum { Insert, Remove } action;
