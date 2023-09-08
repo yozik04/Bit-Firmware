@@ -12,6 +12,7 @@
 #include "Devices/Input.h"
 #include "Util/Events.h"
 #include <esp_adc/adc_oneshot.h>
+#include "Services/ChirpSystem.h"
 
 
 JigHWTest* JigHWTest::test = nullptr;
@@ -25,7 +26,8 @@ JigHWTest::JigHWTest(){
 
 	test = this;
 
-	tests.push_back({ JigHWTest::Robot, "Bob", [](){} });
+	tests.push_back({ JigHWTest::Robot, "Konektor", [](){} });
+	tests.push_back({ JigHWTest::Buttons, "Gumbi", [](){} });
 	tests.push_back({ JigHWTest::SPIFFSTest, "SPIFFS", [](){} });
 	tests.push_back({ JigHWTest::BatteryCalib, "Batt kalib", [](){} });
 	tests.push_back({ JigHWTest::BatteryCheck, "Batt provjera", [](){} });
@@ -88,9 +90,7 @@ void JigHWTest::start(){
 	canvas->setTextSize(1);
 	canvas->setCursor(0, 6);
 
-	canvas->print("Clockstar test");
-	canvas->setCursor(canvas->width() / 2, 16);
-	canvas->println();
+	canvas->print("Bit test\n\n");
 
 	bool pass = true;
 	for(const Test& test : tests){
@@ -126,10 +126,16 @@ void JigHWTest::start(){
 
 //------------------------------------------------------
 
+	canvas->setTextColor(TFT_GREEN);
+	canvas->print("\nTEST GOTOV. SVE OK.");
 
-	canvas->print("\n");
+	for(;;){
+		gpio_set_level(led_pin, 1);
+		vTaskDelay(500);
 
-	RobotTest();
+		gpio_set_level(led_pin, 0);
+		vTaskDelay(500);
+	}
 }
 
 void JigHWTest::rgb(){
@@ -173,14 +179,16 @@ void JigHWTest::log(const char* property, const std::string& value){
 	printf("%s:%s:%s\n", currentTest, property, value.c_str());
 }
 
-bool JigHWTest::Robot(){
-	return test->rob.getInserted() == Bob;
+void JigHWTest::instr(const char* msg){
+	canvas->setTextColor(TFT_GOLD);
+	canvas->print(msg);
+	canvas->print(" ");
 }
 
 bool JigHWTest::BatteryCalib(){
 	if(Battery::getVoltOffset() != 0){
 		test->log("calibrated", (int32_t) Battery::getVoltOffset());
-		canvas->print("fused. ");
+		test->instr("fused.");
 		return true;
 	}
 
@@ -297,114 +305,22 @@ uint32_t JigHWTest::calcChecksum(FILE* file){
 	return sum;
 }
 
-void JigHWTest::RobotTest(){
-	/**
-	 * Dodatni test checkInserted i adresa 0 (mr. bee)
-	 * Kad se izvuče jedan buzz, insert 2 buzza
-	 *
-	 * Mr. bee ledica radi isto kao i control ledica kao na clockstaru (blink) u zasebnom threadu
-	 */
-
-
-	TaskHandle_t handle;
-	xTaskCreate([](void*){
-		for(;;){
-
-			gpio_set_level(led_pin, 1);
-			vTaskDelay(500);
-
-			gpio_set_level(led_pin, 0);
-			vTaskDelay(500);
-		}
-	}, "BlinkTask", 4096, nullptr, 1, &handle);
-
-	ledc_timer_config_t ledc_timer = {
-			.speed_mode       = LEDC_LOW_SPEED_MODE,
-			.duty_resolution  = LEDC_TIMER_10_BIT,
-			.timer_num        = LEDC_TIMER_0,
-			.freq_hz          = 200,
-			.clk_cfg          = LEDC_AUTO_CLK,
-			.deconfigure      = false
+bool JigHWTest::Buttons(){
+	PWM buzzPwm(PIN_BUZZ, LEDC_CHANNEL_0);
+	ChirpSystem audio(buzzPwm);
+	const auto buzz = [&audio](){
+		audio.play({ Chirp { 200, 200, 100 } });
 	};
-	ledc_timer_config(&ledc_timer);
-
-	ledc_channel_config_t ledc_channel = {
-			.gpio_num       = PIN_BUZZ,
-			.speed_mode     = LEDC_LOW_SPEED_MODE,
-			.channel        = LEDC_CHANNEL_0,
-			.intr_type      = LEDC_INTR_DISABLE,
-			.timer_sel      = LEDC_TIMER_0,
-
-			.duty           = 0,
-			.hpoint         = 0,
-			.flags = { .output_invert = 1 }
-	};
-	ledc_channel_config(&ledc_channel);
-
-	const auto buzzDbl = [](){
-		ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, (1 << (10 - 1)) - 1);
-		ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
-		vTaskDelay(BuzzDuration);
-
-		ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, 0);
-		ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
-		vTaskDelay(BuzzDuration);
-
-		ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, (1 << (10 - 1)) - 1);
-		ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
-		vTaskDelay(BuzzDuration);
-
-		ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, 0);
-		ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
-	};
-
-	const auto buzz = [](){
-		ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, (1 << (10 - 1)) - 1);
-		ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
-		vTaskDelay(BuzzDuration);
-
-		ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, 0);
-		ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
-	};
-
-	bool testDone = false;
-	auto frprint = [&testDone](uint16_t color, const char* format, ...)  __attribute__((format(printf, 3, 4))){
-		canvas->fillRect(0, 100, 128, 28, TFT_BLACK);
-		canvas->setTextColor(color);
-		canvas->setCursor(2, 106);
-
-		va_list arg;
-		va_start(arg, format);
-		canvas->vprintf(format, arg);
-		va_end(arg);
-
-		if(testDone){
-			canvas->setTextColor(TFT_GREEN);
-			canvas->setCursor(2, 122);
-			canvas->print("Sve OK! Test Gotov.");
-		}
-	};
-
-	auto print = [](uint16_t color, const char* format, ...)  __attribute__((format(printf, 3, 4))){
-		canvas->setTextColor(color);
-
-		va_list arg;
-		va_start(arg, format);
-		canvas->vprintf(format, arg);
-		va_end(arg);
-	};
-	canvas->setTextColor(TFT_GOLD);
-
-	canvas->print("Sad pritisni sve\ngumbe redom.\n");
 
 	EventQueue evts(12);
-
 	Input input(true);
 	vTaskDelay(200);
 	Events::listen(Facility::Input, &evts);
 
 	std::unordered_set<Input::Button> pressed;
 	std::unordered_set<Input::Button> released;
+
+	test->instr("Pritisni sve\ngumbe redom.");
 
 	for(;;){
 		Event evt{};
@@ -422,42 +338,108 @@ void JigHWTest::RobotTest(){
 		if(pressed.size() == 7 && released.size() == 7) break;
 	}
 
-	canvas->print("\nOK, sad makni\npa vrati Boba.\n");
-
 	Events::unlisten(&evts);
-	evts.reset();
 
-	Events::listen(Facility::Robots, &evts);
-	bool bobRem = false;
-	bool bobIns = false;
+	return true;
+}
 
-	for(;;){
-		Event evt{};
-		if(!evts.get(evt, portMAX_DELAY)) continue;
+bool JigHWTest::Robot(){
+	Robots rob;
+	gpio_set_direction((gpio_num_t) CTRL_1, GPIO_MODE_OUTPUT);
+	gpio_set_level((gpio_num_t) CTRL_1, 1);
 
-		auto data = (Robots::Event*) evt.data;
-		if(data->action == Robots::Event::Remove){
-			bobRem = true;
-			if(bobRem && bobIns){
-				testDone = true;
-			}
-			frprint(TFT_WHITE, "Robot maknut");
-			buzz();
-		}else if(data->action == Robots::Event::Insert){
-			if(data->robot == Bob){
-				bobIns = true;
-				if(bobRem && bobIns){
-					testDone = true;
-				}
-				frprint(TFT_WHITE, "Bob ustekan");
-				buzzDbl();
-			}else{
-				bobRem = false;
-				bobIns = false;
-				testDone = false;
-				frprint(TFT_RED, "Greska! Ustekan robot\nkoji nije Bob!");
-			}
-		}
-		free(evt.data);
+	if(rob.getInserted() == Bob){
+		test->instr("Krivi Bob.\nUzmi iz kutije za\ntestiranje.");
+		test->log("bob", "krivi");
+		gpio_set_level((gpio_num_t) CTRL_1, 0);
+		return false;
+	}else if(!rob.testerBob()){
+		test->instr("Bob nije\numetnut.");
+		test->log("bob", false);
+		gpio_set_level((gpio_num_t) CTRL_1, 0);
+		return false;
 	}
+
+	PWM buzzPwm(PIN_BUZZ, LEDC_CHANNEL_0);
+	ChirpSystem audio(buzzPwm);
+	const auto buzz = [&audio](){
+		audio.play({ Chirp { 200, 200, 100 } });
+	};
+	const auto buzzDbl = [&audio](){
+		audio.play({
+			Chirp { 200, 200, 100 },
+			Chirp { 0, 0, 100 },
+			Chirp { 200, 200, 100 }
+		});
+	};
+
+	EventQueue evts(12);
+	Events::listen(Facility::Robots, &evts);
+
+	const auto out = [&evts](){
+		Events::unlisten(&evts);
+		gpio_set_level((gpio_num_t) CTRL_1, 0);
+	};
+
+	auto waitEvt = [&evts](){
+		Robots::Event rEvt;
+		for(;;){
+			Event evt{};
+			if(!evts.get(evt, portMAX_DELAY)) continue;
+			rEvt = *((Robots::Event*) evt.data);
+			free(evt.data);
+			break;
+		}
+		return rEvt;
+	};
+
+	test->instr("Makni Boba.\n");
+
+	auto evt = waitEvt();
+	if(evt.action != Robots::Event::Remove){
+		test->log("rem", false);
+		test->instr("Nezz.");
+		out();
+		return false;
+	}
+	buzz();
+
+	test->instr("Sad ga vrati.");
+	evt = waitEvt();
+
+	if(evt.action != Robots::Event::Insert){
+		test->log("ins", false);
+		test->instr("Nezz.");
+		out();
+		return false;
+	}
+
+	if(evt.robot == COUNT){
+		if(rob.testerBob()){
+			buzzDbl();
+			vTaskDelay(500);
+
+			out();
+			return true;
+		}else{
+			test->instr("Los konektor");
+			test->log("err", "konektor");
+			out();
+			return false;
+		}
+	}else if(evt.robot == Bob){
+		test->instr("Krivi\nBob.  Uzmi iz kutije\nza testiranje.");
+		test->log("err", "bob");
+		out();
+		return false;
+	}else{
+		test->instr("Krivi robot.");
+		test->log("err", "robot");
+		Events::unlisten(&evts);
+		out();
+		return false;
+	}
+
+	out();
+	return false;
 }

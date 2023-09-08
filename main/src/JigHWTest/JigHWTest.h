@@ -30,8 +30,6 @@ private:
 	std::vector<Test> tests;
 	const char* currentTest;
 
-	Robots rob;
-
 	void log(const char* property, const char* value);
 	void log(const char* property, float value);
 	void log(const char* property, double value);
@@ -40,15 +38,17 @@ private:
 	void log(const char* property, int32_t value);
 	void log(const char* property, const std::string& value);
 
+	void instr(const char* msg);
+
 	static bool Robot();
+	static bool SPIFFSTest();
 	static bool BatteryCalib();
 	static bool BatteryCheck();
-	static bool SPIFFSTest();
+	static bool Buttons();
+
 	static uint32_t calcChecksum(FILE* file);
 
 	static constexpr gpio_num_t led_pin = (gpio_num_t) CTRL_1;
-	static constexpr uint32_t BuzzDuration = 100;
-	void RobotTest();
 
 	void rgb();
 
