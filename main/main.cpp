@@ -27,6 +27,7 @@
 #include "Services/XPSystem.h"
 #include "Services/AchievementSystem.h"
 #include "Services/HighScoreManager.h"
+#include "Filepaths.hpp"
 
 BacklightBrightness* bl;
 
@@ -112,7 +113,7 @@ void init(){
 	auto disp = new Display();
 	Services.set(Service::Display, disp);
 
-	disp->getLGFX().drawBmpFile("/spiffs/Splash.bmp", 36, 11);
+	disp->getLGFX().drawBmpFile(Filepath::Splash, 36, 11);
 	bl->fadeIn();
 	auto splashStart = millis();
 
