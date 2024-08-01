@@ -15,6 +15,7 @@
 #include "Games/Artemis/Game.h"
 #include "Games/Harald/Harald.h"
 #include "Games/Planck/Planck.h"
+#include "Games/WackyStacky/WackyStacky.h"
 #include "Services/MelodyPlayer.h"
 #include "Util/Notes.h"
 
@@ -32,7 +33,8 @@ static const std::unordered_map<Games, std::function<std::unique_ptr<Game>(Sprit
 		{ Games::Robby,      [](Sprite& canvas){ return std::make_unique<Asteroids::Asteroids>(canvas); } },
 		{ Games::Artemis,    [](Sprite& canvas){ return std::make_unique<ArtemisGame::PewPew>(canvas); } },
 		{ Games::Harald,    [](Sprite& canvas){ return std::make_unique<Harald::Harald>(canvas); } },
-		{ Games::Planck,    [](Sprite& canvas){ return std::make_unique<Planck::Planck>(canvas); } }
+		{ Games::Planck,    [](Sprite& canvas){ return std::make_unique<Planck::Planck>(canvas); } },
+		{ Games::WackyStacky,   [](Sprite& canvas){ return std::make_unique<WackyStacky::WackyStacky>(canvas); } }
 };
 
 extern const std::unordered_map<Games, std::function<MelodyPlayer*()>> IntroSounds;
