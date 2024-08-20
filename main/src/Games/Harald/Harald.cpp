@@ -545,10 +545,6 @@ void Harald::Harald::checkPufs(float dt){
 		removeObject(puf.go);
 		std::erase_if(pufs, [puf](const Puf& other){ return puf.go == other.go; });
 	}
-
-	if(pufs.empty()){
-		heapRep();
-	}
 }
 
 void Harald::Harald::gameWin(){
