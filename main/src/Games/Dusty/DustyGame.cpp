@@ -80,7 +80,7 @@ void DustyGame::DustyGame::onLoad(){
 
 	armGo = std::make_shared<GameObject>(
 			std::move(armRc),
-			std::make_unique<RectCC>(PixelDim { 5, 7 }, PixelDim { 0, 7 })
+			std::make_unique<RectCC>(PixelDim { 5, 14 }, PixelDim { 0, 14 })
 	);
 	armGo->setPos(ArmPos);
 	armGo->getRenderComponent()->setLayer(20);
