@@ -72,10 +72,6 @@ void MainMenu::launch(Games game){
 		return;
 	}
 
-	if(Display* display = (Display*) Services.get(Service::Display)){
-		display->getLGFX().drawBmpFile(Filepath::SplashWithBackground);
-	}
-
 	auto ui = (UIThread*) Services.get(Service::UI);
 	ui->startScreen([game](){ return std::make_unique<GameSplashScreen>(game); });
 }
@@ -365,13 +361,8 @@ void MainMenu::buildUI(){
 
 	}, LV_EVENT_KEY, inputGroup);
 	lv_obj_add_event_cb(*menuHeader, [](lv_event_t* e){
-		if(Display* display = (Display*) Services.get(Service::Display)){
-			display->getLGFX().drawBmpFile(Filepath::SplashWithBackground);
-		}
-
 		auto ui = (UIThread*) Services.get(Service::UI);
 		ui->startScreen([](){ return std::make_unique<ProfileScreen>(); });
-
 	}, LV_EVENT_CLICKED, this);
 
 	auto games = (RobotManager*) Services.get(Service::RobotManager);
