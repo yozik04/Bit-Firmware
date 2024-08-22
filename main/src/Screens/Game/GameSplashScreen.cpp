@@ -355,27 +355,78 @@ const std::unordered_map<Games, std::function<MelodyPlayer*()>> IntroSounds = {
 		} },
 		// TODO intro sounds for the new games
 		{ Games::WackyStacky, [](){
-			return new MelodyPlayer(130, {});
+			return new MelodyPlayer(160, {
+				toneSlide(NOTE_G3, NOTE_C4, 1), toneFlat(NOTE_C4, 0.5), toneNone(0.5),
+				toneFlat(NOTE_E4, 1), toneNone(1),
+				toneFlat(NOTE_C5, 1), toneNone(1),
+				toneFlat(NOTE_G4, 1), toneNone(1),
+
+				toneSlide(NOTE_E4, NOTE_D5, 1), toneNone(1),
+				toneFlat(NOTE_C5, 1), toneNone(1),
+				toneFlat(NOTE_A4, 1), toneNone(1),
+				toneFlat(NOTE_C5, 1), toneNone(1),
+
+				toneSlide(NOTE_G4, NOTE_E5, 1), toneNone(1),
+				toneFlat(NOTE_C5, 1), toneNone(1),
+				toneFlat(NOTE_A4, 1), toneNone(1),
+				toneFlat(NOTE_C5, 1), toneNone(1),
+
+				toneSlide(NOTE_E4, NOTE_D5, 1), toneNone(1),
+				toneFlat(NOTE_C5, 1), toneNone(1),
+				toneFlat(NOTE_A4, 1), toneNone(1),
+				toneFlat(NOTE_C5, 1), toneNone(1),
+
+				toneSlide(NOTE_C5, NOTE_C4, 1), toneFlat(NOTE_C4, 3)
+			});
 		} },
 		{ Games::Harald, [](){
-			return new MelodyPlayer(130, {});
-		} },
-		{ Games::Frank, [](){
-			return new MelodyPlayer(130, {});
+			return new MelodyPlayer(130, {
+					toneFlat(NOTE_C5, 4), toneFlat(NOTE_F5, 4), toneNone(3),
+					toneFlat(NOTE_GS5, 4), toneFlat(NOTE_G5, 4), toneNone(3),
+					toneFlat(NOTE_DS5, 4), toneFlat(NOTE_F5, 6)
+			});
 		} },
 		{ Games::Charlie, [](){
-			return new MelodyPlayer(130, {});
-		} },
-		{ Games::Fred, [](){
-			return new MelodyPlayer(130, {});
+			return new MelodyPlayer(160, {
+				toneFlat(NOTE_C4, 1), toneNone(2), toneFlat(NOTE_C4, 0.5), toneNone(0.5),
+				toneFlat(NOTE_DS4, 0.5), toneNone(1.5), toneFlat(NOTE_F4, 0.5), toneNone(1.5),
+				toneFlat(NOTE_FS4, 0.5), toneNone(0.5), toneFlat(NOTE_F4, 0.5), toneNone(1.5), toneFlat(NOTE_DS4, 0.5), toneNone(0.5),
+				toneFlat(NOTE_F4, 0.5), toneNone(3.5),
+				toneFlat(NOTE_FS4, 0.5), toneNone(0.5), toneFlat(NOTE_F4, 0.5), toneNone(1.5), toneFlat(NOTE_DS4, 0.5), toneNone(0.5),
+				toneFlat(NOTE_F4, 0.5), toneNone(1.5), toneFlat(NOTE_DS3, 0.5), toneNone(1.5),
+				toneFlat(NOTE_FS4, 0.5), toneNone(0.5), toneFlat(NOTE_F4, 0.5), toneNone(1.5), toneFlat(NOTE_DS4, 0.5), toneNone(0.5),
+				toneFlat(NOTE_C4, 1)
+			});
 		} },
 		{ Games::Planck, [](){
-			return new MelodyPlayer(130, {});
+			return new MelodyPlayer(160, {
+				toneFlat(NOTE_C3, 2), toneSlide(NOTE_C3, NOTE_C4, 1), toneNone(2),
+				toneFlat(NOTE_C3, 2), toneSlide(NOTE_C3, NOTE_C4, 1), toneNone(2),
+				toneFlat(NOTE_D4, 1), toneFlat(NOTE_C4, 1), toneFlat(NOTE_G3, 1),
+				toneNone(2), toneFlat(NOTE_C4, 4)
+			});
 		} },
 		{ Games::Dusty, [](){
-			return new MelodyPlayer(130, {});
+			return new MelodyPlayer(160, {
+				toneFlat(NOTE_C4, 1), toneNone(1), toneFlat(NOTE_DS4, 1), toneNone(1),
+				toneFlat(NOTE_C4, 1), toneNone(1), toneFlat(NOTE_DS4, 1), toneNone(1),
+				toneFlat(NOTE_D4, 1), toneNone(1), toneFlat(NOTE_DS4, 1), toneNone(1),
+				toneFlat(NOTE_D4, 1), toneNone(1), toneFlat(NOTE_DS4, 1), toneNone(1),
+				toneFlat(NOTE_F4, 1), toneNone(1), toneFlat(NOTE_DS4, 1), toneNone(1),
+				toneFlat(NOTE_D4, 1), toneNone(1), toneFlat(NOTE_DS4, 1), toneNone(1),
+				toneFlat(NOTE_C4, 4)
+			});
 		} },
 		{ Games::Sparkly, [](){
-			return new MelodyPlayer(130, {});
+			return new MelodyPlayer(130, {
+				toneFlat(NOTE_C5, 0.2),
+				toneFlat(NOTE_DS5, 1), toneNone(1), toneFlat(NOTE_F5, 1), toneNone(1),
+				toneFlat(NOTE_FS5, 1), toneNone(1), toneFlat(NOTE_F5, 1), toneNone(0.8),
+				toneFlat(NOTE_C5, 0.2),
+				toneFlat(NOTE_DS5, 1), toneNone(1), toneFlat(NOTE_C5, 1), toneNone(1),
+				toneFlat(NOTE_AS4, 1), toneNone(1), toneFlat(NOTE_G4, 1), toneNone(0.8),
+				toneFlat(NOTE_G4, 0.2),
+				toneFlat(NOTE_AS4, 1), toneNone(1), toneFlat(NOTE_C5, 2)
+			});
 		} },
 };
