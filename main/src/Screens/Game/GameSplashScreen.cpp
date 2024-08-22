@@ -137,7 +137,7 @@ void GameSplashScreen::buildUI(){
 }
 
 void GameSplashScreen::loop(){
-	if(millis() - startTime < HoldTime || melody->isPlaying()) return;
+	if(millis() - startTime < HoldTime || (melody && melody->isPlaying())) return;
 
 	if(auto ui = (UIThread*) Services.get(Service::UI)){
 		ui->startScreen([this](){ return std::make_unique<GameMenuScreen>(currentGame); });
@@ -169,8 +169,9 @@ void GameSplashScreen::onStart(){
 		}
 	}
 
-	if(IntroSounds.contains(currentGame)){
-		melody = IntroSounds.at(currentGame)();
+	const auto settings = (Settings*) Services.get(Service::Settings);
+	if(settings->get().sound && IntroSounds.contains(currentGame)){
+		melody = std::unique_ptr<MelodyPlayer>(IntroSounds.at(currentGame)());
 		if(melody){
 			melody->play();
 		}
@@ -178,7 +179,7 @@ void GameSplashScreen::onStart(){
 }
 
 void GameSplashScreen::onStop(){
-	delete melody;
+	melody.reset();
 }
 
 const std::unordered_map<Games, std::function<MelodyPlayer*()>> IntroSounds = {
