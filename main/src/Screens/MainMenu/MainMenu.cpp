@@ -407,14 +407,14 @@ void MainMenu::buildUI(){
 }
 
 std::string MainMenu::imgFullPath(const char* game){
-	std::string path("S:/GameIcons/");
+	std::string path("S:/Menu/");
 	path.append(game);
 	path.append(".bin");
 	return path;
 }
 
 std::string MainMenu::imgGrayscalePath(const char* game){
-	std::string path("S:/GameIcons/bw/");
+	std::string path("S:/MenuBW/bw/");
 	path.append(game);
 	path.append(".bin");
 	return path;

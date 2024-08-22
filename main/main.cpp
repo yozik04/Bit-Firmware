@@ -174,6 +174,7 @@ void init(){
 		});
 	}
 
+	FSLVGL::loadArchives();
 	FSLVGL::loadCache();
 
 	auto ui = new UIThread(*lvgl, *gamer);
