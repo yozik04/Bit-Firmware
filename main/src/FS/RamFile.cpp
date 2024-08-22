@@ -40,8 +40,14 @@ RamFile::RamFile(File file, bool use32bAligned) : filePath(file.name()){
 	file.read(data, fileSize);
 }
 
+RamFile::RamFile(uint8_t* data, size_t size) : data(data), fileSize(size), borrowed(true){
+
+}
+
 RamFile::~RamFile(){
-	free(data);
+	if(!borrowed){
+		free(data);
+	}
 }
 
 size_t RamFile::write(const uint8_t* buf, size_t size){

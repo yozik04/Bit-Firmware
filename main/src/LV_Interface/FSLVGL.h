@@ -4,8 +4,10 @@
 #include <lvgl.h>
 #include <string>
 #include <unordered_set>
+#include <unordered_map>
 #include <memory>
 #include "FS/RamFile.h"
+#include "Util/FileArchive.h"
 
 class FSLVGL {
 public:
@@ -21,6 +23,7 @@ public:
 	static void addToCache(const char* path, bool use32bAligned = false);
 	static void removeFromCache(const char* path);
 
+	static void loadArchives();
 	static void loadCache();
 	static void unloadCache();
 
@@ -42,6 +45,8 @@ private:
 	};
 
 	static std::unordered_set<FileResource, std::hash<File*>> cache;
+	static std::unordered_map<std::string, FileArchive*> archives;
+	static std::unordered_set<FileResource, std::hash<File*>> archiveOpen;
 
 	static auto findCache(const std::string& path);
 	static auto findCache(void* ptr);

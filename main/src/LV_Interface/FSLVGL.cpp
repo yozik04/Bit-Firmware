@@ -48,8 +48,17 @@ static const char* Cached[] = {
 		"/Theme4/settings.bin",
 };
 
+static const char* Archives[] = {
+		"/Achi",
+		"/AchiBW",
+		"/Menu",
+		"/MenuBW"
+};
+
 const char* TAG = "FSLVGL";
 std::unordered_set<FSLVGL::FileResource, std::hash<File*>> FSLVGL::cache;
+std::unordered_map<std::string, FileArchive*> FSLVGL::archives;
+std::unordered_set<FSLVGL::FileResource, std::hash<File*>> FSLVGL::archiveOpen;
 
 FSLVGL::FSLVGL(char letter){
 	cache.reserve(sizeof(Cached) / sizeof(Cached[0]) + 16);
@@ -164,11 +173,40 @@ void FSLVGL::unloadCache(){
 	}
 }
 
+void FSLVGL::loadArchives(){
+	for(const auto& archive : Archives){
+		const auto filename = std::string(archive) + ".sz";
+		archives.insert(std::make_pair(archive, new FileArchive(SPIFFS::open(filename.c_str()))));
+	}
+}
+
 bool FSLVGL::ready_cb(struct _lv_fs_drv_t* drv){
 	return true;
 }
 
 void* FSLVGL::open_cb(struct _lv_fs_drv_t* drv, const char* path, lv_fs_mode_t mode){
+	const int len = strnlen(path, 32);
+	int slashIndex = 0;
+	for(int i = 0; i < len; i++){
+		if(path[i] == '/' && i != 0){
+			slashIndex = i;
+			break;
+		}
+	}
+
+	const auto archive = archives.find(std::string(path, path+slashIndex));
+	if(archive != archives.end()){
+		auto file = new File();
+		*file = archive->second->get(path + slashIndex + 1);
+		if(!*file){
+			delete file;
+			return nullptr;
+		}
+
+		archiveOpen.insert(FileResource{ file });
+		return file;
+	}
+
 	auto cached = findCache(path);
 	if(cached != cache.end()){
 		(*cached).ramFile->seek(0);
@@ -190,6 +228,15 @@ void* FSLVGL::open_cb(struct _lv_fs_drv_t* drv, const char* path, lv_fs_mode_t m
 }
 
 lv_fs_res_t FSLVGL::close_cb(struct _lv_fs_drv_t* drv, void* file_p){
+	auto archIt = std::find_if(archiveOpen.begin(), archiveOpen.end(), [file_p](auto fileResource){
+		return fileResource.ramFile == file_p;
+	});
+	if(archIt != archiveOpen.end()){
+		delete archIt->ramFile;
+		archiveOpen.erase(archIt);
+		return 0;
+	}
+
 	auto it = findCache(file_p);
 	if(it != cache.end()) return 0;
 
@@ -198,6 +245,14 @@ lv_fs_res_t FSLVGL::close_cb(struct _lv_fs_drv_t* drv, void* file_p){
 }
 
 lv_fs_res_t FSLVGL::read_cb(struct _lv_fs_drv_t* drv, void* file_p, void* buf, uint32_t btr, uint32_t* br){
+	auto archIt = std::find_if(archiveOpen.begin(), archiveOpen.end(), [file_p](auto fileResource){
+		return fileResource.ramFile == file_p;
+	});
+	if(archIt != archiveOpen.end()){
+		*br = (*archIt).ramFile->read((uint8_t*) buf, btr);
+		return 0;
+	}
+
 	auto cached = findCache(file_p);
 	if(cached != cache.end()){
 		*br = (*cached).ramFile->read((uint8_t*) buf, btr);
@@ -210,6 +265,14 @@ lv_fs_res_t FSLVGL::read_cb(struct _lv_fs_drv_t* drv, void* file_p, void* buf, u
 }
 
 lv_fs_res_t FSLVGL::write_cb(struct _lv_fs_drv_t* drv, void* file_p, const void* buf, uint32_t btw, uint32_t* bw){
+	auto archIt = std::find_if(archiveOpen.begin(), archiveOpen.end(), [file_p](auto fileResource){
+		return fileResource.ramFile == file_p;
+	});
+	if(archIt != archiveOpen.end()){
+		*bw = 0;
+		return 0;
+	}
+
 	auto cached = findCache(file_p);
 	if(cached != cache.end()){
 		*bw = 0;
@@ -223,6 +286,19 @@ lv_fs_res_t FSLVGL::write_cb(struct _lv_fs_drv_t* drv, void* file_p, const void*
 }
 
 lv_fs_res_t FSLVGL::seek_cb(struct _lv_fs_drv_t* drv, void* file_p, uint32_t pos, lv_fs_whence_t whence){
+	auto archIt = std::find_if(archiveOpen.begin(), archiveOpen.end(), [file_p](auto fileResource){
+		return fileResource.ramFile == file_p;
+	});
+	if(archIt != archiveOpen.end()){
+		static const std::unordered_map<lv_fs_whence_t, SeekMode> SeekMap = {
+				{ LV_FS_SEEK_SET, SeekMode::SeekSet },
+				{ LV_FS_SEEK_CUR, SeekMode::SeekCur },
+				{ LV_FS_SEEK_END, SeekMode::SeekEnd },
+		};
+		(*archIt).ramFile->seek(pos, SeekMap.at(whence));
+		return 0;
+	}
+
 	auto cached = findCache(file_p);
 	if(cached != cache.end()){
 		static const std::unordered_map<lv_fs_whence_t, SeekMode> SeekMap = {
@@ -260,6 +336,14 @@ lv_fs_res_t FSLVGL::seek_cb(struct _lv_fs_drv_t* drv, void* file_p, uint32_t pos
 }
 
 lv_fs_res_t FSLVGL::tell_cb(struct _lv_fs_drv_t* drv, void* file_p, uint32_t* pos_p){
+	auto archIt = std::find_if(archiveOpen.begin(), archiveOpen.end(), [file_p](auto fileResource){
+		return fileResource.ramFile == file_p;
+	});
+	if(archIt != archiveOpen.end()){
+		*pos_p = (*archIt).ramFile->position();
+		return 0;
+	}
+
 	auto cached = findCache(file_p);
 	if(cached != cache.end()){
 		*pos_p = (*cached).ramFile->position();
