@@ -22,7 +22,7 @@ void UIThread::loop(){
 	}else if(active == Src::Game){
 		gamer.loop();
 	}else{
-		delayMillis(100);
+		delayMillis(10);
 		return;
 	}
 }

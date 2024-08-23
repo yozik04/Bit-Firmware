@@ -161,10 +161,9 @@ void init(){
 		delayMillis(10);
 	}
 
-	ui->startScreen([](){ return std::make_unique<MainMenu>(); });
-
 	bl->fadeOut();
 	ui->start();
+	ui->startScreen([](){ return std::make_unique<MainMenu>(true); });
 	delayMillis(200);
 	bl->fadeIn();
 
