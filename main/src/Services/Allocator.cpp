@@ -11,6 +11,16 @@ Allocator::Allocator(const size_t dataSize) : dataSize(dataSize){
 	}
 }
 
+Allocator::Allocator(void* buf, size_t dataSize) : dataSize(dataSize), data((uint8_t*) buf), borrowed(true){
+
+}
+
+Allocator::~Allocator(){
+	if(!borrowed){
+		free(data);
+	}
+}
+
 void* Allocator::malloc(size_t size){
 	if(data == nullptr) return nullptr;
 	if(size > freeSize()) return nullptr;

@@ -53,7 +53,7 @@ void shutdown(){
 }
 
 void init(){
-	auto alloc = new Allocator(80 * 1024);
+	auto alloc = new Allocator(86 * 1024);
 
 	gpio_config_t cfg = {
 			.pin_bit_mask = (1ULL << I2C_SDA) | (1ULL << I2C_SCL),

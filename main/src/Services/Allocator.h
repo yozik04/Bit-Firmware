@@ -7,7 +7,9 @@
 
 class Allocator{
 public:
-	explicit Allocator(const size_t dataSize);
+	explicit Allocator(size_t dataSize);
+	Allocator(void* buf, size_t dataSize);
+	virtual ~Allocator();
 
 	void* malloc(size_t size);
 	void reset();
@@ -18,6 +20,7 @@ private:
 	const size_t dataSize;
 	uint8_t* data;
 	size_t pointer = 0;
+	bool borrowed = false;
 
 };
 

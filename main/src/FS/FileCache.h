@@ -9,6 +9,7 @@
 class FileCache {
 public:
 	virtual File open(const char* path) = 0;
+	virtual ~FileCache() = default;
 
 	virtual void load(Allocator* alloc = nullptr) = 0;
 	virtual void unload() = 0;

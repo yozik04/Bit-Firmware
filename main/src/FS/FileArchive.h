@@ -6,10 +6,11 @@
 #include <string>
 #include "FS/File.h"
 #include "Services/Allocator.h"
+#include <unordered_set>
 
 class FileArchive {
 public:
-	FileArchive(File file, Allocator* alloc = nullptr);
+	FileArchive(File file, Allocator* alloc = nullptr, const std::unordered_set<std::string>& excluded = {});
 	virtual ~FileArchive();
 
 	File get(const char* file, const char* name = nullptr);

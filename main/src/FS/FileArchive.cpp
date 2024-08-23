@@ -4,7 +4,7 @@
 
 static const char* TAG = "FileArchive";
 
-FileArchive::FileArchive(File file, Allocator* alloc){
+FileArchive::FileArchive(File file, Allocator* alloc, const std::unordered_set<std::string>& excluded){
 	file.seek(0);
 	uint32_t count = 0;
 	file.read((uint8_t*) &count, 4);
@@ -35,7 +35,10 @@ FileArchive::FileArchive(File file, Allocator* alloc){
 		uint32_t size = 0;
 		file.read((uint8_t*) &size, 4);
 
-		totalSize += size;
+		if(!excluded.contains(name)){
+			totalSize += size;
+		}
+
 		tmp.emplace_back(Entry { name, size, 0 });
 	}
 
@@ -61,6 +64,11 @@ FileArchive::FileArchive(File file, Allocator* alloc){
 	size_t offset = 0;
 
 	for(auto& entry : tmp){
+		if(excluded.contains(entry.name)){
+			file.seek(entry.size, SeekMode::SeekCur);
+			continue;
+		}
+
 		file.read(data + offset, entry.size);
 		entry.offset = offset;
 

@@ -19,6 +19,9 @@ public:
 	void unloadCache();
 
 	static void themeChange();
+	static void menuChange();
+
+	static void reloadMenu();
 
 private:
 	lv_fs_drv_t drv;
@@ -27,11 +30,39 @@ private:
 	Allocator* alloc = nullptr;
 
 	RawCache cache;
-	ArchiveCache archive;
 
 	std::vector<std::string> getCacheFiles() const;
-	static bool themeChanged;
 	bool cacheLoaded = false;
+
+	static FSLVGL* instance;
+	static bool themeChanged;
+	static bool menuChanged;
+
+	struct SubArchive {
+		FileArchive* archive = nullptr;
+		Allocator* alloc = nullptr;
+		void* allocBuf = nullptr;
+		operator bool(){ return archive != nullptr || alloc != nullptr; }
+	};
+
+	static constexpr size_t MenuSize = 42000; // Biggest icon * num of icons
+	static constexpr size_t ThemeSize = 24000; // Size of Theme1 (biggest theme)
+	static constexpr size_t AchisSize = 12000; // Size of Theme1 (biggest theme)
+
+	struct {
+		SubArchive menu;
+		SubArchive theme;
+		SubArchive achis;
+	} archives = { };
+
+	void loadMenu();
+	void unloadMenu();
+
+	void loadTheme();
+	void unloadTheme();
+
+	void loadAchis();
+	void unloadAchis();
 
 	static constexpr File* getFile(void* fp){ return (File*) fp; }
 

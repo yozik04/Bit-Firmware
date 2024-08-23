@@ -4,32 +4,16 @@
 #include "Settings/Settings.h"
 #include "Util/Services.h"
 #include "Filepaths.hpp"
+#include "Services/RobotManager.h"
 #include <cstdio>
 #include <dirent.h>
 #include <esp_spiffs.h>
 #include <string>
 #include <unordered_map>
 
-std::initializer_list<std::string> ThemedCache = {
-		"/bg.bin",
-		"/header.bin",
-		"/barShort.bin",
-		"/barLong.bin",
-		"/barMid.bin",
-		"/header.bin",
-		"/paused.bin",
-		"/settings.bin",
-		"/popup.bin",
-		"/battery/bg.bin",
-		"/battery/1.bin",
-		"/battery/2.bin",
-		"/battery/3.bin",
-		"/battery/4.bin",
-		"/battery/5.bin",
-		"/battery/6.bin"
-};
-
 std::initializer_list<std::string> GeneralCache = {
+		"/Ach/bg.bin",
+		"/Ach/bgSelected.bin",
 		"/Profile/bg.bin",
 		"/Profile/lock.bin",
 		"/Profile/barOutline.bin",
@@ -46,18 +30,13 @@ std::initializer_list<std::string> GeneralCache = {
 		"/Profile/theme-outline.bin"
 };
 
-std::initializer_list<std::string> Archives = {
-		"/Achi",
-		"/AchiBW",
-		"/Menu",
-		"/MenuBW"
-};
-
 const char* TAG = "FSLVGL";
 
+FSLVGL* FSLVGL::instance = nullptr;
 bool FSLVGL::themeChanged = false;
+bool FSLVGL::menuChanged = false;
 
-FSLVGL::FSLVGL(char letter, Allocator* alloc) : alloc(alloc), archive(Archives){
+FSLVGL::FSLVGL(char letter, Allocator* alloc) : alloc(alloc){
 	lv_fs_drv_init(&drv);
 
 	drv.letter = letter;
@@ -76,6 +55,8 @@ FSLVGL::FSLVGL(char letter, Allocator* alloc) : alloc(alloc), archive(Archives){
 	drv.user_data = this;
 
 	lv_fs_drv_register(&drv);
+
+	instance = this;
 }
 
 FSLVGL::~FSLVGL(){
@@ -86,50 +67,168 @@ void FSLVGL::themeChange(){
 	themeChanged = true;
 }
 
+void FSLVGL::menuChange(){
+	menuChanged = true;
+}
+
+void FSLVGL::reloadMenu(){
+	instance->unloadMenu();
+	instance->loadMenu();
+}
+
 void FSLVGL::loadCache(){
 	if(cacheLoaded && themeChanged){
-		unloadCache();
-		themeChanged = false;
+		unloadTheme();
+		loadTheme();
+	}
+
+	if(cacheLoaded && menuChanged){
+		unloadMenu();
+		loadMenu();
 	}
 
 	if(cacheLoaded) return;
 	cacheLoaded = true;
 
+	if(alloc){
+		archives.menu.allocBuf = alloc->malloc(MenuSize);
+		archives.theme.allocBuf = alloc->malloc(ThemeSize);
+		archives.achis.allocBuf = alloc->malloc(AchisSize);
+	}else{
+		archives.menu.allocBuf = malloc(MenuSize);
+		archives.theme.allocBuf = malloc(ThemeSize);
+		archives.achis.allocBuf = malloc(AchisSize);
+	}
+
 	cache.setPaths(getCacheFiles());
-
 	cache.load(alloc);
-	archive.load(alloc);
 
-	printf("Cache loaded. Alloc remaining: %zu B\n", alloc->freeSize());
-	heapRep();
+	loadMenu();
+	loadTheme();
+	loadAchis();
 }
 
 void FSLVGL::unloadCache(){
 	if(!cacheLoaded) return;
 	cacheLoaded = false;
 
+	unloadMenu();
+	unloadTheme();
+	unloadAchis();
+
 	cache.unload();
-	archive.unload();
 
 	if(alloc){
 		alloc->reset();
+	}else{
+		free(archives.menu.allocBuf);
+		free(archives.theme.allocBuf);
+		free(archives.achis.allocBuf);
 	}
+
+	archives.menu.allocBuf = nullptr;
+	archives.theme.allocBuf = nullptr;
+	archives.achis.allocBuf = nullptr;
+}
+
+void FSLVGL::loadMenu(){
+	if(archives.menu) return;
+	if(!cacheLoaded) return;
+	if(archives.menu.allocBuf == nullptr) return;
+
+	std::unordered_set<std::string> excluded;
+	excluded.reserve((int) Games::COUNT);
+
+	auto roboMan = (RobotManager*) Services.get(Service::RobotManager);
+	for(int i = 0; i < (int) Games::COUNT; i++){
+		if((Games) i == Games::Frank || (Games) i == Games::Fred) continue;
+
+		std::string path = "/";
+		if(roboMan->isUnlocked((Games) i)){
+			path += "BW/";
+		}
+		path += GameIcons[i];
+		path += ".bin";
+
+		excluded.emplace(std::move(path));
+	}
+
+	archives.menu.alloc = new Allocator(archives.menu.allocBuf, MenuSize);
+	archives.menu.archive = new FileArchive(SPIFFS::open("/Menu.sz"), archives.menu.alloc, excluded);
+
+	menuChanged = false;
+}
+
+void FSLVGL::unloadMenu(){
+	if(!archives.menu) return;
+
+	delete archives.menu.archive;
+	delete archives.menu.alloc;
+
+	archives.menu.archive = nullptr;
+	archives.menu.alloc = nullptr;
+}
+
+void FSLVGL::loadTheme(){
+	if(archives.theme) return;
+	if(!cacheLoaded) return;
+	if(archives.theme.allocBuf == nullptr) return;
+
+	auto settings = (Settings*) Services.get(Service::Settings);
+	const auto theme = settings ? settings->get().theme : Theme::Theme1;
+
+	static constexpr const char* ThemeArchives[] = { "/Theme1.sz", "/Theme2.sz", "/Theme3.sz", "/Theme4.sz" };
+
+	archives.theme.alloc = new Allocator(archives.theme.allocBuf, ThemeSize);
+	archives.theme.archive = new FileArchive(SPIFFS::open(ThemeArchives[(int) theme]), archives.theme.alloc);
+
+	themeChanged = false;
+}
+
+void FSLVGL::unloadTheme(){
+	if(!archives.theme) return;
+
+	delete archives.theme.archive;
+	delete archives.theme.alloc;
+
+	archives.theme.archive = nullptr;
+	archives.theme.alloc = nullptr;
+}
+
+void FSLVGL::loadAchis(){
+	if(archives.achis) return;
+	if(!cacheLoaded) return;
+	if(archives.achis.allocBuf == nullptr) return;
+
+	std::unordered_set<std::string> excluded;
+	excluded.reserve((int) Achievement::COUNT);
+
+	auto achiMan = (AchievementSystem*) Services.get(Service::Achievements);
+	for(int i = 0; i < (int) Achievement::COUNT; i++){
+		if(achiMan->isUnlocked((Achievement) i)){
+			excluded.emplace(AchievementFilesBW[i] + 7);
+		}else{
+			excluded.emplace(AchievementFiles[i] + 7);
+		}
+	}
+
+	archives.achis.alloc = new Allocator(archives.achis.allocBuf, AchisSize);
+	archives.achis.archive = new FileArchive(SPIFFS::open("/Achi.sz"), archives.achis.alloc, excluded);
+}
+
+void FSLVGL::unloadAchis(){
+	if(!archives.achis) return;
+
+	delete archives.achis.archive;
+	delete archives.achis.alloc;
+
+	archives.achis.archive = nullptr;
+	archives.achis.alloc = nullptr;
 }
 
 std::vector<std::string> FSLVGL::getCacheFiles() const{
-	auto settings = (Settings*) Services.get(Service::Settings);
-
-	const auto theme = settings ? settings->get().theme : Theme::Theme1;
-
 	std::vector<std::string> paths;
-	paths.reserve(ThemedCache.size() + GeneralCache.size());
-
-	static constexpr const char* ThemePaths[] = { "/Theme1", "/Theme2", "/Theme3", "/Theme4" };
-
-	for(const auto& file : ThemedCache){
-		paths.emplace_back(std::string(ThemePaths[(int) theme]) + file);
-		printf("%s\n", paths.back().c_str());
-	}
+	paths.reserve(GeneralCache.size());
 
 	for(const auto& file : GeneralCache){
 		paths.emplace_back(file);
@@ -148,11 +247,23 @@ void* FSLVGL::lvOpen(const char* path, lv_fs_mode_t mode){
 		return filePtr;
 	};
 
-	file = archive.open(path);
-	if(file) return mkPtr(file);
-
 	file = cache.open(path);
 	if(file) return mkPtr(file);
+
+	if(archives.menu && std::string(path).starts_with("/Menu")){
+		file = archives.menu.archive->get(path + 5);
+		if(file) return mkPtr(file);
+	}
+
+	if(archives.theme && std::string(path).starts_with("/Theme")){
+		file = archives.theme.archive->get(path + 7);
+		if(file) return mkPtr(file);
+	}
+
+	if(archives.achis && std::string(path).starts_with("/Achi")){
+		file = archives.achis.archive->get(path + 5);
+		if(file) return mkPtr(file);
+	}
 
 	static const std::unordered_map<lv_fs_mode_t, const char*> Map = {
 			{ LV_FS_MODE_WR, "w" },
@@ -209,8 +320,6 @@ lv_fs_res_t FSLVGL::lvSeek(void* fp, uint32_t pos, lv_fs_whence_t whence){
 lv_fs_res_t FSLVGL::lvTell(void* fp, uint32_t* pos){
 	File* file = getFile(fp);
 	if(!*file) return LV_FS_RES_NOT_EX;
-
-	printf("pos\n");
 
 	*pos = file->position();
 	return 0;

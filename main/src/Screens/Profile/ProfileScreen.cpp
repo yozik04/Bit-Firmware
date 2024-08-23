@@ -43,9 +43,6 @@ void ProfileScreen::onStop(){
 
 	if(saved.theme != oldTheme){
 		FSLVGL::themeChange();
-
-		auto display = (Display*) Services.get(Service::Display);
-		display->getLGFX().drawBmpFile(Filepath::SplashWithBackground);
 	}
 }
 

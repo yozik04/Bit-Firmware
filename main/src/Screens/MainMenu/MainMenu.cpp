@@ -187,6 +187,7 @@ void MainMenu::handleGameInsert(const RobotManager::Event& evt){
 	}
 
 	if(isNew && robGames.count(rob.robot >= Robot::COUNT ? (uint8_t) Robot::COUNT + (uint8_t) rob.token : (uint8_t) rob.robot)){
+		FSLVGL::reloadMenu();
 		MenuItem* item = robGames.at(rob.robot >= Robot::COUNT ? (uint8_t) Robot::COUNT + (uint8_t) rob.token : (uint8_t) rob.robot);
 		item->setLocked(false);
 	}
@@ -412,7 +413,7 @@ std::string MainMenu::imgFullPath(const char* game){
 }
 
 std::string MainMenu::imgGrayscalePath(const char* game){
-	std::string path("S:/MenuBW/bw/");
+	std::string path("S:/Menu/BW/");
 	path.append(game);
 	path.append(".bin");
 	return path;
