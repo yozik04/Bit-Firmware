@@ -50,10 +50,14 @@ FileArchive::FileArchive(File file){
 	}
 }
 
-File FileArchive::get(const char* file){
+File FileArchive::get(const char* file, const char* name){
 	auto it = entries.find(file);
 	if(it == entries.end()) return File();
 
-	auto f = std::make_shared<RamFile>(data.data() + it->second.offset, it->second.size);
+	if(!name){
+		name = file;
+	}
+
+	auto f = std::make_shared<RamFile>(data.data() + it->second.offset, it->second.size, name);
 	return File(f);
 }

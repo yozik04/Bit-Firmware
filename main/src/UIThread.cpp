@@ -6,7 +6,7 @@
 #include "Screens/ShutdownScreen.h"
 #include "LV_Interface/FSLVGL.h"
 
-UIThread::UIThread(LVGL& lvgl, GameRunner& gameRunner) : Threaded("UI", 6 * 1024, 5, 0), lvgl(lvgl), gamer(gameRunner), evts(6){
+UIThread::UIThread(LVGL& lvgl, GameRunner& gameRunner, FSLVGL& fs) : Threaded("UI", 6 * 1024, 5, 0), lvgl(lvgl), gamer(gameRunner), fs(fs), evts(6){
 	Events::listen(Facility::Battery, &evts);
 }
 
@@ -29,14 +29,14 @@ void UIThread::loop(){
 
 void UIThread::startGame(Games game){
 	lvgl.stopScreen();
-	FSLVGL::unloadCache();
+	fs.unloadCache();
 	gamer.startGame(game);
 	active = Src::Game;
 }
 
 void UIThread::startScreen(std::function<std::unique_ptr<LVScreen>()> create){
 	gamer.endGame();
-	FSLVGL::loadCache();
+	fs.loadCache();
 	lvgl.startScreen(std::move(create));
 	active = Src::LVGL;
 }

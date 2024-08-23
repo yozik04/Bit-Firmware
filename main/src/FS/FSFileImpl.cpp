@@ -152,7 +152,7 @@ size_t FSFileImpl::size() const{
 }
 
 const char* FSFileImpl::name() const{
-	return (const char*) _path;
+	return (const char*) _path + 7;
 }
 
 //to implement

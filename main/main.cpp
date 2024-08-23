@@ -174,10 +174,10 @@ void init(){
 		});
 	}
 
-	FSLVGL::loadArchives();
-	FSLVGL::loadCache();
+	lvFS->loadArchives();
+	lvFS->loadCache();
 
-	auto ui = new UIThread(*lvgl, *gamer);
+	auto ui = new UIThread(*lvgl, *gamer, *lvFS);
 	Services.set(Service::UI, ui);
 
 	while(millis() - splashStart < 2000){

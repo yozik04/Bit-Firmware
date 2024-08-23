@@ -10,7 +10,7 @@ class FileArchive {
 public:
 	FileArchive(File file);
 
-	File get(const char* file);
+	File get(const char* file, const char* name = nullptr);
 
 private:
 	struct Entry {

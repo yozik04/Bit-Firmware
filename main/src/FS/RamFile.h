@@ -11,7 +11,7 @@
 class RamFile : public FileImpl {
 public:
 	RamFile(File file, bool use32bAligned = false);
-	RamFile(uint8_t* data, size_t size);
+	RamFile(uint8_t* data, size_t size, const char* name);
 	~RamFile() override;
 
 	size_t write(const uint8_t* buf, size_t size) override;
