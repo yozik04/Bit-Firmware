@@ -155,7 +155,7 @@ void HighScoreScreen::buildUI(){
 
 	if(const HighScoreManager* hsm = (HighScoreManager*) Services.get(Service::HighScore)){
 		if(hsm->hasHighScore(currentGame)){
-			const std::array<HighScore, 5>& highScores = hsm->getAll(currentGame);
+			const auto& highScores = hsm->getAll(currentGame);
 
 			for(const HighScore& highScore : highScores){
 				if(highScore.score > 0){

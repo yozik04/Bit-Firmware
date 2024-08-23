@@ -37,7 +37,7 @@ void HighScoreManager::saveScore(Games game, HighScore score){
 	setHighScores(game, highScores[(size_t) game]);
 }
 
-const std::array<HighScore, 5>& HighScoreManager::getAll(Games game) const{
+const std::array<HighScore, HighScoreManager::Count>& HighScoreManager::getAll(Games game) const{
 	return highScores[(size_t) game];
 }
 
@@ -64,22 +64,22 @@ bool HighScoreManager::hasScore(Games game) const{
 	return std::find(NoScoreGames.begin(), NoScoreGames.end(), game) == NoScoreGames.end();
 }
 
-void HighScoreManager::setHighScores(Games game, const std::array<HighScore, 5>& score) {
+void HighScoreManager::setHighScores(Games game, const std::array<HighScore, Count>& score) {
 	const NVSFlash* nvs = (NVSFlash*) Services.get(Service::NVS);
 	if(nvs == nullptr){
 		return;
 	}
 
 	const std::string blob = std::string("HighScore") + std::to_string((uint8_t) game);
-	nvs->set<HighScore, 5>(blob, score);
+	nvs->set<HighScore, Count>(blob, score);
 }
 
-bool HighScoreManager::getHighScores(Games game, std::array<HighScore, 5>& score) {
+bool HighScoreManager::getHighScores(Games game, std::array<HighScore, Count>& score) {
 	const NVSFlash* nvs = (NVSFlash*) Services.get(Service::NVS);
 	if(nvs == nullptr){
 		return false;
 	}
 
 	const std::string blob = std::string("HighScore") + std::to_string((uint8_t) game);
-	return nvs->get<HighScore, 5>(blob, score);
+	return nvs->get<HighScore, Count>(blob, score);
 }
