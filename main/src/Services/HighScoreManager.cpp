@@ -20,12 +20,6 @@ bool HighScoreManager::isHighScore(Games game, uint32_t score) const{
 		return false;
 	}
 
-	for(const HighScore& highScore : highScores[(size_t) game]){
-		if(highScore.score == score){
-			return false;
-		}
-	}
-
 	return highScores[(size_t) game].back().score == 0 || highScores[(size_t) game].back().score < score;
 }
 
