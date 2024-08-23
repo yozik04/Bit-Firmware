@@ -12,7 +12,7 @@
 #include "Devices/Input.h"
 #include "Devices/Battery.h"
 #include "Util/Notes.h"
-#include <esp_spiffs.h>
+#include "FS/SPIFFS.h"
 #include "UIThread.h"
 #include "Services/Robots.h"
 #include "Services/RobotManager.h"
@@ -49,29 +49,6 @@ void shutdown(){
 	//Required to prevent MOSFET activation on TFT_BL with leaked current if pin is floating
 	rtc_gpio_isolate((gpio_num_t)PIN_BL);
 	esp_deep_sleep_start();
-}
-
-bool initSPIFFS(){
-	esp_vfs_spiffs_conf_t conf = {
-			.base_path = "/spiffs",
-			.partition_label = "storage",
-			.max_files = 8,
-			.format_if_mount_failed = false
-	};
-
-	auto ret = esp_vfs_spiffs_register(&conf);
-	if(ret != ESP_OK){
-		if(ret == ESP_FAIL){
-			ESP_LOGE("FS", "Failed to mount or format filesystem");
-		}else if(ret == ESP_ERR_NOT_FOUND){
-			ESP_LOGE("FS", "Failed to find SPIFFS partition");
-		}else{
-			ESP_LOGE("FS", "Failed to initialize SPIFFS (%s)", esp_err_to_name(ret));
-		}
-		return false;
-	}
-
-	return true;
 }
 
 void init(){
@@ -127,7 +104,7 @@ void init(){
 	Services.set(Service::Twinkle, twinkleService);
 	twinkleService->start();
 
-	if(!initSPIFFS()) return;
+	if(!SPIFFS::init()) return;
 
 	auto disp = new Display();
 	Services.set(Service::Display, disp);
