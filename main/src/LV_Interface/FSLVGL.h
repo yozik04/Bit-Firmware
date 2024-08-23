@@ -18,13 +18,19 @@ public:
 	void loadCache();
 	void unloadCache();
 
+	static void themeChange();
+
 private:
 	lv_fs_drv_t drv;
 	const std::string Root = "/spiffs";
 
+	Allocator* alloc = nullptr;
+
 	RawCache cache;
 	ArchiveCache archive;
 
+	std::vector<std::string> getCacheFiles() const;
+	static bool themeChanged;
 	bool cacheLoaded = false;
 
 	static constexpr File* getFile(void* fp){ return (File*) fp; }
@@ -38,8 +44,6 @@ private:
 	void* lvDirOpen(const char* path);
 	lv_fs_res_t lvDirRead(void* dir, char* fn);
 	lv_fs_res_t lvDirClose(void* dir);
-
-	Allocator* alloc = nullptr;
 
 };
 

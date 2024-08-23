@@ -1,48 +1,49 @@
 #include "FSLVGL.h"
-#include "FS/FSFileImpl.h"
 #include "FS/SPIFFS.h"
+#include "Util/stdafx.h"
+#include "Settings/Settings.h"
+#include "Util/Services.h"
+#include "Filepaths.hpp"
 #include <cstdio>
 #include <dirent.h>
 #include <esp_spiffs.h>
-#include <esp_log.h>
 #include <string>
-#include <algorithm>
 #include <unordered_map>
 
-std::initializer_list<std::string> Cached = {
-		"/bg/0.bin",
-		"/bg/1.bin",
-		"/bg/2.bin",
-		"/bg/3.bin",
-		// "/Profile/bg.bin",
-		// "/Profile/barOutline.bin",
-		// "/Profile/arrowUp.bin",
-		// "/Profile/arrowDown.bin",
-		// "/Profile/arrowLeft.bin",
-		// "/Profile/arrowRight.bin",
-		// "/Profile/lock.bin",
-		// "/Profile/theme-outline.bin",
-		// "/Profile/ach-border.bin",
-		// "/Profile/theme-01-icon.bin",
-		// "/Profile/theme-02-icon.bin",
-		// "/Profile/theme-03-icon.bin",
-		// "/Profile/theme-04-icon.bin",
-		// "/Theme1/bg.bin",
-		// "/Theme1/header.bin",
-		// "/Theme1/paused.bin",
-		// "/Theme1/settings.bin",
-		// "/Theme2/bg.bin",
-		// "/Theme2/header.bin",
-		// "/Theme2/paused.bin",
-		// "/Theme2/settings.bin",
-		// "/Theme3/bg.bin",
-		// "/Theme3/header.bin",
-		// "/Theme3/paused.bin",
-		// "/Theme3/settings.bin",
-		// "/Theme4/bg.bin",
-		// "/Theme4/header.bin",
-		// "/Theme4/paused.bin",
-		// "/Theme4/settings.bin",
+std::initializer_list<std::string> ThemedCache = {
+		"/bg.bin",
+		"/header.bin",
+		"/barShort.bin",
+		"/barLong.bin",
+		"/barMid.bin",
+		"/header.bin",
+		"/paused.bin",
+		"/settings.bin",
+		"/popup.bin",
+		"/battery/bg.bin",
+		"/battery/1.bin",
+		"/battery/2.bin",
+		"/battery/3.bin",
+		"/battery/4.bin",
+		"/battery/5.bin",
+		"/battery/6.bin"
+};
+
+std::initializer_list<std::string> GeneralCache = {
+		"/Profile/bg.bin",
+		"/Profile/lock.bin",
+		"/Profile/barOutline.bin",
+		"/Profile/arrowDown.bin",
+		"/Profile/arrowUp.bin",
+		"/Profile/arrowLeft.bin",
+		"/Profile/arrowRight.bin",
+		"/Profile/ach-border.bin",
+		"/Profile/ach-placeholder.bin",
+		"/Profile/theme-01-icon.bin",
+		"/Profile/theme-02-icon.bin",
+		"/Profile/theme-03-icon.bin",
+		"/Profile/theme-04-icon.bin",
+		"/Profile/theme-outline.bin"
 };
 
 std::initializer_list<std::string> Archives = {
@@ -54,7 +55,9 @@ std::initializer_list<std::string> Archives = {
 
 const char* TAG = "FSLVGL";
 
-FSLVGL::FSLVGL(char letter, Allocator* alloc) : cache(Cached), archive(Archives), alloc(alloc){
+bool FSLVGL::themeChanged = false;
+
+FSLVGL::FSLVGL(char letter, Allocator* alloc) : alloc(alloc), archive(Archives){
 	lv_fs_drv_init(&drv);
 
 	drv.letter = letter;
@@ -79,12 +82,23 @@ FSLVGL::~FSLVGL(){
 	esp_vfs_spiffs_unregister("storage");
 }
 
+void FSLVGL::themeChange(){
+	themeChanged = true;
+}
+
 void FSLVGL::loadCache(){
+	if(cacheLoaded && themeChanged){
+		unloadCache();
+		themeChanged = false;
+	}
+
 	if(cacheLoaded) return;
 	cacheLoaded = true;
 
-	archive.load(alloc);
+	cache.setPaths(getCacheFiles());
+
 	cache.load(alloc);
+	archive.load(alloc);
 
 	printf("Cache loaded. Alloc remaining: %zu B\n", alloc->freeSize());
 	heapRep();
@@ -100,6 +114,28 @@ void FSLVGL::unloadCache(){
 	if(alloc){
 		alloc->reset();
 	}
+}
+
+std::vector<std::string> FSLVGL::getCacheFiles() const{
+	auto settings = (Settings*) Services.get(Service::Settings);
+
+	const auto theme = settings ? settings->get().theme : Theme::Theme1;
+
+	std::vector<std::string> paths;
+	paths.reserve(ThemedCache.size() + GeneralCache.size());
+
+	static constexpr const char* ThemePaths[] = { "/Theme1", "/Theme2", "/Theme3", "/Theme4" };
+
+	for(const auto& file : ThemedCache){
+		paths.emplace_back(std::string(ThemePaths[(int) theme]) + file);
+		printf("%s\n", paths.back().c_str());
+	}
+
+	for(const auto& file : GeneralCache){
+		paths.emplace_back(file);
+	}
+
+	return paths;
 }
 
 void* FSLVGL::lvOpen(const char* path, lv_fs_mode_t mode){

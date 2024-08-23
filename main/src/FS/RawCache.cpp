@@ -3,8 +3,20 @@
 #include "SPIFFS.h"
 #include "RamFile.h"
 
+RawCache::RawCache(){ }
+
 RawCache::RawCache(const std::vector<std::string>& paths) : paths(paths){
 	files.reserve(paths.size());
+}
+
+void RawCache::setPaths(const std::vector<std::string>& paths){
+	if(loaded) return;
+
+	this->paths = paths;
+
+	if(files.bucket_count() < paths.size()){
+		files.reserve(paths.size());
+	}
 }
 
 void RawCache::load(Allocator* alloc){
