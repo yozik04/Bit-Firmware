@@ -30,6 +30,10 @@ uint32_t WackyStacky::WackyStacky::getXP() const{
 	return score * 3;
 }
 
+uint32_t WackyStacky::WackyStacky::getScore() const{
+	return score;
+}
+
 void WackyStacky::WackyStacky::onLoad(){
 	Game::onLoad();
 

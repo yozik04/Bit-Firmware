@@ -15,6 +15,7 @@ public:
 
 protected:
 	uint32_t getXP() const override;
+	uint32_t getScore() const override;
 	virtual void onLoad() override;
 	virtual void onLoop(float deltaTime) override;
 	void handleInput(const Input::Data& data) override;
