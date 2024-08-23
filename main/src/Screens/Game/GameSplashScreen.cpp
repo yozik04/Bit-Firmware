@@ -372,10 +372,10 @@ const std::unordered_map<Games, std::function<MelodyPlayer*()>> IntroSounds = {
 				toneFlat(NOTE_A4, 1), toneNone(1),
 				toneFlat(NOTE_C5, 1), toneNone(1),
 
-				toneSlide(NOTE_E4, NOTE_D5, 1), toneNone(1),
+				/*toneSlide(NOTE_E4, NOTE_D5, 1), toneNone(1),
 				toneFlat(NOTE_C5, 1), toneNone(1),
 				toneFlat(NOTE_A4, 1), toneNone(1),
-				toneFlat(NOTE_C5, 1), toneNone(1),
+				toneFlat(NOTE_C5, 1), toneNone(1),*/
 
 				toneSlide(NOTE_C5, NOTE_C4, 1), toneFlat(NOTE_C4, 3)
 			});
