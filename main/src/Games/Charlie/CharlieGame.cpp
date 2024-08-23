@@ -65,6 +65,10 @@ void CharlieGame::CharlieGame::onLoad(){
 }
 
 uint32_t CharlieGame::CharlieGame::getXP() const{
+	return score * 3;
+}
+
+uint32_t CharlieGame::CharlieGame::getScore() const{
 	return score;
 }
 

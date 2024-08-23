@@ -19,6 +19,9 @@ public:
 
 private:
 	uint32_t getXP() const override;
+protected:
+	uint32_t getScore() const override;
+private:
 
 	void onLoad() override;
 	void handleInput(const Input::Data& data) override;
