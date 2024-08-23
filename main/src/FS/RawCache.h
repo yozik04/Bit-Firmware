@@ -8,7 +8,7 @@ class RawCache : public FileCache {
 public:
 	explicit RawCache(const std::vector<std::string>& paths);
 
-	void load() override;
+	void load(Allocator* alloc = nullptr) override;
 	void unload() override;
 
 	File open(const char* path) override;

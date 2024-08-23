@@ -7,7 +7,7 @@ RawCache::RawCache(const std::vector<std::string>& paths) : paths(paths){
 	files.reserve(paths.size());
 }
 
-void RawCache::load(){
+void RawCache::load(Allocator* alloc){
 	if(loaded) return;
 	loaded = true;
 
@@ -18,7 +18,22 @@ void RawCache::load(){
 			continue;
 		}
 
-		files.emplace(path, RamFile::open(file));
+		File myFile;
+
+		if(alloc){
+			auto buf = (uint8_t*) alloc->malloc(file.size());
+			if(buf != nullptr){
+				file.read(buf, file.size());
+				myFile = { std::make_shared<RamFile>(buf, file.size(), file.name()) };
+			}else{
+				ESP_LOGW("RawCache", "Failed allocating %zu B from allocator. Reverting to RamFile", file.size());
+				myFile = RamFile::open(file);
+			}
+		}else{
+			myFile = RamFile::open(file);
+		}
+
+		files.emplace(path, myFile);
 	}
 }
 

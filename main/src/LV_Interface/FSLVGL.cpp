@@ -54,7 +54,7 @@ std::initializer_list<std::string> Archives = {
 
 const char* TAG = "FSLVGL";
 
-FSLVGL::FSLVGL(char letter) : cache(Cached), archive(Archives){
+FSLVGL::FSLVGL(char letter, Allocator* alloc) : cache(Cached), archive(Archives), alloc(alloc){
 	lv_fs_drv_init(&drv);
 
 	drv.letter = letter;
@@ -79,16 +79,27 @@ FSLVGL::~FSLVGL(){
 	esp_vfs_spiffs_unregister("storage");
 }
 
-void FSLVGL::loadArchives(){
-	archive.load();
-}
-
 void FSLVGL::loadCache(){
-	cache.load();
+	if(cacheLoaded) return;
+	cacheLoaded = true;
+
+	archive.load(alloc);
+	cache.load(alloc);
+
+	printf("Cache loaded. Alloc remaining: %zu B\n", alloc->freeSize());
+	heapRep();
 }
 
 void FSLVGL::unloadCache(){
+	if(!cacheLoaded) return;
+	cacheLoaded = false;
+
 	cache.unload();
+	archive.unload();
+
+	if(alloc){
+		alloc->reset();
+	}
 }
 
 void* FSLVGL::lvOpen(const char* path, lv_fs_mode_t mode){

@@ -5,10 +5,12 @@
 #include <unordered_map>
 #include <string>
 #include "FS/File.h"
+#include "Services/Allocator.h"
 
 class FileArchive {
 public:
-	FileArchive(File file);
+	FileArchive(File file, Allocator* alloc = nullptr);
+	virtual ~FileArchive();
 
 	File get(const char* file, const char* name = nullptr);
 
@@ -20,7 +22,10 @@ private:
 	};
 
 	std::unordered_map<std::string, const Entry> entries;
-	std::vector<uint8_t> data;
+
+	Allocator* alloc = nullptr;
+	bool externalData = false;
+	uint8_t* data = nullptr;
 
 };
 

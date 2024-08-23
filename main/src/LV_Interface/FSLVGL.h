@@ -8,13 +8,13 @@
 #include <memory>
 #include "FS/RawCache.h"
 #include "FS/ArchiveCache.h"
+#include "Services/Allocator.h"
 
 class FSLVGL {
 public:
-	FSLVGL(char letter);
+	FSLVGL(char letter, Allocator* alloc = nullptr);
 	virtual ~FSLVGL();
 
-	void loadArchives();
 	void loadCache();
 	void unloadCache();
 
@@ -24,6 +24,8 @@ private:
 
 	RawCache cache;
 	ArchiveCache archive;
+
+	bool cacheLoaded = false;
 
 	static constexpr File* getFile(void* fp){ return (File*) fp; }
 
@@ -36,6 +38,9 @@ private:
 	void* lvDirOpen(const char* path);
 	lv_fs_res_t lvDirRead(void* dir, char* fn);
 	lv_fs_res_t lvDirClose(void* dir);
+
+	Allocator* alloc = nullptr;
+
 };
 
 
