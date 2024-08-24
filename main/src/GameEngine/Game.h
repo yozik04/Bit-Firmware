@@ -56,6 +56,8 @@ protected:
 	void removeObjects(std::initializer_list<const GameObjPtr> objs);
 
 	void addAchi(Achievement ID, int32_t increment);
+	void setAchiIfBigger(Achievement ID, int32_t value);
+	void resetAchi(Achievement ID);
 
 	CollisionSystem collision;
 

@@ -99,6 +99,16 @@ void Game::addAchi(Achievement id, int32_t increment){
 	achievementSystem->increment(id, increment);
 }
 
+void Game::setAchiIfBigger(Achievement ID, int32_t value){
+	const auto current = achievementSystem->get(ID);
+	if(value <= current) return;
+	achievementSystem->increment(ID, value - current);
+}
+
+void Game::resetAchi(Achievement ID){
+	achievementSystem->reset(ID);
+}
+
 void Game::handleInput(const Input::Data& data){
 
 }
