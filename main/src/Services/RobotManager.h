@@ -161,10 +161,10 @@ static constexpr const char* PetIcons[] = {
 
 // Ordered by theme (enum Theme)
 static constexpr const char* ThemeIcons[] = {
-	"S:/ThemeIcons/Theme1.bin",
-	"S:/ThemeIcons/Theme2.bin",
-	"S:/ThemeIcons/Theme3.bin",
-	"S:/ThemeIcons/Theme4.bin"
+	"S:/Profile/theme-01-icon.bin",
+	"S:/Profile/theme-02-icon.bin",
+	"S:/Profile/theme-03-icon.bin",
+	"S:/Profile/theme-04-icon.bin"
 };
 
 class RobotManager : private Threaded {
