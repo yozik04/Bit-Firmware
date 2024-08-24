@@ -65,7 +65,8 @@ static constexpr const AchievementData DefaultAchievementData[(uint32_t) Achieve
 
 static const char* TAG = "AchievementSystem";
 
-AchievementSystem::AchievementSystem() : achievementProgress((size_t) Achievement::COUNT), previousState((size_t) Achievement::COUNT){
+AchievementSystem::AchievementSystem(){
+	achievementProgress = { DefaultAchievementData, DefaultAchievementData + sizeof(DefaultAchievementData)/sizeof(DefaultAchievementData[0]) };
 	load();
 }
 
@@ -129,18 +130,15 @@ bool AchievementSystem::load(){
 		return false;
 	}
 
-	std::array<std::pair<int32_t, int32_t>, (size_t) Achievement::COUNT> rawData{};
-	if(!nvs->get(Blob, rawData)){
-		for(size_t i = 0; i < (size_t) Achievement::COUNT; ++i){
-			achievementProgress[i] = DefaultAchievementData[i];
-		}
+	std::array<uint32_t, (size_t) Achievement::COUNT> data = {};
 
+	if(!nvs->get(Blob, data)){
 		store();
 		return true;
 	}
 
 	for(size_t i = 0; i < (size_t) Achievement::COUNT; ++i){
-		achievementProgress[i] = AchievementData((Achievement) i, rawData[i].first, rawData[i].second);
+		achievementProgress[i].progress = data[i];
 	}
 
 	return true;
@@ -152,10 +150,11 @@ void AchievementSystem::store(){
 		return;
 	}
 
-	std::array<std::pair<int32_t, int32_t>, (size_t) Achievement::COUNT> rawData{};
-	for(size_t i = 0; i < (size_t) Achievement::COUNT; ++i){
-		rawData[i] = { achievementProgress[i].goal, achievementProgress[i].progress };
+	std::array<uint32_t, (int) Achievement::COUNT> data = {};
+
+	for(int i = 0; i < (int) Achievement::COUNT; i++){
+		data[i] = achievementProgress[i].progress;
 	}
 
-	nvs->set(Blob, rawData);
+	nvs->set(Blob, data);
 }
