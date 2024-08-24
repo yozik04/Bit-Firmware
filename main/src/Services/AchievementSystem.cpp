@@ -5,45 +5,45 @@
 //Starting data for every achievement
 //TODO - adjust bronze/silver/gold (_b/s/g) achievement goals according to game
 static constexpr const AchievementData DefaultAchievementData[(uint32_t) Achievement::COUNT] = {
-		{ Achievement::Artemis_friendly,  100,  0 },
-		{ Achievement::Artemis_sharp,     1,    0 },
-		{ Achievement::Bee_b,             50,   0 },
-		{ Achievement::Bee_crow,          1,    0 },
-		{ Achievement::Bee_g,             200,  0 },
-		{ Achievement::Bee_s,             100,  0 },
-		{ Achievement::Blocks_4lines,     1,    0 },
-		{ Achievement::Blocks_b,          500,  0 },
-		{ Achievement::Blocks_clear,      1,    0 },
-		{ Achievement::Blocks_g,          2000, 0 },
-		{ Achievement::Blocks_s,          1000, 0 },
-		{ Achievement::Bob_bombs,         1,    0 },
-		{ Achievement::Bob_green,         1,    0 },
-		{ Achievement::Bob_yellow,        1,    0 },
-		{ Achievement::Bonk_5,            5,    0 },
-		{ Achievement::Bonk_comeback,     1,    0 },
-		{ Achievement::Buttons_triple,    1,    0 },
-		{ Achievement::Buttons_win,       1,    0 },
-		{ Achievement::Capacitron_b,      250,  0 },
-		{ Achievement::Capacitron_fire,   1,    0 },
-		{ Achievement::Capacitron_g,      1000, 0 },
-		{ Achievement::Capacitron_s,      500,  0 },
-		{ Achievement::Charlie_nomercy,   1,    0 },
-		{ Achievement::Charlie_yesmercy,  1,    0 },
-		{ Achievement::Dusty_shovel,      1,    0 },
+		{ Achievement::Artemis_friendly, 100,  0 },
+		{ Achievement::Artemis_sharp,    1,    0 },
+		{ Achievement::Bee_b,            50,   0 },
+		// { Achievement::Bee_crow,         1,    0 },
+		{ Achievement::Bee_g,            200,  0 },
+		{ Achievement::Bee_s,            100,  0 },
+		// { Achievement::Blocks_4lines,    1,    0 },
+		{ Achievement::Blocks_clear,     1,    0 },
+		{ Achievement::Blocks_b,         500,  0 },
+		{ Achievement::Blocks_g,         2000, 0 },
+		{ Achievement::Blocks_s,         1000, 0 },
+		{ Achievement::Bob_bombs,        1,    0 },
+		// { Achievement::Bob_green,        1,    0 },
+		// { Achievement::Bob_yellow,       1,    0 },
+		{ Achievement::Bonk_5,           5,    0 },
+		{ Achievement::Bonk_comeback,    1,    0 },
+		// { Achievement::Buttons_triple,   1,    0 },
+		{ Achievement::Buttons_win,      1,    0 },
+		{ Achievement::Capacitron_b,     50,  0 },
+		{ Achievement::Capacitron_fire,  1,    0 },
+		{ Achievement::Capacitron_g,     200, 0 },
+		{ Achievement::Capacitron_s,      100,  0 },
+		// { Achievement::Charlie_nomercy,   1,    0 },
+		// { Achievement::Charlie_yesmercy,  1,    0 },
+		// { Achievement::Dusty_shovel,      1,    0 },
 		{ Achievement::Dusty_rat,         1,    0 },
-		{ Achievement::Fred_copper,       1,    0 },
-		{ Achievement::Fred_detective,    1,    0 },
-		{ Achievement::Fred_veteran,      100,  0 },
+		// { Achievement::Fred_copper,       1,    0 },
+		// { Achievement::Fred_detective,    1,    0 },
+		// { Achievement::Fred_veteran,      100,  0 },
 		{ Achievement::Hertz_3,           1,    0 },
 		{ Achievement::Marv_5,            5,    0 },
 		{ Achievement::Marv_life,         1,    0 },
-		{ Achievement::Marv_newspapers,   100,  0 },
-		{ Achievement::Planck_b,          50,   0 },
-		{ Achievement::Planck_chauffeur,  1,    0 },
-		{ Achievement::Planck_g,          200,  0 },
+		// { Achievement::Marv_newspapers,   100,  0 },
+		{ Achievement::Planck_b,          10,   0 },
+		// { Achievement::Planck_chauffeur,  1,    0 },
+		{ Achievement::Planck_g,          50,  0 },
 		{ Achievement::Planck_juice,      10,   0 },
-		{ Achievement::Planck_nobrake,    1,    0 },
-		{ Achievement::Planck_s,          100,  0 },
+		// { Achievement::Planck_nobrake,    1,    0 },
+		{ Achievement::Planck_s,          20,  0 },
 		{ Achievement::Resistron_b,       50,   0 },
 		{ Achievement::Resistron_deflect, 1,    0 },
 		{ Achievement::Resistron_g,       200,  0 },
@@ -83,7 +83,20 @@ void AchievementSystem::getAll(std::vector<AchievementData>& unlockedList) const
 	}
 }
 
+const AchievementData& AchievementSystem::get(Achievement ID){
+	return achievementProgress[(int) ID];
+}
+
 void AchievementSystem::reset(Achievement ID){
+	if(!inSession){
+		return;
+	}
+
+	// allow reset if achievement was won this session
+	if(previousState[(size_t) ID].progress >= achievementProgress[(size_t) ID].goal){
+		return;
+	}
+
 	achievementProgress[(size_t) ID].progress = 0;
 }
 

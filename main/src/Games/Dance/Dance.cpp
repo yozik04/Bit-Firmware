@@ -201,6 +201,8 @@ void Dance::createNote(uint8_t track){
 
 	notes[track].push_back(note);
 	addObject(note);
+
+	noteGoal++;
 }
 
 void Dance::noteHit(uint8_t track){
@@ -248,6 +250,8 @@ void Dance::noteHit(uint8_t track){
 			goToAnim = getFile("/idle.gif");
 			goToPos = PlayerPos + idleGIF.offset;
 		});
+
+		notesHit++;
 
 	}else{
 
@@ -297,6 +301,13 @@ void Dance::gameDone(bool success){
 		playerRC->setAnim(getFile("/win.gif"));
 		player->setPos(PlayerPos + winGIF.offset);
 
+		if(life == 3){
+			addAchi(Achievement::Buttons_win, 1);
+		}
+
+		if(notesHit >= noteGoal-3){
+			// Achi: hit every single note
+		}
 	}else{
 		robot->playLose();
 		audio.play({ { 400, 300, 200 },

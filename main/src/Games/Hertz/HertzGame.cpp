@@ -143,6 +143,10 @@ void HertzGame::addPoints(int difference){
 		duckAnim->setAnim(getFile("/win.gif"));
 		duckAnim->setLoopMode(GIF::Single);
 		done = true;
+
+		if(tries <= 3){
+			addAchi(Achievement::Hertz_3, 1);
+		}
 	}else{
 		duckAnim->setAnim(getFile("/blink.gif"));
 		duckAnim->setLoopMode(GIF::Single);
