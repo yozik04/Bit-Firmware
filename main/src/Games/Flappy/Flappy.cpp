@@ -283,8 +283,6 @@ void Flappy::die(){
 	if(state != Play) return;
 //	RGB.blinkTwice(Pixel::Red);
 
-	flashAll();
-
 	robot->blinkContinuousFast();
 	life--;
 	if(life > 0){

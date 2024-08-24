@@ -190,8 +190,6 @@ void Pong::setCollision(){
 			changeState(State::PressToStart);
 		}
 
-		flashAll();
-
 		audio.play({ { 400, 100, 200 },
 					 { 0,   0,   80 },
 					 { 150, 100, 300 } });

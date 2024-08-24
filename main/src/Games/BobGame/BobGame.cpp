@@ -173,7 +173,6 @@ void BobGame::BobGame::collisionHandler(Item item){
 						 { 400, 700, 50 } });
 		}
 	}else{
-		flashAll();
 //		RGB.blink(Pixel::Red);
 		lives--;
 		if(lives > 0){

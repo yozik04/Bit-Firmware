@@ -222,8 +222,6 @@ void ArtemisGame::PewPew::onPos(){
 void ArtemisGame::PewPew::onNeg(){
 	if(done) return;
 
-	flashAll();
-
 	shootHit = true;
 	lives--;
 	hearts->setLives(lives);
