@@ -5,6 +5,7 @@
 #include <vector>
 #include <cstdint>
 #include <array>
+#include <unordered_map>
 
 // TODO needs to be filled out
 enum class Achievement : uint32_t {
@@ -66,6 +67,13 @@ enum class Achievement : uint32_t {
 	Stacky_super,
 	COUNT
 };
+
+struct AchievementText {
+	const char* Title;
+	const char* Description;
+};
+
+extern const std::unordered_map<Achievement, AchievementText> AchievementTextData;
 
 struct AchievementData {
 	inline constexpr bool unlocked() const{
