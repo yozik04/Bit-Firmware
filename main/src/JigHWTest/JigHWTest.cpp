@@ -339,6 +339,10 @@ bool JigHWTest::Buttons(){
 	};
 	gpio_config(&cfg);
 
+	for(auto btn : { LED_A, LED_B, LED_UP, LED_DOWN, LED_RIGHT, LED_LEFT, LED_MENU }){
+		gpio_set_level((gpio_num_t) btn, 1);
+	}
+
 
 	for(;;){
 		Event evt{};
@@ -349,25 +353,25 @@ bool JigHWTest::Buttons(){
 			pressed.insert(data->btn);
 			switch(data->btn){
 				case Input::Up:
-					gpio_set_level((gpio_num_t)LED_UP, 1);
+					gpio_set_level((gpio_num_t)LED_UP, 0);
 					break;
 				case Input::Down:
-					gpio_set_level((gpio_num_t)LED_DOWN, 1);
+					gpio_set_level((gpio_num_t)LED_DOWN, 0);
 					break;
 				case Input::Left:
-					gpio_set_level((gpio_num_t)LED_LEFT, 1);
+					gpio_set_level((gpio_num_t)LED_LEFT, 0);
 					break;
 				case Input::Right:
-					gpio_set_level((gpio_num_t)LED_RIGHT, 1);
+					gpio_set_level((gpio_num_t)LED_RIGHT, 0);
 					break;
 				case Input::A:
-					gpio_set_level((gpio_num_t)LED_A, 1);
+					gpio_set_level((gpio_num_t)LED_A, 0);
 					break;
 				case Input::B:
-					gpio_set_level((gpio_num_t)LED_B, 1);
+					gpio_set_level((gpio_num_t)LED_B, 0);
 					break;
 				case Input::Menu:
-					gpio_set_level((gpio_num_t)LED_MENU, 1);
+					gpio_set_level((gpio_num_t)LED_MENU, 0);
 					break;
 			}
 			buzz();
