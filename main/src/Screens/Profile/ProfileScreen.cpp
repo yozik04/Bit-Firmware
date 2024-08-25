@@ -320,7 +320,7 @@ void ProfileScreen::startAnim(ProfileScreen::Section section){
 	lv_anim_set_repeat_count(&focusedSectionAnim, LV_ANIM_REPEAT_INFINITE);
 	lv_anim_set_path_cb(&focusedSectionAnim, lv_anim_path_linear);
 	lv_anim_set_exec_cb(&focusedSectionAnim, FocusedSectionAnimCB);
-	lv_anim_set_values(&focusedSectionAnim, 60, 120);
+	lv_anim_set_values(&focusedSectionAnim, 0, 140);
 	lv_obj_t* var;
 	switch(section){
 		case Section::Achievement:
