@@ -198,7 +198,7 @@ void ProfileScreen::buildUI(){
 	lv_obj_set_pos(lvlText, 16, 69);
 	lv_obj_set_style_text_font(lvlText, &landerfont, 0);
 	lv_obj_set_style_text_color(lvlText, lv_color_make(85, 126, 150), 0);
-	lv_label_set_text(lvlText, ("LVL " + std::to_string(xpSystem->MapXPToLevel(xpSystem->getXP()).nextLvl - 1)).c_str());
+	lv_label_set_text(lvlText, ("LVL " + std::to_string(xpSystem->getLevel())).c_str());
 
 	//Achievement section
 	achievementOverlay = lv_obj_create(*this);
