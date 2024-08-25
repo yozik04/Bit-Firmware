@@ -387,7 +387,7 @@ void WackyStacky::WackyStacky::robotFallen(){
 }
 
 void WackyStacky::WackyStacky::dropped(){
-	if(hookedRobot && hookedRobot->getPos().y < 40.0f){
+	if(!hookedRobot || (hookedRobot && hookedRobot->getPos().y < 40.0f)){
 		return;
 	}
 
