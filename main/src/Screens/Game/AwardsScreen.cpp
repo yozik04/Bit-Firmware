@@ -55,7 +55,7 @@ void AwardsScreen::setAwardMode(Award award){
 	if(levelSet == 0){
 		levelSet = xpSystem->getLevel();
 	}else if(award == Award::LevelUp){
-		++levelSet;
+		levelSet = std::min(levelSet+1, (uint32_t) XPSystem::MaxLevel);
 	}
 
 	ChirpSystem* chirp = (ChirpSystem*) Services.get(Service::Audio);
@@ -71,7 +71,7 @@ void AwardsScreen::setAwardMode(Award award){
 	}else if(award == Award::HighScore){
 		chirp->play({{ NOTE_G6, NOTE_G6, 100 },
 					 { NOTE_C6, NOTE_C6, 300 }});
-	}else if(award == Award::XP){
+	}else if(award == Award::XP && levelSet != XPSystem::MaxLevel){
 		chirp->play({{ NOTE_C3, NOTE_C6, AnimLength }});
 	}
 
@@ -228,7 +228,7 @@ void AwardsScreen::setAwardMode(Award award){
 		lv_obj_set_style_bg_img_src(bar, Filepath::Award::XpBackground, 0);
 		lv_obj_set_style_bg_opa(bar, 100, 0);
 
-		xpBar = new XPBar(XPBarLength::Long, bar, 0.0f);
+		xpBar = new XPBar(XPBarLength::Long, bar, levelSet == XPSystem::MaxLevel ? 1.0f : 0.0f);
 		lv_obj_set_align(*xpBar, LV_ALIGN_CENTER);
 	}else if(award == Award::Achievement){
 		auto img = lv_img_create(rest);
@@ -286,15 +286,27 @@ void AwardsScreen::loop(){
 		chirped = true;
 
 		if(xpBar != nullptr){
-			xpBar->setFill(XPSystem::MapXPToLevel(xpSystem->getXP() + xp).nextLvl > levelSet + 1 ? 1.0f : xpSystem->MapXPToLevel(xpSystem->getXP() + xp).progress, true);
+			if(XPSystem::MapXPToLevel(xpSystem->getXP() + xp).nextLvl == levelSet && levelSet == XPSystem::MaxLevel){
+				xpBar->setFill(1.0f, false);
+			}else{
+				xpBar->setFill(XPSystem::MapXPToLevel(xpSystem->getXP() + xp).nextLvl > levelSet + 1 ? 1.0f : xpSystem->MapXPToLevel(xpSystem->getXP() + xp).progress, true);
+			}
 		}
 
-		if(ChirpSystem* chirp = (ChirpSystem*) Services.get(Service::Audio)){
-			chirp->play({{ NOTE_C3, NOTE_C6, AnimLength }});
+		if(levelSet < XPSystem::MaxLevel){
+			if(ChirpSystem* chirp = (ChirpSystem*) Services.get(Service::Audio)){
+				chirp->play({{ NOTE_C3, NOTE_C6, AnimLength }});
+			}
 		}
 	}
 
-	if(awardMode <= Award::LevelUp && millis() - lastChange >= AnimLength * 3 && XPSystem::MapXPToLevel(xpSystem->getXP() + xp).nextLvl > levelSet + 1){
+	if(awardMode <= Award::LevelUp && millis() - lastChange >= AnimLength * 3 &&
+	   (
+			   (XPSystem::MapXPToLevel(xpSystem->getXP() + xp).currLvl < XPSystem::MapXPToLevel(xpSystem->getXP() + xp).nextLvl && XPSystem::MapXPToLevel(xpSystem->getXP() + xp).nextLvl > levelSet + 1)
+			   ||
+			   (XPSystem::MapXPToLevel(xpSystem->getXP() + xp).currLvl == XPSystem::MapXPToLevel(xpSystem->getXP() + xp).nextLvl && levelSet < XPSystem::MaxLevel)
+	   )
+			){
 		setAwardMode(Award::LevelUp);
 	}
 
