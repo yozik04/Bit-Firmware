@@ -66,6 +66,8 @@ void ProfileScreen::loop(){
 }
 
 void ProfileScreen::handleGameInsert(const RobotManager::Event& evt){
+	MainMenu::gameEvent({ .action = RobotManager::Event::Remove });
+
 	if(evt.action == RobotManager::Event::Unknown){
 		new UpdateRobot(this);
 		return;
@@ -82,10 +84,14 @@ void ProfileScreen::handleGameInsert(const RobotManager::Event& evt){
 		return;
 	}
 
+	FSLVGL::reloadMenu();
+
 	new NewRobot(this, rob, isNew);
 }
 
 void ProfileScreen::handleThemeInsert(const RobotManager::Event& evt){
+	MainMenu::gameEvent({ .action = RobotManager::Event::Remove });
+
 	if(evt.action == RobotManager::Event::Unknown){
 		new UpdateRobot(this);
 		return;
@@ -110,6 +116,8 @@ void ProfileScreen::handleThemeInsert(const RobotManager::Event& evt){
 }
 
 void ProfileScreen::handlePetInsert(const RobotManager::Event& evt){
+	MainMenu::gameEvent({ .action = RobotManager::Event::Remove });
+
 	if(evt.action == RobotManager::Event::Unknown){
 		new UpdateRobot(this);
 		return;
