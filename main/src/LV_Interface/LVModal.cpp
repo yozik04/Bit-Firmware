@@ -39,11 +39,12 @@ LVModal::LVModal(LVScreen* parent) : LVObject((lv_obj_t*) *parent), parentScreen
 	lv_obj_set_align(container, LV_ALIGN_CENTER);
 	lv_obj_add_flag(container, LV_OBJ_FLAG_FLOATING);
 
+	oldGroup = InputLVGL::getInstance()->getIndev()->group;
 	lv_indev_set_group(InputLVGL::getInstance()->getIndev(), inputGroup);
 }
 
 LVModal::~LVModal(){
-	lv_indev_set_group(InputLVGL::getInstance()->getIndev(), parentScreen->getInputGroup());
+	lv_indev_set_group(InputLVGL::getInstance()->getIndev(), oldGroup);
 	lv_group_del(inputGroup);
 	current = nullptr;
 }

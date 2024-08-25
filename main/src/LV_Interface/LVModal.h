@@ -21,6 +21,8 @@ private:
 	const LVScreen* parentScreen;
 	lv_obj_t* container;
 
+	lv_group_t* oldGroup;
+
 };
 
 
