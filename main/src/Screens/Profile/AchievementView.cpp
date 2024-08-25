@@ -10,6 +10,8 @@ AchievementView::AchievementView(LVScreen* screen, lv_obj_t* parent, uint8_t row
 	auto achievementSystem = (AchievementSystem*) Services.get(Service::Achievements);
 	achievementSystem->getAll(achievementsVector);
 
+	std::sort(achievementsVector.begin(), achievementsVector.end(), [](const AchievementData& a, const AchievementData& b){ return (a.progress >= a.goal) > (b.progress >= b.goal); });
+
 	initStyles();
 	buildUI();
 }
@@ -104,7 +106,7 @@ void AchievementView::buildUI(){
 		lv_obj_center(*img);
 
 		lv_obj_add_event_cb(base, onKey, LV_EVENT_KEY, this);
-		lv_obj_add_event_cb(base, onPress, LV_EVENT_PRESSED, this);
+		lv_obj_add_event_cb(base, onPress, LV_EVENT_CLICKED, this);
 		lv_obj_add_event_cb(base, [](lv_event_t* e){
 			lv_obj_set_style_bg_img_src(lv_event_get_target(e), "S:/Ach/bgSelected.bin", LV_STATE_FOCUSED);
 		}, LV_EVENT_FOCUSED, nullptr);
