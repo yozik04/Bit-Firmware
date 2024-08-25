@@ -41,8 +41,6 @@ private:
 
 	class XPBar* xpBar = nullptr;
 
-	class AchievementView *achView;
-
 	LVStyle itemStyle;
 
 	uint8_t activeIndex = 0;
