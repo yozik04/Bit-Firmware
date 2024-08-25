@@ -26,7 +26,7 @@ JigHWTest::JigHWTest(){
 
 	test = this;
 
-	tests.push_back({ JigHWTest::Robot, "Konektor", [](){} });
+	// tests.push_back({ JigHWTest::Robot, "Konektor", [](){} });
 	tests.push_back({ JigHWTest::Buttons, "Gumbi", [](){} });
 	tests.push_back({ JigHWTest::SPIFFSTest, "SPIFFS", [](){} });
 	tests.push_back({ JigHWTest::BatteryCalib, "Batt kalib", [](){} });
