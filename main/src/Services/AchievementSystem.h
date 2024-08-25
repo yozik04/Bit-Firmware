@@ -11,59 +11,59 @@ enum class Achievement : uint32_t {
 	Artemis_friendly,
 	Artemis_sharp,
 	Bee_b,
-	// Bee_crow,
-	Bee_g,
 	Bee_s,
-	// Blocks_4lines,
+	Bee_g,
 	Blocks_clear,
 	Blocks_b,
 	Blocks_s,
 	Blocks_g,
 	Bob_bombs,
-	// Bob_green,
-	// Bob_yellow,
 	Bonk_5,
 	Bonk_comeback,
-	// Buttons_triple,
 	Buttons_win,
 	Capacitron_b,
-	Capacitron_fire,
-	Capacitron_g,
 	Capacitron_s,
-	// Charlie_nomercy,
-	// Charlie_yesmercy,
-	// Dusty_shovel,
+	Capacitron_g,
+	Capacitron_fire,
 	Dusty_rat,
-	// Fred_copper,
-	// Fred_detective,
-	// Fred_veteran,
 	Hertz_3,
 	Marv_5,
 	Marv_life,
-	// Marv_newspapers,
 	Planck_b,
-	// Planck_chauffeur,
 	Planck_g,
 	Planck_juice,
-	// Planck_nobrake,
 	Planck_s,
 	Resistron_b,
-	Resistron_deflect,
-	Resistron_g,
 	Resistron_s,
+	Resistron_g,
+	Resistron_deflect,
 	Robby_asteroid,
 	Robby_sharp,
 	Snake_b,
-	Snake_fill,
-	Snake_g,
 	Snake_s,
+	Snake_g,
+	Snake_fill,
 	Sparkly_nobrake,
-	// Sparkly_overtake,
 	Sparkly_road,
 	Stacky_5,
 	Stacky_highrise,
 	Stacky_skyscraper,
 	Stacky_super,
+	// Bee_crow,
+	// Blocks_4lines,
+	// Bob_green,
+	// Bob_yellow,
+	// Buttons_triple,
+	// Charlie_nomercy,
+	// Charlie_yesmercy,
+	// Dusty_shovel,
+	// Fred_copper,
+	// Fred_detective,
+	// Fred_veteran,
+	// Marv_newspapers,
+	// Planck_chauffeur,
+	// Planck_nobrake,
+	// Sparkly_overtake,
 	COUNT
 };
 
@@ -76,7 +76,7 @@ extern const std::unordered_map<Achievement, AchievementText> AchievementTextDat
 
 struct AchievementData {
 	inline constexpr bool unlocked() const{
-		return goal != 0 && progress == goal;
+		return goal != 0 && progress >= goal;
 	}
 
 	inline constexpr operator bool() const{
@@ -102,8 +102,8 @@ public:
 	void endSession(std::vector<AchievementData>& unlockedList);
 
 private:
-	std::vector<AchievementData> achievementProgress; //global achievement progress
-	std::vector<AchievementData> previousState; //achivement state before a new session is started
+	std::unordered_map<Achievement, AchievementData> achievementProgress; //global achievement progress
+	std::unordered_map<Achievement, AchievementData> previousState; //achivement state before a new session is started
 	bool inSession = false;
 	inline static constexpr const char* Blob = "Achievements";
 

@@ -10,8 +10,6 @@ AchievementView::AchievementView(LVScreen* screen, lv_obj_t* parent, uint8_t row
 	auto achievementSystem = (AchievementSystem*) Services.get(Service::Achievements);
 	achievementSystem->getAll(achievementsVector);
 
-	std::sort(achievementsVector.begin(), achievementsVector.end(), [](const AchievementData& a, const AchievementData& b){ return (a.progress >= a.goal) > (b.progress >= b.goal); });
-
 	initStyles();
 	buildUI();
 }
