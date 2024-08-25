@@ -120,6 +120,7 @@ void JigHWTest::start(){
 	if(!pass){
 		printf("TEST:fail:%s\n", currentTest);
 		vTaskDelete(nullptr);
+		return;
 	}
 
 	printf("TEST:passall\n");
@@ -130,10 +131,10 @@ void JigHWTest::start(){
 	canvas->print("\nTEST GOTOV. SVE OK.");
 
 	for(;;){
-		gpio_set_level(led_pin, 1);
+		gpio_set_level((gpio_num_t) LED_MENU, 1);
 		vTaskDelay(500);
 
-		gpio_set_level(led_pin, 0);
+		gpio_set_level((gpio_num_t) LED_MENU, 0);
 		vTaskDelay(500);
 	}
 }
