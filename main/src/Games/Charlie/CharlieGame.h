@@ -73,6 +73,8 @@ private:
 	int cacoons = 0;
 	int escapes = 0;
 
+	class ChirpSystem* audio;
+
 };
 
 };

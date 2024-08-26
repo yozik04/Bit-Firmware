@@ -3,6 +3,8 @@
 #include "GameEngine/Rendering/AnimRC.h"
 #include <esp_random.h>
 #include "Util/stdafx.h"
+#include "Util/Services.h"
+#include "Services/ChirpSystem.h"
 
 CharlieGame::CharlieGame::CharlieGame(Sprite& base) : Game(base, Games::Charlie, "/Games/Charlie", {
 		RES_GOBLET,
@@ -18,7 +20,7 @@ CharlieGame::CharlieGame::CharlieGame(Sprite& base) : Game(base, Games::Charlie,
 		{ "/fly_plot.gif", {}, true },
 		{ "/fly_unroll.gif", {}, true }
 }){
-
+	audio = (ChirpSystem*)Services.get(Service::Audio);
 }
 
 CharlieGame::CharlieGame::~CharlieGame(){
@@ -103,7 +105,14 @@ void CharlieGame::CharlieGame::onLoop(float deltaTime){
 
 		auto fly = new Fly([this](const char* name){ return getFile(name); }, nullptr, [this](Cacoon* cac){
 			if(over) return;
-			// TODO: fly left sound (before dmg call)
+			audio->play({{ 600, 300, 200 },
+						 { 0,   0,   75 },
+						 { 400, 200, 200 },
+						 { 0,   0,   75 },
+						 { 80,  80,  75 },
+						 { 0,   0,   75 },
+						 { 80,  80,  75 }
+						});
 			dmg();
 		});
 
@@ -152,7 +161,12 @@ void CharlieGame::CharlieGame::updateRoll(float dt){
 
 	cacoons++;
 
-	// TODO: fly rolled sound
+	audio->play({{ 200, 200, 75 },
+				 { 0,   0,   75 },
+				 { 200, 200, 75 },
+				 { 0,   0,   75 },
+				 { 300, 500, 100 }
+				});
 }
 
 void CharlieGame::CharlieGame::updateCacs(float dt){
@@ -163,7 +177,10 @@ void CharlieGame::CharlieGame::updateCacs(float dt){
 
 		cac->t += dt;
 		if(cac->t >= CacoonTime){
-			// TODO: score++ sound
+			audio->play({{ 600, 800, 100 },
+						 { 0,   0,   75 },
+						 { 600, 800, 100 }
+						});
 			score++;
 			scoreEl->setScore(score);
 
@@ -195,7 +212,14 @@ void CharlieGame::CharlieGame::updateCacs(float dt){
 					delete cac;
 				}
 
-				// TODO: fly rescued sound (before dmg call)
+				audio->play({{ 300, 600, 200 },
+							 { 0,   0,   75 },
+							 { 600, 300, 200 },
+							 { 0,   0,   75 },
+							 { 100, 80,  100 },
+							 { 0,   0,   75 },
+							 { 100, 80,  100 },
+							});
 
 				escapes++;
 
@@ -278,7 +302,10 @@ void CharlieGame::CharlieGame::startRoll(){
 	rollingFly = closest.front().fly;
 	rollingFly->goCac();
 
-	// TODO: roll start sound
+	audio->play({{ 200, 80,  100 },
+				 { 0,   0,   75 },
+				 { 80,  400, 200 }
+				});
 }
 
 void CharlieGame::CharlieGame::stopRoll(){
@@ -302,7 +329,20 @@ void CharlieGame::CharlieGame::dmg(){
 }
 
 void CharlieGame::CharlieGame::gameOver(){
-	// TODO: game over audio
+
+	audio->play({{ 400, 400, 75 },
+				 { 0,   0,   75 },
+				 { 200, 200, 75 },
+				 { 0,   0,   75 },
+				 { 300, 300, 75 },
+				 { 0,   0,   75 },
+				 { 100, 100, 75 },
+				 { 0,   0,   75 },
+				 { 100, 400, 400 },
+				 { 400, 100, 400 },
+				 { 0,   0,   75 },
+				 { 100, 100, 200 },
+				});
 
 	over = true;
 
