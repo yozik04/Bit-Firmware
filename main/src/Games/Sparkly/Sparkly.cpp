@@ -553,7 +553,7 @@ void Sparkly::Sparkly::positionBillboards(){
 			enemyCar->setPos(screenCoords);
 
 			if(StaticRC* rc = (StaticRC*) enemyCar->getRenderComponent().get()){
-				rc->setScale(glm::vec2{scale});
+				rc->setScale(glm::vec2{ scale });
 			}
 		}
 	}
