@@ -156,7 +156,7 @@ void WackyStacky::WackyStacky::scrollAnim(float dt){
 		clouds[i]->setPos(clouds[i]->getPos() + glm::vec2{ 0.0f, 0.5f + (esp_random() % 6) * 0.05f } * move * 0.2f);
 
 		if(clouds[i]->getPos().y >= 128.0f){
-			clouds[i]->setPos(glm::vec2{ (esp_random() % 110) - 10.0f, -(esp_random() % 100) -30.0f });
+			clouds[i]->setPos(glm::vec2{ ((int32_t) (esp_random() % 110)) - 10.0f, -((int32_t) (esp_random() % 100)) - 30.0f });
 		}
 	}
 
