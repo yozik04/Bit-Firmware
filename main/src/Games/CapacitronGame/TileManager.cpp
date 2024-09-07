@@ -245,6 +245,7 @@ CapacitronGame::Powerup CapacitronGame::TileManager::spawnRandomPowerup(uint8_t 
 		anim->start();
 		anim->stop();
 		powerup.size = { 20, 20 };
+		anim->setLayer(PadsRenderLayer);
 	}
 	return powerup;
 }
