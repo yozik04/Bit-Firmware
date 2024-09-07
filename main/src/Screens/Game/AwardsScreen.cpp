@@ -404,9 +404,10 @@ void AwardsScreen::exit(){
 		return;
 	}
 
+	Games game = currentGame;
 	if(hsm->isHighScore(currentGame, highScore)){
-		ui->startScreen([this](){ return std::make_unique<HighScoreScreen>(currentGame); });
+		ui->startScreen([game](){ return std::make_unique<HighScoreScreen>(game); });
 	}else{
-		ui->startScreen([this](){ return std::make_unique<GameMenuScreen>(currentGame); });
+		ui->startScreen([game](){ return std::make_unique<GameMenuScreen>(game); });
 	}
 }

@@ -73,5 +73,6 @@ void InstructionsScreen::loop(){
 
 void InstructionsScreen::exit(){
 	auto ui = (UIThread*) Services.get(Service::UI);
-	ui->startScreen([this](){ return std::make_unique<GameMenuScreen>(currentGame); });
+	Games game = currentGame;
+	ui->startScreen([game](){ return std::make_unique<GameMenuScreen>(game); });
 }

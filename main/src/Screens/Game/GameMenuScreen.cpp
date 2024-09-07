@@ -156,7 +156,8 @@ void GameMenuScreen::buildUI(){
 			auto screen = (GameMenuScreen*) arg;
 
 			if(auto ui = (UIThread*) Services.get(Service::UI)){
-				ui->startScreen([screen](){ return std::make_unique<InstructionsScreen>(screen->currentGame, true); });
+				Games game = screen->currentGame;
+				ui->startScreen([game](){ return std::make_unique<InstructionsScreen>(game, true); });
 			}
 		}, e->user_data);
 	}, LV_EVENT_PRESSED, this);
@@ -170,7 +171,8 @@ void GameMenuScreen::buildUI(){
 					auto screen = (GameMenuScreen*) arg;
 
 					if(auto ui = (UIThread*) Services.get(Service::UI)){
-						ui->startScreen([screen](){ return std::make_unique<HighScoreScreen>(screen->currentGame); });
+						Games game = screen->currentGame;
+						ui->startScreen([game](){ return std::make_unique<HighScoreScreen>(game); });
 					}
 				}, e->user_data);
 			}, LV_EVENT_PRESSED, this);
@@ -184,7 +186,8 @@ void GameMenuScreen::buildUI(){
 			auto screen = (GameMenuScreen*) arg;
 
 			if(auto ui = (UIThread*) Services.get(Service::UI)){
-				ui->startScreen([screen](){ return std::make_unique<InstructionsScreen>(screen->currentGame, false); });
+				Games game = screen->currentGame;
+				ui->startScreen([game](){ return std::make_unique<InstructionsScreen>(game, false); });
 			}
 		}, e->user_data);
 	}, LV_EVENT_PRESSED, this);
