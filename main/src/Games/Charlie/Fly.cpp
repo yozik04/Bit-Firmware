@@ -93,6 +93,7 @@ void CharlieGame::Fly::update(float dt){
 			if(onRescued && rescue){
 				rescue->fly->goAway();
 				onRescued(rescue);
+				rescue = nullptr;
 			}
 
 			goAway();
