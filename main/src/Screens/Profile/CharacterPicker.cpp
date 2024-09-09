@@ -14,7 +14,6 @@ static void VerticalAnimCB(void* obj, int32_t v){
 }
 
 CharacterPicker::CharacterPicker(lv_obj_t* parent) : LVObject(parent), settings(*(Settings*) Services.get(Service::Settings)){
-	petIndex = settings.get().pet;
 	avatarIndex = settings.get().avatar;
 	level = ((XPSystem*) Services.get(Service::XPSystem))->getLevel();
 
@@ -22,6 +21,16 @@ CharacterPicker::CharacterPicker(lv_obj_t* parent) : LVObject(parent), settings(
 	for(uint8_t i = 0; i < (uint8_t) Pet::COUNT; ++i){
 		if(robotManager.isUnlocked((Pet) i)){
 			unlockedPets.push_back((Pet) i);
+		}
+	}
+
+	const auto selectedPet = settings.get().pet;
+	petIndex = selectedPet;
+	if(selectedPet != -1){
+		for(uint8_t i = 0; i < unlockedPets.size(); ++i){
+			if(selectedPet == (uint8_t)unlockedPets[i]){
+				petIndex = i;
+			}
 		}
 	}
 
