@@ -86,6 +86,15 @@ uint8_t Robots::checkAddr() const{
 }
 
 uint8_t Robots::checkToken() const{
+	gpio_config_t cfg = {
+			.pin_bit_mask = 0,
+			.mode = GPIO_MODE_INPUT
+	};
+	for(const auto& pin : CtrlPins){
+		cfg.pin_bit_mask |= 1ULL << pin;
+	}
+	gpio_config(&cfg);
+
 	uint8_t addr = 0;
 
 	for(int i = 0; i < 6; i++){
