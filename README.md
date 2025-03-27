@@ -3,7 +3,7 @@
 # Building
 To build the Bit base firmware, you'll need the ESP-IDF. You can find the getting started
 guide [here](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/). The
-production firmware is built using IDF version 5.1.6, tag [v5.1.6](https://github.com/espressif/esp-idf/tree/v5.1.6).
+production firmware is built using IDF version 5.1.6, tag [v5.1.6](https://github.com/espressif/esp-idf/tree/v5.1.6). It is possible to install it using ESP-IDF VS Code extension.
 
 In the root directory of the project:
 
